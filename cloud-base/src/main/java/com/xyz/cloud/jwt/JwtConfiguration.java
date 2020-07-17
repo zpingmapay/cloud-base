@@ -27,7 +27,7 @@ public class JwtConfiguration {
     }
 
     @Bean("JwtTokenProviderWithLocalCache")
-    @ConditionalOnMissingBean(JwtTokenProvider.class)
+    @ConditionalOnMissingBean(RedissonClient.class)
     public JwtTokenProvider tokenProviderWithLocalCache(JwtConfig jwtConfig) {
         String namespace = CACHE_NAMESPACE.concat(jwtConfig.getAppId());
         ICache<String, String> cache = CacheManager.getLocalCache(namespace);

@@ -18,10 +18,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 public class RetryableConfiguration {
     @Bean("RamEventStore")
-    @ConditionalOnMissingBean(EventStore.class)
+    @ConditionalOnMissingBean(value = {RedissonClient.class})
     public EventStore ramEventStore() {
         ICache<String, String> cache = CacheManager.getLocalCache(DefaultStore.CACHE_NAMESPACE);
-        return new DefaultStore(null,cache);
+        return new DefaultStore(null, cache);
     }
 
     @Bean("RedisEventStore")
@@ -29,7 +29,7 @@ public class RetryableConfiguration {
     @ConditionalOnMissingBean(EventStore.class)
     public EventStore redisEventStore(RedissonClient redissonClient) {
         ICache<String, String> cache = CacheManager.getRedisCache(DefaultStore.CACHE_NAMESPACE, redissonClient);
-        return new DefaultStore(null,cache);
+        return new DefaultStore(null, cache);
     }
 
     @Bean
