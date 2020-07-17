@@ -1,0 +1,15 @@
+server:
+  port: 1008
+
+spring:
+  redis:
+    address:
+      redis://192.168.92.56:6379,//192.168.92.64:6379,//192.168.92.65:6379,//192.168.92.56:6380,//192.168.92.64:6380,//192.168.92.65:6380
+
+cloud:
+  retry:
+    interval-in-seconds: 30
+
+  rest:
+    log:
+      with-header: true
