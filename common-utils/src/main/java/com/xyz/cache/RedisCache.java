@@ -16,7 +16,7 @@ public class RedisCache<K, V> implements ICache<K, V> {
 
     @Override
     public void put(K key, V value) {
-        this.rMapCache.put(key, value);
+        this.put(key, value, 30, TimeUnit.DAYS);
     }
 
     @Override
