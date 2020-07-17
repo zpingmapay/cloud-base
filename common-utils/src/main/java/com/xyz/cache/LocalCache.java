@@ -3,6 +3,7 @@ package com.xyz.cache;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public class LocalCache<K, V> implements ICache<K, V> {
@@ -34,5 +35,15 @@ public class LocalCache<K, V> implements ICache<K, V> {
     @Override
     public boolean containsKey(K key) {
         return this.cache.getIfPresent(key) != null;
+    }
+
+    @Override
+    public Collection<V> values() {
+        return this.cache.asMap().values();
+    }
+
+    @Override
+    public long size() {
+        return this.cache.size();
     }
 }

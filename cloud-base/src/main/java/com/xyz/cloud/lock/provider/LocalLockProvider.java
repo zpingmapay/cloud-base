@@ -1,36 +1,31 @@
 package com.xyz.cloud.lock.provider;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.xyz.cache.CacheManager;
+import com.xyz.cache.ICache;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class RamLockProvider implements LockProvider {
-    private final Cache<String, RamLock> cache = CacheBuilder.newBuilder()
-            .maximumSize(1000)
-            .expireAfterWrite(60, TimeUnit.MINUTES)
-            .build();
-
+public class LocalLockProvider implements LockProvider {
+    private final ICache<String, LocalLock> cache = CacheManager.getLocalCache(CACHE_NAMESPACE);
 
     @Override
     public Lock getLock(String key) {
-        RamLock lock = cache.getIfPresent(key);
+        LocalLock lock = cache.get(key);
         if(lock == null) {
-            lock = new RamLock(new ReentrantLock());
+            lock = new LocalLock(new ReentrantLock());
             cache.put(key, lock);
         }
         return lock;
     }
 
-    public static class RamLock implements Lock {
+    public static class LocalLock implements Lock {
         private final java.util.concurrent.locks.Lock lock;
         private final AtomicLong expireAt = new AtomicLong(0);
         private final AtomicBoolean locked = new AtomicBoolean(false);
 
-        public RamLock(java.util.concurrent.locks.Lock lock) {
+        public LocalLock(java.util.concurrent.locks.Lock lock) {
             this.lock = lock;
         }
 

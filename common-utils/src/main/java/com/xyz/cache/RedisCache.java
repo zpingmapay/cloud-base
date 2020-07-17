@@ -4,10 +4,11 @@ import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public class RedisCache<K, V> implements ICache<K, V> {
-    private RMapCache<K, V> rMapCache;
+    private final RMapCache<K, V> rMapCache;
 
     public RedisCache(RedissonClient redissonClient, String namespace) {
         this.rMapCache = redissonClient.getMapCache(namespace, StringCodec.INSTANCE);
@@ -36,5 +37,15 @@ public class RedisCache<K, V> implements ICache<K, V> {
     @Override
     public boolean containsKey(K key) {
         return this.rMapCache.containsKey(key);
+    }
+
+    @Override
+    public Collection<V> values() {
+        return this.rMapCache.values();
+    }
+
+    @Override
+    public long size() {
+        return this.rMapCache.size();
     }
 }

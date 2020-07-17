@@ -34,21 +34,23 @@ public class RetryableAspect {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         String listenerClassName = methodSignature.getDeclaringTypeName();
         String actionMethodName = methodSignature.getName();
+        EventStore.StoreItem<? extends RetryableEvent> item = EventStore.StoreItem.create(listenerClassName, actionMethodName, event, retryableInfo.maxAttempts());
+
         try {
             Object result = pjp.proceed();
-            eventStore.remove(listenerClassName, actionMethodName, event);
+            eventStore.remove(item);
             return result;
         } catch (RetryableException e) {
             //First attempt
             if (event.getAttempts() == 0) {
                 log.warn("Failed to handle event {}, will retry later", JsonUtils.beanToJson(event));
                 event.attemptIncrementAndGet();
-                eventStore.add(listenerClassName, actionMethodName, event, retryableInfo.maxAttempts());
+                eventStore.add(item);
                 return null;
             }
             //Exceed max attempts
             if (event.getAttempts() > retryableInfo.maxAttempts()) {
-                eventStore.remove(listenerClassName, actionMethodName, event);
+                eventStore.remove(item);
                 //TODO manually process the failed event is needed here
                 log.error("Failed to handle event {} after {} attempts", JsonUtils.beanToJson(event), retryableInfo.maxAttempts(), e);
                 return null;
@@ -56,7 +58,7 @@ public class RetryableAspect {
             //Normal attempt
             log.warn("Failed to handle event {}, at attempts {}", JsonUtils.beanToJson(event), event.getAttempts());
             event.attemptIncrementAndGet();
-            eventStore.update(listenerClassName, actionMethodName, event);
+            eventStore.update(item);
             return null;
         }
     }

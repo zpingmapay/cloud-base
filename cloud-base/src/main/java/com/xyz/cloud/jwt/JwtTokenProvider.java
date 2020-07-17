@@ -19,7 +19,7 @@ public class JwtTokenProvider {
     public static final String WEB_TOKEN_PREFIX = "Bearer ";
     public static final String APP_ID = "x-app-id";
     public static final String USER_ID = "x-user-id";
-    static final String CACHE_PREFIX = "cloud.jwt.";
+    static final String CACHE_NAMESPACE = JwtTokenProvider.class.getName();
     private final JwtConfig jwtConfig;
     private final ICache<String, String> cache;
 

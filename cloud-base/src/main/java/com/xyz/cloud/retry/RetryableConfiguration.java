@@ -1,10 +1,12 @@
-package com.xyz.cloud.retry.config;
+package com.xyz.cloud.retry;
 
-import com.xyz.cloud.retry.EventMonitorJob;
-import com.xyz.cloud.retry.EventStoreFactory;
-import com.xyz.cloud.retry.EventStoreMonitor;
-import com.xyz.cloud.retry.RetryableAspect;
+import com.xyz.cache.CacheManager;
+import com.xyz.cache.ICache;
+import com.xyz.cloud.retry.sotre.DefaultStore;
 import com.xyz.cloud.retry.sotre.EventStore;
+import org.redisson.api.RedissonClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @Configuration
 public class RetryableConfiguration {
+    @Bean("RamEventStore")
+    @ConditionalOnMissingBean(EventStore.class)
+    public EventStore ramEventStore() {
+        ICache<String, String> cache = CacheManager.getLocalCache(DefaultStore.CACHE_NAMESPACE);
+        return new DefaultStore(null,cache);
+    }
+
+    @Bean("RedisEventStore")
+    @ConditionalOnBean(RedissonClient.class)
+    @ConditionalOnMissingBean(EventStore.class)
+    public EventStore redisEventStore(RedissonClient redissonClient) {
+        ICache<String, String> cache = CacheManager.getRedisCache(DefaultStore.CACHE_NAMESPACE, redissonClient);
+        return new DefaultStore(null,cache);
+    }
+
     @Bean
     public EventStoreMonitor eventStoreMonitor(ApplicationContext ctx) {
         return new EventStoreMonitor(ctx);

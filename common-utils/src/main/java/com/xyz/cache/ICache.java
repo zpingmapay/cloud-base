@@ -1,5 +1,6 @@
 package com.xyz.cache;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public interface ICache<K,V> {
@@ -12,4 +13,8 @@ public interface ICache<K,V> {
     void remove(K key);
 
     boolean containsKey(K key);
+
+    Collection<V> values();
+
+    long size();
 }

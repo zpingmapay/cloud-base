@@ -6,8 +6,6 @@ import org.redisson.api.RedissonClient;
 import java.util.concurrent.TimeUnit;
 
 public class RedisLockProvider implements LockProvider {
-    private static final String REDIS_PREFIX = RedisLockProvider.class.getName();
-
     private final RedissonClient redissonClient;
 
     public RedisLockProvider(RedissonClient redissonClient) {
@@ -16,7 +14,7 @@ public class RedisLockProvider implements LockProvider {
 
     @Override
     public Lock getLock(String key) {
-        RLock lock = redissonClient.getLock(REDIS_PREFIX.concat(key));
+        RLock lock = redissonClient.getLock(CACHE_NAMESPACE.concat(key));
         return new RedisLock(lock);
     }
 

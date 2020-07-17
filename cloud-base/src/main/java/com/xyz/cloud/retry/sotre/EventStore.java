@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -17,42 +16,38 @@ import java.util.List;
  * Append-only store for storing Spring Event
  */
 public interface EventStore {
-    EventStore newStore(Class<? extends RetryableEvent> eventClass);
+    EventStore newStore(@NotNull Class<? extends RetryableEvent> eventClass);
 
-    <T extends RetryableEvent> void add(@NotBlank String listenerClassName, @NotBlank String actionMethodName, @NotNull T event, int maxAttempts);
+    void add(@NotNull StoreItem<? extends RetryableEvent> item);
 
-    List<StoreItem> list();
+    List<StoreItem<RetryableEvent>> list();
 
-    <T extends RetryableEvent> void remove(@NotBlank String listenerClassName, @NotBlank String actionMethodName, @NotNull T event);
+    void remove(@NotNull StoreItem<? extends RetryableEvent> item);
 
-    <T extends RetryableEvent> void update(@NotBlank String listenerClassName, @NotBlank String actionMethodName, @NotNull T event);
+    void update(@NotNull StoreItem<? extends RetryableEvent> item);
 
-    int size();
+    long size();
 
     Class<? extends RetryableEvent> getEventClass();
 
-    default String buildKey(String listenerClassName, String actionMethodName, RetryableEvent event) {
-        return String.format("%s_%s_%s", listenerClassName, actionMethodName, event.getTraceId());
-    }
-
     @Data
     @Slf4j
-    class StoreItem {
+    class StoreItem<T extends RetryableEvent> {
         private String listenerClassName;
         private String actionMethodName;
-        private String eventBody;
+        private T event;
         private int maxAttempts;
 
-        public static <T extends RetryableEvent> StoreItem create(String listenerClassName, String actionMethodName, T event, int maxAttempts) {
-            StoreItem item = new StoreItem();
+        public static <T extends RetryableEvent> StoreItem<T> create(String listenerClassName, String actionMethodName, T event, int maxAttempts) {
+            StoreItem<T> item = new StoreItem<>();
             item.listenerClassName = listenerClassName;
             item.actionMethodName = actionMethodName;
-            item.eventBody = JsonUtils.beanToJson(event);
+            item.event = event;
             item.maxAttempts = maxAttempts;
             return item;
         }
 
-        public <T extends RetryableEvent> void redo(ApplicationContext ctx, T event) {
+        public void redo(ApplicationContext ctx) {
             try {
                 log.debug("Retrying event {}", JsonUtils.beanToJson(event));
                 Object listener = ctx.getBean(Class.forName(listenerClassName));
@@ -63,5 +58,15 @@ public interface EventStore {
                 log.warn("Failed to handle event {}", JsonUtils.beanToJson(event), e);
             }
         }
+
+        public String getId() {
+            return String.format("%s_%s_%s", listenerClassName, actionMethodName, event.getTraceId());
+        }
+
+        public static final StoreItem<RetryableEvent> fromJson(String json, Class<? extends RetryableEvent> eventClass) {
+            StoreItem<RetryableEvent> storeItem = JsonUtils.jsonToBean(json, StoreItem.class, eventClass);
+            return storeItem;
+        }
     }
+
 }

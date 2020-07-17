@@ -1,7 +1,6 @@
 package com.xyz.cloud.sample.lock;
 
 import com.xyz.cloud.lock.annotation.Lock;
-import com.xyz.cloud.lock.provider.RamLockProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
