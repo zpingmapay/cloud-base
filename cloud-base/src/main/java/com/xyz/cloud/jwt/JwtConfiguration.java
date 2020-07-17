@@ -1,11 +1,15 @@
 package com.xyz.cloud.jwt;
 
+import com.xyz.cache.CacheManager;
+import com.xyz.cache.ICache;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static com.xyz.cloud.jwt.JwtTokenProvider.CACHE_PREFIX;
 
 @Configuration
 public class JwtConfiguration {
@@ -22,17 +26,21 @@ public class JwtConfiguration {
         return jwtConfig;
     }
 
-    @Bean("JwtTokenProviderWithoutCache")
+    @Bean("JwtTokenProviderWithLocalCache")
     @ConditionalOnMissingBean(JwtTokenProvider.class)
-    public JwtTokenProvider tokenProviderWithoutCache(JwtConfig jwtConfig) {
-        return new JwtTokenProvider(jwtConfig);
+    public JwtTokenProvider tokenProviderWithLocalCache(JwtConfig jwtConfig) {
+        String namespace = CACHE_PREFIX.concat(jwtConfig.getAppId());
+        ICache<String, String> cache = CacheManager.getLocalCache(namespace);
+        return new JwtTokenProvider(jwtConfig, cache);
     }
 
-    @Bean("JwtTokenProviderWithCache")
+    @Bean("JwtTokenProviderWithRedisCache")
     @ConditionalOnBean(RedissonClient.class)
     @ConditionalOnMissingBean(JwtTokenProvider.class)
-    public JwtTokenProvider tokenProviderWithCache(JwtConfig jwtConfig, RedissonClient redissonClient) {
-        return new JwtTokenProvider(jwtConfig, redissonClient);
+    public JwtTokenProvider tokenProviderWithRedisCache(JwtConfig jwtConfig, RedissonClient redissonClient) {
+        String namespace = CACHE_PREFIX.concat(jwtConfig.getAppId());
+        ICache<String, String> cache = CacheManager.getRedisCache(namespace, redissonClient);
+        return new JwtTokenProvider(jwtConfig, cache);
     }
 
     @Bean

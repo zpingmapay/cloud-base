@@ -35,7 +35,7 @@ public class JwtAspect {
             validJwt();
             return pjp.proceed();
         } catch (ValidationException e) {
-            throw new AccessException(e.getCode(), e.getMsg(), e);
+            throw new AccessException(e.getCode(), e.getMsg());
         }
     }
 

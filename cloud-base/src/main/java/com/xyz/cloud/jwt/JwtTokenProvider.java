@@ -4,10 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
 import com.xyz.utils.ValidationUtils;
-import org.redisson.api.RedissonClient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -21,19 +19,13 @@ public class JwtTokenProvider {
     public static final String WEB_TOKEN_PREFIX = "Bearer ";
     public static final String APP_ID = "x-app-id";
     public static final String USER_ID = "x-user-id";
-    private static final String CACHE_PREFIX = "cloud.jwt.";
+    static final String CACHE_PREFIX = "cloud.jwt.";
     private final JwtConfig jwtConfig;
     private final ICache<String, String> cache;
 
-    public JwtTokenProvider(JwtConfig jwtConfig) {
+    public JwtTokenProvider(JwtConfig jwtConfig, ICache<String, String> cache) {
         this.jwtConfig = jwtConfig;
-        this.cache = CacheManager.getLocalCache(CACHE_PREFIX.concat(jwtConfig.getAppId()));
-    }
-
-
-    public JwtTokenProvider(JwtConfig jwtConfig, RedissonClient redissonClient) {
-        this.jwtConfig = jwtConfig;
-        this.cache = CacheManager.getRedisCache(CACHE_PREFIX.concat(jwtConfig.getAppId()), redissonClient);
+        this.cache = cache;
     }
 
     public String buildJwtToken(String userId) {
@@ -61,7 +53,7 @@ public class JwtTokenProvider {
         if (jwtConfig.isMultiLoginCheck()) {
             multiLoginCheck(userId, jwtToken);
         }
-        return userId;
+         return userId;
     }
 
     private DecodedJWT getDecodedJWT(String jwtToken) {

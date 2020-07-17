@@ -10,7 +10,7 @@ import java.text.MessageFormat;
 @Data
 @NoArgsConstructor
 public class CommonException extends RuntimeException implements Serializable {
-    private final static String MSG_TEMPLATE = "Code:{0}, Msg:{1}, Err:{2}";
+    private final static String MSG_TEMPLATE = "Msg:{1}, {2}";
     private String code;
     private String msg;
 
