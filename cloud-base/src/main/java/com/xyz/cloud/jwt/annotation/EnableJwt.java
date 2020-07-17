@@ -10,5 +10,4 @@ import java.lang.annotation.*;
 @Documented
 @Import({JwtConfiguration.class})
 public @interface EnableJwt {
-    boolean multiLoginCheck() default false;
 }

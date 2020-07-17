@@ -1,11 +1,6 @@
 server:
   port: 1008
 
-spring:
-  redis:
-    address:
-      redis://192.168.92.56:6379,//192.168.92.64:6379,//192.168.92.65:6379,//192.168.92.56:6380,//192.168.92.64:6380,//192.168.92.65:6380
-
 cloud:
   retry:
     interval-in-seconds: 30
@@ -13,3 +8,9 @@ cloud:
   rest:
     log:
       with-header: true
+
+  jwt:
+    app-id: 1008
+    secret: sample.app20200808qa1z3838wsxedc3rfv4tgbyhnujm5ikolp9ttt$QA0ZWSXED2CRFV8TGB2YHNU7JM3IKO8LPa12*@(cloud.jwt)
+    ttl-in-hours: 24
+    multi-login-check: true

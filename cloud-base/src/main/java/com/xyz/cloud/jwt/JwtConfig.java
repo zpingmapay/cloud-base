@@ -10,6 +10,7 @@ public class JwtConfig {
     private String secretSeed;
     private int ttlInHours;
     private String secret;
+    private boolean multiLoginCheck;
 
     public void setSecretSeed(String secretSeed) {
         this.secretSeed = secretSeed;
