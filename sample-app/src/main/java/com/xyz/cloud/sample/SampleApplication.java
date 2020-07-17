@@ -2,6 +2,7 @@ package com.xyz.cloud.sample;
 
 import com.xyz.cloud.jwt.annotation.EnableJwt;
 import com.xyz.cloud.lock.annotation.EnableLock;
+import com.xyz.cloud.log.annotation.EnableControllerLog;
 import com.xyz.cloud.retry.annotation.EnableRetryableEvent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 @EnableJwt
 @EnableLock
 @EnableRetryableEvent
+@EnableControllerLog
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class SampleApplication {

@@ -48,17 +48,17 @@ public class RetryableAspect {
                 eventStore.add(item);
                 return null;
             }
+            log.warn("Failed to handle event {}, at attempts {}", JsonUtils.beanToJson(event), event.getAttempts());
+            event.attemptIncrementAndGet();
             //Exceed max attempts
             if (event.getAttempts() > retryableInfo.maxAttempts()) {
                 eventStore.remove(item);
                 //TODO manually process the failed event is needed here
                 log.error("Failed to handle event {} after {} attempts", JsonUtils.beanToJson(event), retryableInfo.maxAttempts(), e);
-                return null;
+            } else {
+                //Normal attempt
+                eventStore.update(item);
             }
-            //Normal attempt
-            log.warn("Failed to handle event {}, at attempts {}", JsonUtils.beanToJson(event), event.getAttempts());
-            event.attemptIncrementAndGet();
-            eventStore.update(item);
             return null;
         }
     }

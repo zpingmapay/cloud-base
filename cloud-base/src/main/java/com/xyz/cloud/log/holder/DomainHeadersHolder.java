@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
+import static com.xyz.cloud.jwt.JwtTokenProvider.USER_ID;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 public class DomainHeadersHolder implements HttpHeadersHolder {
@@ -17,7 +18,6 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
     private static final String HEADER_LNG = "lng";
     private static final String HEADER_LAT = "lat";
     private static final String HEADER_APP_ID = "app-id";
-    public static final String USER_ID = "x-zhaoyou-id";
   
     @Override
     public Object extract(HttpServletRequest request) {
@@ -61,5 +61,4 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
             return JsonUtils.beanToJson(this);
         }
     }
-
 }

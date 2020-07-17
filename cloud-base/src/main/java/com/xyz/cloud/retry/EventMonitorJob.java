@@ -13,7 +13,7 @@ public class EventMonitorJob {
     }
 
     @Lock(key = "'lock.event.store.monitor'")
-    @Scheduled(cron = "*/${cloud.retry.interval-in-seconds:31} * * * * ?")
+    @Scheduled(cron = "*/${cloud.retry.interval-in-seconds:59} * * * * ?")
     public void monitor() {
         this.monitor.monitor();
     }
