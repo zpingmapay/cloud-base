@@ -1,6 +1,7 @@
 package com.xyz.cloud.sample.controller;
 
 
+import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.jwt.JwtTokenProvider;
 import com.xyz.cloud.jwt.annotation.Jwt;
 import com.xyz.cloud.log.holder.DomainHeadersHolder;
@@ -22,23 +23,23 @@ public class SampleController {
     private HttpHeadersHolder httpHeadersHolder;
 
     @PostMapping("/login")
-    public String login() {
+    public ResultDto<String> login() {
         String userId = getUserId();
-        return jwtTokenProvider.buildJwtToken(userId);
+        return ResultDto.ok(jwtTokenProvider.buildJwtToken(userId));
     }
 
     @Jwt
     @GetMapping("/")
-    public String doGet() {
-        return "get ok";
+    public ResultDto<String> doGet() {
+        return ResultDto.ok("get ok");
     }
 
     @Jwt
     @PostMapping("/")
-    public String doPost() {
+    public ResultDto<String> doPost() {
         DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader)httpHeadersHolder.getHeaderObject();
         ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
-        return "post ok";
+        return ResultDto.ok("post ok");
     }
 
     private String getUserId() {

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,27 +63,27 @@ public class ControllerLogAspect {
 
     private void logRequest(String headersStr, String requestUri, Object[] args) {
         if(logWithHeader) {
-            log.info("{},请求路径:{}, 请求参数:{}", headersStr, requestUri, JsonUtils.beanToJson(args));
+            log.info("{},Uri:{}, parameters:{}", headersStr, requestUri, JsonUtils.beanToJson(args));
         } else {
-            log.info("请求路径:{}, 请求参数:{}", requestUri, JsonUtils.beanToJson(args));
+            log.info("Uri:{}, parameters:{}", requestUri, JsonUtils.beanToJson(args));
         }
     }
 
     private void logResponse(String headersStr, String requestUri, Object result, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
         if(logWithHeader) {
-            log.info("{},请求路径:{}, 返回值:{}, 耗时:{}ms", headersStr, requestUri, JsonUtils.beanToJson(result), timeElapsed);
+            log.info("{},Uri:{}, return:{}, took:{}ms", headersStr, requestUri, JsonUtils.beanToJson(result), timeElapsed);
         } else {
-            log.info("请求路径:{}, 返回值:{}, 耗时:{}ms", requestUri, JsonUtils.beanToJson(result), timeElapsed);
+            log.info("Uri:{}, return:{}, took:{}ms", requestUri, JsonUtils.beanToJson(result), timeElapsed);
         }
     }
 
     private void logError(String headersStr, String requestUri, Throwable t, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
         if(logWithHeader) {
-            log.error("{},请求路径失败:{}, 异常:{}, 耗时:{}ms", headersStr, requestUri, t.getMessage(), timeElapsed);
+            log.error("{},Uri:{}, error:{}, took:{}ms", headersStr, requestUri, t.getMessage(), timeElapsed);
         } else {
-            log.error("请求路径失败:{}, 异常:{}, 耗时:{}ms", requestUri, t.getMessage(), timeElapsed);
+            log.error("Uri:{}, error:{}, took:{}ms", requestUri, t.getMessage(), timeElapsed);
         }
     }
 }

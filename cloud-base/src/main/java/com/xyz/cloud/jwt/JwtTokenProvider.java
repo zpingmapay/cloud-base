@@ -73,6 +73,6 @@ public class JwtTokenProvider {
     void multiLoginCheck(String userId, String token) {
         String cachedToken = this.cache.get(userId);
         ValidationUtils.notBlank(cachedToken, "Access token is expired");
-        ValidationUtils.isTrue(cachedToken.equals(token), "Account login in another device");
+        ValidationUtils.isTrue(cachedToken.equals(token), "Account logged in another device, please login again");
     }
 }

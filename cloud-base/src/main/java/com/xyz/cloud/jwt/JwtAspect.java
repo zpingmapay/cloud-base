@@ -1,5 +1,7 @@
 package com.xyz.cloud.jwt;
 
+import com.xyz.cloud.log.holder.DefaultHeadersHolder;
+import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.ValidationUtils;
@@ -27,7 +29,7 @@ public class JwtAspect {
 
     public JwtAspect(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-     }
+    }
 
     @Around("@annotation(com.xyz.cloud.jwt.annotation.Jwt) || @within(com.xyz.cloud.jwt.annotation.Jwt)")
     public Object authWithJwt(ProceedingJoinPoint pjp) throws Throwable {
@@ -42,6 +44,10 @@ public class JwtAspect {
     private void validJwt() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
+
+        HttpHeadersHolder httpHeadersHolder = new DefaultHeadersHolder();
+        httpHeadersHolder.extract(request);
+
         String token = request.getHeader(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);

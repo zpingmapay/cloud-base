@@ -2,6 +2,7 @@ package com.xyz.cloud.jwt;
 
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
+import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -44,7 +45,7 @@ public class JwtConfiguration {
     }
 
     @Bean
-    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider) {
+    public JwtAspect jwtAspectWithHttpHeadersHolder(JwtTokenProvider jwtTokenProvider) {
         return new JwtAspect(jwtTokenProvider);
     }
 }
