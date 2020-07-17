@@ -2,7 +2,6 @@ package com.xyz.cloud.jwt;
 
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
-import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
