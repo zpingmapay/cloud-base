@@ -6,5 +6,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Retryable {
-    int maxAttempts() default 10;
+    int maxAttempts() default 100;
 }
