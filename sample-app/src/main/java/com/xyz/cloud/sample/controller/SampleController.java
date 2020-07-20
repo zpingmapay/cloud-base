@@ -1,11 +1,11 @@
 package com.xyz.cloud.sample.controller;
 
-
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.jwt.JwtTokenProvider;
 import com.xyz.cloud.jwt.annotation.Jwt;
 import com.xyz.cloud.log.holder.DomainHeadersHolder;
 import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.oauth1.annotation.OAuth1;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +40,12 @@ public class SampleController {
         DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader)httpHeadersHolder.getHeaderObject();
         ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
         return ResultDto.ok("post ok");
+    }
+
+    @OAuth1
+    @GetMapping("/me")
+    public ResultDto<String> myUserId() {
+        return ResultDto.ok(getUserId());
     }
 
     private String getUserId() {

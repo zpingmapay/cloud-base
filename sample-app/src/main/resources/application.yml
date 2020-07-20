@@ -14,3 +14,7 @@ cloud:
     secret: sample.app20200808qa1z3838wsxedc3rfv4tgbyhnujm5ikolp9ttt$QA0ZWSXED2CRFV8TGB2YHNU7JM3IKO8LPa12*@(cloud.jwt)
     ttl-in-hours: 24
     multi-login-check: true
+
+  oauth1:
+    config-folder: /etc/sample/config
+    config-name: oauth1-keys.json

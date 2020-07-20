@@ -2,6 +2,7 @@ package com.xyz.cloud.oauth1;
 
 import com.xyz.cloud.oauth1.provider.OAuth1KeyProvider;
 import com.xyz.exception.AccessException;
+import com.xyz.utils.ValidationUtils;
 import net.oauth.*;
 import net.oauth.server.OAuthServlet;
 
@@ -20,15 +21,15 @@ public class OAuth1Validator {
         this.oAuth1KeyProvider = oAuth1KeyProvider;
     }
 
-    public boolean validateRequest(String consumerKey, HttpServletRequest httpRequest) {
+    public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
         String consumerSecret = oAuth1KeyProvider.findConsumerSecretByKey(consumerKey);
+        ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
         OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
         OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, null);
         consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
         OAuthAccessor accessor = new OAuthAccessor(consumer);
         try {
             validator.validateMessage(message, accessor);
-            return true;
         } catch (Exception e) {
             throw new AccessException("Invalid OAuth1 token");
         } finally {

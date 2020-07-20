@@ -1,5 +1,7 @@
 package com.xyz.cloud.oauth1;
 
+import com.xyz.cloud.log.holder.DefaultHeadersHolder;
+import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.ValidationUtils;
@@ -45,6 +47,9 @@ public class OAuth1Aspect {
     private void validateOAuth1Token() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
+
+        HttpHeadersHolder httpHeadersHolder = new DefaultHeadersHolder();
+        httpHeadersHolder.extract(request);
 
         String token = request.getHeader(HEADER_AUTH_TOKEN);
         ValidationUtils.isTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");

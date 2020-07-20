@@ -44,7 +44,7 @@ public class JwtConfiguration {
     }
 
     @Bean
-    public JwtAspect jwtAspectWithHttpHeadersHolder(JwtTokenProvider jwtTokenProvider) {
+    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider) {
         return new JwtAspect(jwtTokenProvider);
     }
 }

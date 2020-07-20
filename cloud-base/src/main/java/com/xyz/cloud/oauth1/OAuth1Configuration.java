@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class OAuth1Configuration {
     @Bean
     @ConditionalOnMissingBean(OAuth1KeyProvider.class)
-    public OAuth1KeyProvider oAuth1KeyProvider(@Value("${cloud.oauth1.config.folder: /etc/xyz/config/}") String configFolder,
-                                               @Value("${cloud.oauth1.config.name: oauth1-keys.json}") String configName) {
+    public OAuth1KeyProvider oAuth1KeyProvider(@Value("${cloud.oauth1.config-folder: /etc/xyz/config/}") String configFolder,
+                                               @Value("${cloud.oauth1.config-name: oauth1-keys.json}") String configName) {
         return new JsonConfigKeyProvider(configFolder, configName);
     }
 
