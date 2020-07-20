@@ -5,9 +5,9 @@ import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.ValidationUtils;
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -54,12 +54,12 @@ public class OAuth1Aspect {
         String token = httpHeadersHolder.getString(HEADER_AUTH_TOKEN);
         ValidationUtils.isTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");
 
-        String[] keyPairs = token.substring(6).split(",");
+        String[] keyPairs = token.substring(OAUTH_PREFIX.length()).split(",");
         String consumerKey = Arrays
                 .stream(keyPairs)
                 .map(x -> {
                     String[] strArr = x.trim().split("=");
-                    return new Pair<>(strArr[0], strArr[1].substring(1,
+                    return Pair.of(strArr[0], strArr[1].substring(1,
                             strArr[1].length() - 1));
                 }).filter(k -> CONSUMER_KEY.equals(k.getKey()))
                 .map(Pair::getValue).findAny()
