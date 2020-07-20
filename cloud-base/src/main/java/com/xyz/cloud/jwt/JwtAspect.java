@@ -48,7 +48,7 @@ public class JwtAspect {
         HttpHeadersHolder httpHeadersHolder = new DefaultHeadersHolder();
         httpHeadersHolder.extract(request);
 
-        String token = request.getHeader(HEADER_ACCESS_TOKEN);
+        String token = httpHeadersHolder.getString(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
         }

@@ -24,7 +24,7 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Aspect
 @Order(1000)
 public class OAuth1Aspect {
-    private static final String HEADER_AUTH_TOKEN = "Authorization";
+    private static final String HEADER_AUTH_TOKEN = "authorization";
     private static final String OAUTH_PREFIX = "OAuth ";
     private static final String CONSUMER_KEY = "oauth_consumer_key";
 
@@ -51,7 +51,7 @@ public class OAuth1Aspect {
         HttpHeadersHolder httpHeadersHolder = new DefaultHeadersHolder();
         httpHeadersHolder.extract(request);
 
-        String token = request.getHeader(HEADER_AUTH_TOKEN);
+        String token = httpHeadersHolder.getString(HEADER_AUTH_TOKEN);
         ValidationUtils.isTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");
 
         String[] keyPairs = token.substring(6).split(",");

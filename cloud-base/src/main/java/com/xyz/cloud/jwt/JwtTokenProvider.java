@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static com.auth0.jwt.JWT.create;
 
 public class JwtTokenProvider {
-    public static final String HEADER_ACCESS_TOKEN = "Authorization";
+    public static final String HEADER_ACCESS_TOKEN = "authorization";
     public static final String WEB_TOKEN_PREFIX = "Bearer ";
     public static final String APP_ID = "x-app-id";
     public static final String USER_ID = "x-user-id";
