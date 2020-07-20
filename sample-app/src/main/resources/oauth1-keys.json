@@ -1,6 +1,6 @@
 [
   {
-    "key": "oauth1__consumer_key_of_sample_service",
+    "key": "oauth1_consumer_key_of_sample_service",
     "secret": "oauth1_consumer_secret_of_sample_service",
     "desc": "sample service"
   }
