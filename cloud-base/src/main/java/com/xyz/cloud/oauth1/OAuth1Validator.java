@@ -33,6 +33,7 @@ public class OAuth1Validator {
         } catch (Exception e) {
             throw new AccessException("Invalid OAuth1 token");
         } finally {
+            //Workaround to avoid OutOfMemoryError
             if (System.currentTimeMillis() - lastReleaseTime.get() > releasePeriod) {
                 CompletableFuture.runAsync(() -> {
                     validator.releaseGarbage();
