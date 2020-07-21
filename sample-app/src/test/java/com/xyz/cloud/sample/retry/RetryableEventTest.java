@@ -11,7 +11,7 @@ public class RetryableEventTest {
     @Resource
     SampleEventPublisher eventPublisher;
 
-    @Test
+//    @Test
     public void testEvent() throws InterruptedException {
         SampleEvent event1 = new SampleEvent("Test1", "1 ");
         eventPublisher.publish(event1);
