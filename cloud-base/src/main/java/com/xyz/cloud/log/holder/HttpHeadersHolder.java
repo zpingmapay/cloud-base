@@ -23,18 +23,16 @@ import java.util.Objects;
  * </code>
  */
 public interface HttpHeadersHolder {
-    String COMMON_HEADER = "com.zhaoyou.common.headers";
-
     Object extract(HttpServletRequest httpServletRequest);
 
     String getString(String key);
 
     default void setHeaderObject(Object header) {
-        Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).setAttribute(COMMON_HEADER, header, RequestAttributes.SCOPE_REQUEST);
+        Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).setAttribute(HttpHeadersHolder.class.getName(), header, RequestAttributes.SCOPE_REQUEST);
     }
 
     default Object getHeaderObject() {
-        return Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(COMMON_HEADER, RequestAttributes.SCOPE_REQUEST);
+        return Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(HttpHeadersHolder.class.getName(), RequestAttributes.SCOPE_REQUEST);
     }
 
     default int getInt(String key) {

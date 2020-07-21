@@ -16,7 +16,7 @@ public class DefaultControllerLogConfiguration {
     }
 
     @Bean
-    public ControllerLogAspect restLogAspect(ApplicationContext ctx, @Value("${zhaoyou.rest.log.with-header:true}") boolean logWithHeader,
+    public ControllerLogAspect restLogAspect(ApplicationContext ctx, @Value("${cloud.log.with-header:true}") boolean logWithHeader,
                                              HttpHeadersHolder holder) {
         return new ControllerLogAspect(logWithHeader, holder);
     }

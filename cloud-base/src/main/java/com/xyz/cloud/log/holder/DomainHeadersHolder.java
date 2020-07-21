@@ -36,7 +36,6 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
         return domainHeader;
     }
 
-
     @Override
     public String getString(String key) {
         Object headerObject = this.getHeaderObject();
