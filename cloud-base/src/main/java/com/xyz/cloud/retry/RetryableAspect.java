@@ -29,9 +29,9 @@ public class RetryableAspect {
 
     @Around("@annotation(com.xyz.cloud.retry.annotation.Retryable)")
     public Object onEventHandling(ProceedingJoinPoint pjp) throws Throwable {
-        Retryable retryableInfo = getRetryAbleInfo(pjp);
+        Retryable retryableInfo = getRetryableInfo(pjp);
         ValidationUtils.notNull(retryableInfo, "Retryable event is not properly configured");
-        RetryableEvent event = getRetryAbleEvent(pjp);
+        RetryableEvent event = getRetryableEvent(pjp);
         ValidationUtils.notNull(event, "Not a Retryable Event arg");
 
         EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
@@ -66,13 +66,13 @@ public class RetryableAspect {
         }
     }
 
-    private Retryable getRetryAbleInfo(ProceedingJoinPoint pjp) {
+    private Retryable getRetryableInfo(ProceedingJoinPoint pjp) {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         Method method = methodSignature.getMethod();
         return method.getAnnotation(Retryable.class);
     }
 
-    private RetryableEvent getRetryAbleEvent(ProceedingJoinPoint pjp) {
+    private RetryableEvent getRetryableEvent(ProceedingJoinPoint pjp) {
         Object[] args = pjp.getArgs();
         ValidationUtils.isTrue(args != null && args.length >= 1, "No args found");
         ValidationUtils.isTrue(args[0] instanceof RetryableEvent, "Arg is not RetryableEvent");
