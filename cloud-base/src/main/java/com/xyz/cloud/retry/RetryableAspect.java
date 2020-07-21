@@ -2,7 +2,7 @@ package com.xyz.cloud.retry;
 
 import com.xyz.cloud.retry.annotation.Retryable;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
-import com.xyz.cloud.retry.sotre.EventStore;
+import com.xyz.cloud.retry.repository.EventRepository;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 public class RetryableAspect {
-    private final EventStoreFactory eventStoreFactory;
-    private final EventStore eventStoreTemplate;
+    private final EventRepositoryFactory eventRepositoryFactory;
+    private final EventRepository eventRepositoryTemplate;
     private final DeadEventHandler deadEventHandler;
 
-    public RetryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate, DeadEventHandler deadEventHandler) {
-        this.eventStoreFactory = eventStoreFactory;
-        this.eventStoreTemplate = eventStoreTemplate;
+    public RetryableAspect(EventRepositoryFactory eventRepositoryFactory, EventRepository eventRepositoryTemplate, DeadEventHandler deadEventHandler) {
+        this.eventRepositoryFactory = eventRepositoryFactory;
+        this.eventRepositoryTemplate = eventRepositoryTemplate;
         this.deadEventHandler = deadEventHandler;
     }
 
@@ -33,34 +33,34 @@ public class RetryableAspect {
         RetryableEvent event = getRetryAbleEvent(pjp);
         ValidationUtils.notNull(event, "Not a Retryable Event arg");
 
-        EventStore eventStore = eventStoreFactory.findOrCreate(event.getClass(), eventStoreTemplate.getClass());
+        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         String listenerClassName = methodSignature.getDeclaringTypeName();
         String actionMethodName = methodSignature.getName();
-        EventStore.StoreItem<? extends RetryableEvent> item = EventStore.StoreItem.create(listenerClassName, actionMethodName, event, retryableInfo.maxAttempts());
+        EventRepository.EventItem<? extends RetryableEvent> item = EventRepository.EventItem.create(listenerClassName, actionMethodName, event, retryableInfo.maxAttempts());
 
         try {
             Object result = pjp.proceed();
-            eventStore.remove(item);
+            eventRepository.remove(item);
             return result;
         } catch (RetryableException e) {
             //First attempt
             if (event.getAttempts() == 0) {
                 log.warn("Failed to handle event {}, will retry later", JsonUtils.beanToJson(event));
                 event.attemptIncrementAndGet();
-                eventStore.add(item);
+                eventRepository.add(item);
                 return null;
             }
             log.warn("Failed to handle event {}, at attempts {}", JsonUtils.beanToJson(event), event.getAttempts());
             event.attemptIncrementAndGet();
             //Exceed max attempts
             if (event.getAttempts() > retryableInfo.maxAttempts()) {
-                eventStore.remove(item);
+                eventRepository.remove(item);
                 //TODO manually process the failed event is needed here
                 deadEventHandler.handleDeadEvent(listenerClassName, actionMethodName, event);
             } else {
                 //Normal attempt
-                eventStore.update(item);
+                eventRepository.update(item);
             }
             return null;
         }

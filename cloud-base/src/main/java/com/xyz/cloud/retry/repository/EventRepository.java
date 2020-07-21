@@ -1,4 +1,4 @@
-package com.xyz.cloud.retry.sotre;
+package com.xyz.cloud.retry.repository;
 
 import com.xyz.cloud.retry.RetryableEvent;
 import com.xyz.utils.JsonUtils;
@@ -13,18 +13,18 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * Append-only store for storing Spring Event
+ * Append-only repository for storing Spring Event
  */
-public interface EventStore {
-    EventStore newStore(@NotNull Class<? extends RetryableEvent> eventClass);
+public interface EventRepository {
+    EventRepository newRepository(@NotNull Class<? extends RetryableEvent> eventClass);
 
-    void add(@NotNull StoreItem<? extends RetryableEvent> item);
+    void add(@NotNull EventRepository.EventItem<? extends RetryableEvent> item);
 
-    List<StoreItem<RetryableEvent>> list();
+    List<EventItem<RetryableEvent>> list();
 
-    void remove(@NotNull StoreItem<? extends RetryableEvent> item);
+    void remove(@NotNull EventRepository.EventItem<? extends RetryableEvent> item);
 
-    void update(@NotNull StoreItem<? extends RetryableEvent> item);
+    void update(@NotNull EventRepository.EventItem<? extends RetryableEvent> item);
 
     long size();
 
@@ -32,14 +32,14 @@ public interface EventStore {
 
     @Data
     @Slf4j
-    class StoreItem<T extends RetryableEvent> {
+    class EventItem<T extends RetryableEvent> {
         private String listenerClassName;
         private String actionMethodName;
         private T event;
         private int maxAttempts;
 
-        public static <T extends RetryableEvent> StoreItem<T> create(String listenerClassName, String actionMethodName, T event, int maxAttempts) {
-            StoreItem<T> item = new StoreItem<>();
+        public static <T extends RetryableEvent> EventItem<T> create(String listenerClassName, String actionMethodName, T event, int maxAttempts) {
+            EventItem<T> item = new EventItem<>();
             item.listenerClassName = listenerClassName;
             item.actionMethodName = actionMethodName;
             item.event = event;
@@ -63,9 +63,9 @@ public interface EventStore {
             return String.format("%s_%s_%s", listenerClassName, actionMethodName, event.getTraceId());
         }
 
-        public static final StoreItem<RetryableEvent> fromJson(String json, Class<? extends RetryableEvent> eventClass) {
-            StoreItem<RetryableEvent> storeItem = JsonUtils.jsonToBean(json, StoreItem.class, eventClass);
-            return storeItem;
+        public static final EventItem<RetryableEvent> fromJson(String json, Class<? extends RetryableEvent> eventClass) {
+            EventItem<RetryableEvent> eventItem = JsonUtils.jsonToBean(json, EventItem.class, eventClass);
+            return eventItem;
         }
     }
 

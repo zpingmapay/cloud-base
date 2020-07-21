@@ -1,9 +1,9 @@
 package com.xyz.cloud.sample;
 
-import com.xyz.cloud.retry.EventStoreFactory;
+import com.xyz.cloud.retry.EventRepositoryFactory;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.InfiniteRetryDeadEventHandler;
-import com.xyz.cloud.retry.sotre.EventStore;
+import com.xyz.cloud.retry.repository.EventRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -27,7 +27,7 @@ public class AutoConfig {
     }
 
     @Bean
-    public DeadEventHandler infiniteRetryDeadEventHandler(EventStore eventStoreTemplate, EventStoreFactory eventStoreFactory) {
-        return new InfiniteRetryDeadEventHandler(eventStoreTemplate, eventStoreFactory);
+    public DeadEventHandler infiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
+        return new InfiniteRetryDeadEventHandler(eventRepositoryTemplate, eventRepositoryFactory);
     }
 }

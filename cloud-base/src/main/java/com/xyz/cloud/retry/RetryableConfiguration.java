@@ -4,15 +4,14 @@ import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.DefaultDeadEventHandler;
-import com.xyz.cloud.retry.sotre.DefaultStore;
-import com.xyz.cloud.retry.sotre.EventStore;
+import com.xyz.cloud.retry.repository.DefaultRepository;
+import com.xyz.cloud.retry.repository.EventRepository;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -20,34 +19,34 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @Configuration
 public class RetryableConfiguration {
-    @Bean("RamEventStore")
+    @Bean("RamEventRepository")
     @ConditionalOnMissingBean(value = {RedissonClient.class})
-    public EventStore ramEventStore() {
-        ICache<String, String> cache = CacheManager.getLocalCache(DefaultStore.CACHE_NAMESPACE);
-        return new DefaultStore(null, cache);
+    public EventRepository ramEventRepository() {
+        ICache<String, String> cache = CacheManager.getLocalCache(DefaultRepository.CACHE_NAMESPACE);
+        return new DefaultRepository(null, cache);
     }
 
-    @Bean("RedisEventStore")
+    @Bean("RedisEventRepository")
     @ConditionalOnBean(RedissonClient.class)
-    @ConditionalOnMissingBean(EventStore.class)
-    public EventStore redisEventStore(RedissonClient redissonClient) {
-        ICache<String, String> cache = CacheManager.getRedisCache(DefaultStore.CACHE_NAMESPACE, redissonClient);
-        return new DefaultStore(null, cache);
+    @ConditionalOnMissingBean(EventRepository.class)
+    public EventRepository redisEventRepository(RedissonClient redissonClient) {
+        ICache<String, String> cache = CacheManager.getRedisCache(DefaultRepository.CACHE_NAMESPACE, redissonClient);
+        return new DefaultRepository(null, cache);
     }
 
     @Bean
-    public EventStoreMonitor eventStoreMonitor(ApplicationContext ctx) {
-        return new EventStoreMonitor(ctx);
+    public EventRepositoryMonitor eventRepositoryMonitor(ApplicationContext ctx) {
+        return new EventRepositoryMonitor(ctx);
     }
 
     @Bean
-    public EventMonitorJob eventStoreMonitorJob(EventStoreMonitor eventStoreMonitor) {
-        return new EventMonitorJob(eventStoreMonitor);
+    public EventMonitorJob eventMonitorJob(EventRepositoryMonitor eventRepositoryMonitor) {
+        return new EventMonitorJob(eventRepositoryMonitor);
     }
 
     @Bean
-    public EventStoreFactory eventStoreFactory(EventStoreMonitor eventStoreMonitor, ApplicationContext ctx) {
-        return new EventStoreFactory(eventStoreMonitor, ctx);
+    public EventRepositoryFactory eventRepositoryFactory(EventRepositoryMonitor eventRepositoryMonitor, ApplicationContext ctx) {
+        return new EventRepositoryFactory(eventRepositoryMonitor, ctx);
     }
 
     @Bean
@@ -57,7 +56,7 @@ public class RetryableConfiguration {
     }
 
     @Bean
-    public RetryableAspect retryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate, DeadEventHandler deadEventHandler) {
-        return new RetryableAspect(eventStoreFactory, eventStoreTemplate, deadEventHandler);
+    public RetryableAspect retryableAspect(EventRepositoryFactory eventRepositoryFactory, EventRepository eventRepositoryTemplate, DeadEventHandler deadEventHandler) {
+        return new RetryableAspect(eventRepositoryFactory, eventRepositoryTemplate, deadEventHandler);
     }
 }

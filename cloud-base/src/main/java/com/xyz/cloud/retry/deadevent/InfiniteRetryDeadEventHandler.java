@@ -1,21 +1,21 @@
 package com.xyz.cloud.retry.deadevent;
 
-import com.xyz.cloud.retry.EventStoreFactory;
+import com.xyz.cloud.retry.EventRepositoryFactory;
 import com.xyz.cloud.retry.RetryableEvent;
-import com.xyz.cloud.retry.sotre.EventStore;
+import com.xyz.cloud.retry.repository.EventRepository;
 
 public class InfiniteRetryDeadEventHandler implements DeadEventHandler {
-    private final EventStore eventStoreTemplate;
-    private final EventStoreFactory eventStoreFactory;
+    private final EventRepository eventRepositoryTemplate;
+    private final EventRepositoryFactory eventRepositoryFactory;
 
-    public InfiniteRetryDeadEventHandler(EventStore eventStoreTemplate, EventStoreFactory eventStoreFactory) {
-        this.eventStoreTemplate = eventStoreTemplate;
-        this.eventStoreFactory = eventStoreFactory;
+    public InfiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
+        this.eventRepositoryTemplate = eventRepositoryTemplate;
+        this.eventRepositoryFactory = eventRepositoryFactory;
     }
 
     @Override
     public <T extends RetryableEvent> void handleDeadEvent(String listenerClassName, String actionMethodName, T event) {
-        EventStore eventStore = eventStoreFactory.findOrCreate(event.getClass(), eventStoreTemplate.getClass());
-        eventStore.add(EventStore.StoreItem.create(listenerClassName, actionMethodName, event, Integer.MAX_VALUE));
+        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
+        eventRepository.add(EventRepository.EventItem.create(listenerClassName, actionMethodName, event, Integer.MAX_VALUE));
     }
 }

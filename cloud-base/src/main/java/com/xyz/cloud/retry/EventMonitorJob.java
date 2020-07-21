@@ -6,13 +6,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.validation.constraints.NotNull;
 
 public class EventMonitorJob {
-    private final EventStoreMonitor monitor;
+    private final EventRepositoryMonitor monitor;
 
-    public EventMonitorJob(@NotNull EventStoreMonitor monitor) {
+    public EventMonitorJob(@NotNull EventRepositoryMonitor monitor) {
         this.monitor = monitor;
     }
 
-    @Lock(key = "'lock.event.store.monitor'")
+    @Lock(key = "'lock.event.repository.monitor'")
     @Scheduled(cron = "*/${cloud.retry.interval-in-seconds:59} * * * * ?")
     public void monitor() {
         this.monitor.monitor();
