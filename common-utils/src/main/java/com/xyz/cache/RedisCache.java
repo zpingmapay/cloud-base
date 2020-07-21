@@ -20,8 +20,18 @@ public class RedisCache<K, V> implements ICache<K, V> {
     }
 
     @Override
+    public void putIfAbsent(K key, V value) {
+        this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
+    }
+
+    @Override
     public void put(K key, V value, long timeout, TimeUnit timeUnit) {
-        this.rMapCache.put(key,value,timeout,timeUnit);
+        this.rMapCache.put(key, value, timeout, timeUnit);
+    }
+
+    @Override
+    public void putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
+        this.rMapCache.putIfAbsent(key, value, timeout, timeUnit);
     }
 
     @Override

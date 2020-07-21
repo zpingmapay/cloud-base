@@ -26,9 +26,7 @@ public class DefaultRepository implements EventRepository {
     @Override
     public void add(@NotNull EventRepository.EventItem<? extends RetryableEvent> item) {
         String key = item.getId();
-        if (!this.cache.containsKey(key)) {
-            this.cache.put(key, JsonUtils.beanToJson(item));
-        }
+        this.cache.putIfAbsent(key, JsonUtils.beanToJson(item));
     }
 
     @Override

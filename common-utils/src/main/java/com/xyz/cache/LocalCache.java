@@ -14,12 +14,24 @@ public class LocalCache<K, V> implements ICache<K, V> {
 
     @Override
     public void put(K key, V value) {
-        this.cache.put(key, value);
+        this.put(key, value, 30, TimeUnit.DAYS);
+    }
+
+    @Override
+    public void putIfAbsent(K key, V value) {
+        this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
     }
 
     @Override
     public void put(K key, V value, long timeout, TimeUnit timeUnit) {
         this.cache.put(key, value);
+    }
+
+    @Override
+    public void putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
+        if (!this.containsKey(key)) {
+            this.cache.put(key, value);
+        }
     }
 
     @Override
