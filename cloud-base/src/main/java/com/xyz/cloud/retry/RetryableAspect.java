@@ -57,7 +57,6 @@ public class RetryableAspect {
             //Exceed max attempts
             if (event.getAttempts() > retryableInfo.maxAttempts()) {
                 eventRepository.remove(item);
-                //TODO manually process the failed event is needed here
                 deadEventHandler.handleDeadEvent(listenerClassName, actionMethodName, event);
             } else {
                 //Normal attempt
