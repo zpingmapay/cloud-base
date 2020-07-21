@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 public class RetryableConfiguration {
     @Bean("RamEventRepository")
-    @ConditionalOnMissingBean(value = {RedissonClient.class})
+    @ConditionalOnMissingBean(RedissonClient.class)
     public EventRepository ramEventRepository() {
         ICache<String, String> cache = CacheManager.getLocalCache(DefaultRepository.CACHE_NAMESPACE);
         return new DefaultRepository(null, cache);
