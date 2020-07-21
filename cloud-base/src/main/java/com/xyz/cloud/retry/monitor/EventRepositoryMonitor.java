@@ -25,15 +25,18 @@ public class EventRepositoryMonitor {
     }
 
     public void monitor() {
-        set.forEach(x -> CompletableFuture.runAsync(() -> redoAll(x)));
+        set.forEach(x -> CompletableFuture.runAsync(() -> {
+                    if (x.size() >= ALARM_THRESHOLD) {
+                        log.warn("monitoring repository {}, size = {}", x.getEventClass().getName(), x.size());
+                    } else {
+                        log.debug("monitoring repository {}, size = {}", x.getEventClass().getName(), x.size());
+                    }
+                    redoAll(x);
+                }
+        ));
     }
 
     private void redoAll(EventRepository repository) {
-        if(repository.size() > ALARM_THRESHOLD) {
-            log.warn("monitoring repository {}, size = {}", repository.getEventClass().getName(), repository.size());
-        } else {
-            log.debug("monitoring repository {}, size = {}", repository.getEventClass().getName(), repository.size());
-        }
         repository.list().forEach(x -> x.redo(ctx));
     }
 }
