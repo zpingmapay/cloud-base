@@ -1,6 +1,6 @@
 package com.xyz.cloud.retry.deadevent;
 
-import com.xyz.cloud.retry.EventRepositoryFactory;
+import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import com.xyz.cloud.retry.RetryableEvent;
 import com.xyz.cloud.retry.repository.EventRepository;
 

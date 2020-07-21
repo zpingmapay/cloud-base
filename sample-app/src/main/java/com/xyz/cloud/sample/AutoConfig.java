@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample;
 
-import com.xyz.cloud.retry.EventRepositoryFactory;
+import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.InfiniteRetryDeadEventHandler;
 import com.xyz.cloud.retry.repository.EventRepository;

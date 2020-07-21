@@ -8,6 +8,7 @@ import com.xyz.cloud.retry.monitor.EventMonitorJob;
 import com.xyz.cloud.retry.monitor.EventRepositoryMonitor;
 import com.xyz.cloud.retry.repository.DefaultRepository;
 import com.xyz.cloud.retry.repository.EventRepository;
+import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

@@ -1,6 +1,7 @@
-package com.xyz.cloud.retry;
+package com.xyz.cloud.retry.repository;
 
 import com.google.common.collect.Maps;
+import com.xyz.cloud.retry.RetryableEvent;
 import com.xyz.cloud.retry.monitor.EventRepositoryMonitor;
 import com.xyz.cloud.retry.repository.EventRepository;
 import com.xyz.utils.ValidationUtils;

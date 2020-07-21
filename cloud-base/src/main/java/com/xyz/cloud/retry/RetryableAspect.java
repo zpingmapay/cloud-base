@@ -3,6 +3,7 @@ package com.xyz.cloud.retry;
 import com.xyz.cloud.retry.annotation.Retryable;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.repository.EventRepository;
+import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
