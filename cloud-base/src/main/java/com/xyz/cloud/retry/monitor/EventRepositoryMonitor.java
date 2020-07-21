@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class EventRepositoryMonitor {
+    private static final int ALARM_THRESHOLD = 10;
     private final ApplicationContext ctx;
 
     public EventRepositoryMonitor(ApplicationContext ctx) {
@@ -28,7 +29,11 @@ public class EventRepositoryMonitor {
     }
 
     private void redoAll(EventRepository repository) {
-        log.debug("monitoring repository {}, size = {}", repository.getEventClass().getName(), repository.size());
+        if(repository.size() > ALARM_THRESHOLD) {
+            log.warn("monitoring repository {}, size = {}", repository.getEventClass().getName(), repository.size());
+        } else {
+            log.debug("monitoring repository {}, size = {}", repository.getEventClass().getName(), repository.size());
+        }
         repository.list().forEach(x -> x.redo(ctx));
     }
 }
