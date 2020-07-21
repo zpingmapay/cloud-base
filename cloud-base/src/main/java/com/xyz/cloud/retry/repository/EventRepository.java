@@ -20,7 +20,7 @@ public interface EventRepository {
 
     void add(@NotNull EventRepository.EventItem<? extends RetryableEvent> item);
 
-    List<EventItem<RetryableEvent>> list();
+    List<EventItem<? extends RetryableEvent>> list();
 
     void remove(@NotNull EventRepository.EventItem<? extends RetryableEvent> item);
 
@@ -63,9 +63,9 @@ public interface EventRepository {
             return String.format("%s_%s_%s", listenerClassName, actionMethodName, event.getTraceId());
         }
 
-        public static final EventItem<RetryableEvent> fromJson(String json, Class<? extends RetryableEvent> eventClass) {
-            EventItem<RetryableEvent> eventItem = JsonUtils.jsonToBean(json, EventItem.class, eventClass);
-            return eventItem;
+        @SuppressWarnings("unchecked")
+        public static EventItem<? extends RetryableEvent> fromJson(String json, Class<? extends RetryableEvent> eventClass) {
+            return JsonUtils.jsonToBean(json, EventItem.class, eventClass);
         }
     }
 

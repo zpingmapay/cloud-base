@@ -32,8 +32,7 @@ public class DefaultRepository implements EventRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<EventItem<RetryableEvent>> list() {
+    public List<EventItem<? extends RetryableEvent>> list() {
         return this.cache.values().stream().map(x -> EventItem.fromJson(x, this.eventClass)).collect(Collectors.toList());
     }
 
