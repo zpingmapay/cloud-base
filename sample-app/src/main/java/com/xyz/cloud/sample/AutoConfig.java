@@ -1,5 +1,9 @@
 package com.xyz.cloud.sample;
 
+import com.xyz.cloud.retry.EventStoreFactory;
+import com.xyz.cloud.retry.deadevent.DeadEventHandler;
+import com.xyz.cloud.retry.deadevent.InfiniteRetryDeadEventHandler;
+import com.xyz.cloud.retry.sotre.EventStore;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -10,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AutoConfig {
-//    @Bean(destroyMethod = "shutdown")
+ //   @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient(@Value("${spring.redis.address}") String addressList, @Value("${spring.redis.password:unknown}") String pwd) {
         Config config = new Config();
         String[] address = StringUtils.split(addressList, ",");
@@ -20,5 +24,10 @@ public class AutoConfig {
             config.useClusterServers().addNodeAddress(address);
         }
         return Redisson.create(config);
+    }
+
+    @Bean
+    public DeadEventHandler infiniteRetryDeadEventHandler(EventStore eventStoreTemplate, EventStoreFactory eventStoreFactory) {
+        return new InfiniteRetryDeadEventHandler(eventStoreTemplate, eventStoreFactory);
     }
 }

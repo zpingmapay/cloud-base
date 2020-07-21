@@ -1,6 +1,7 @@
 package com.xyz.cloud.retry;
 
 import com.xyz.cloud.retry.annotation.Retryable;
+import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.sotre.EventStore;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
@@ -17,10 +18,12 @@ import java.lang.reflect.Method;
 public class RetryableAspect {
     private final EventStoreFactory eventStoreFactory;
     private final EventStore eventStoreTemplate;
+    private final DeadEventHandler deadEventHandler;
 
-    public RetryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate) {
+    public RetryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate, DeadEventHandler deadEventHandler) {
         this.eventStoreFactory = eventStoreFactory;
         this.eventStoreTemplate = eventStoreTemplate;
+        this.deadEventHandler = deadEventHandler;
     }
 
     @Around("@annotation(com.xyz.cloud.retry.annotation.Retryable)")
@@ -54,7 +57,7 @@ public class RetryableAspect {
             if (event.getAttempts() > retryableInfo.maxAttempts()) {
                 eventStore.remove(item);
                 //TODO manually process the failed event is needed here
-                log.error("Failed to handle event {} after {} attempts", JsonUtils.beanToJson(event), retryableInfo.maxAttempts(), e);
+                deadEventHandler.handleDeadEvent(listenerClassName, actionMethodName, event);
             } else {
                 //Normal attempt
                 eventStore.update(item);

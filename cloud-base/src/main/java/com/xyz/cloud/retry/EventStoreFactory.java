@@ -20,7 +20,7 @@ public class EventStoreFactory {
         this.ctx = ctx;
     }
 
-    EventStore findOrCreate(@NotNull Class<? extends RetryableEvent> eventClass, @NotNull Class<? extends EventStore> storeClass) {
+    public EventStore findOrCreate(@NotNull Class<? extends RetryableEvent> eventClass, @NotNull Class<? extends EventStore> storeClass) {
         synchronized (eventClass.getName()) {
             EventStore store = cachedStores.get(eventClass.getName());
             if (store == null) {

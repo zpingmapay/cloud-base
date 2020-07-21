@@ -2,6 +2,8 @@ package com.xyz.cloud.retry;
 
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
+import com.xyz.cloud.retry.deadevent.DeadEventHandler;
+import com.xyz.cloud.retry.deadevent.DefaultDeadEventHandler;
 import com.xyz.cloud.retry.sotre.DefaultStore;
 import com.xyz.cloud.retry.sotre.EventStore;
 import org.redisson.api.RedissonClient;
@@ -10,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -48,7 +51,13 @@ public class RetryableConfiguration {
     }
 
     @Bean
-    public RetryableAspect retryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate) {
-        return new RetryableAspect(eventStoreFactory, eventStoreTemplate);
+    @ConditionalOnMissingBean(DeadEventHandler.class)
+    public DeadEventHandler deadEventHandler() {
+        return new DefaultDeadEventHandler();
+    }
+
+    @Bean
+    public RetryableAspect retryableAspect(EventStoreFactory eventStoreFactory, EventStore eventStoreTemplate, DeadEventHandler deadEventHandler) {
+        return new RetryableAspect(eventStoreFactory, eventStoreTemplate, deadEventHandler);
     }
 }
