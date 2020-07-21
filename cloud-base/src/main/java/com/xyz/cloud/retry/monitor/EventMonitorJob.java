@@ -1,4 +1,4 @@
-package com.xyz.cloud.retry;
+package com.xyz.cloud.retry.monitor;
 
 import com.xyz.cloud.lock.annotation.Lock;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,4 +1,4 @@
-package com.xyz.cloud.retry;
+package com.xyz.cloud.retry.monitor;
 
 import com.google.common.collect.Sets;
 import com.xyz.cloud.retry.repository.EventRepository;

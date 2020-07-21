@@ -4,6 +4,8 @@ import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.DefaultDeadEventHandler;
+import com.xyz.cloud.retry.monitor.EventMonitorJob;
+import com.xyz.cloud.retry.monitor.EventRepositoryMonitor;
 import com.xyz.cloud.retry.repository.DefaultRepository;
 import com.xyz.cloud.retry.repository.EventRepository;
 import org.redisson.api.RedissonClient;
