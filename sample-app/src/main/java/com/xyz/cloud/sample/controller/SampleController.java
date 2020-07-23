@@ -2,10 +2,10 @@ package com.xyz.cloud.sample.controller;
 
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.jwt.JwtTokenProvider;
-import com.xyz.cloud.jwt.annotation.Jwt;
+import com.xyz.cloud.jwt.annotation.JwtSecured;
 import com.xyz.cloud.log.holder.DomainHeadersHolder;
 import com.xyz.cloud.log.holder.HttpHeadersHolder;
-import com.xyz.cloud.oauth1.annotation.OAuth1;
+import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +28,13 @@ public class SampleController {
         return ResultDto.ok(jwtTokenProvider.buildJwtToken(userId));
     }
 
-    @Jwt
+    @JwtSecured
     @GetMapping("/")
     public ResultDto<String> doGet() {
         return ResultDto.ok("get ok");
     }
 
-    @Jwt
+    @JwtSecured
     @PostMapping("/")
     public ResultDto<String> doPost() {
         DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader)httpHeadersHolder.getHeaderObject();
@@ -42,7 +42,7 @@ public class SampleController {
         return ResultDto.ok("post ok");
     }
 
-    @OAuth1
+    @OAuth1Secured
     @GetMapping("/me")
     public ResultDto<String> myUserId() {
         return ResultDto.ok(getUserId());

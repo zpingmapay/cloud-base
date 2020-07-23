@@ -29,17 +29,16 @@ public class LockAspect {
         this.lockProvider = lockProvider;
     }
 
-    @Around("@annotation(com.xyz.cloud.lock.annotation.Lock)")
-    public Object lock(ProceedingJoinPoint pjp) throws Throwable {
-        Lock lockInfo = getLockInfo(pjp);
-        ValidationUtils.notNull(lockInfo, "Lock is not properly configured");
-        ValidationUtils.notBlank(lockInfo.key(), "Lock is not properly configured");
-        String lockKey = parseKey(lockInfo.key(), pjp);
+    @Around(value = "@annotation(annotation)", argNames = "pjp,annotation")
+    public Object lock(ProceedingJoinPoint pjp, Lock annotation) throws Throwable {
+        ValidationUtils.notNull(annotation, "Lock is not properly configured");
+        ValidationUtils.notBlank(annotation.key(), "Lock is not properly configured");
+        String lockKey = parseKey(annotation.key(), pjp);
 
         LockProvider.Lock lock = lockProvider.getLock(lockKey);
         try {
             ValidationUtils.notNull(lock, "Lock is not obtained");
-            ValidationUtils.isTrue(lock.tryLock(lockInfo.lockInMillis()), "Lock is not obtained");
+            ValidationUtils.isTrue(lock.tryLock(annotation.lockInMillis()), "Lock is not obtained");
 
             return pjp.proceed();
         } catch (ValidationException e) {
@@ -56,11 +55,5 @@ public class LockAspect {
         Method method = methodSignature.getMethod();
         MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), parameterNameDiscoverer);
         return parser.parseExpression(key).getValue(context, String.class);
-    }
-
-    private Lock getLockInfo(ProceedingJoinPoint pjp) {
-        MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-        Method method = methodSignature.getMethod();
-        return method.getAnnotation(Lock.class);
     }
 }

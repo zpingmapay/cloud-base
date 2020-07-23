@@ -2,6 +2,7 @@ package com.xyz.cloud.oauth1;
 
 import com.xyz.cloud.log.holder.DefaultHeadersHolder;
 import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.ValidationUtils;
@@ -34,8 +35,8 @@ public class OAuth1Aspect {
         this.oAuth1Validator = oAuth1Validator;
     }
 
-    @Around("@annotation(com.xyz.cloud.oauth1.annotation.OAuth1) || @within(com.xyz.cloud.oauth1.annotation.OAuth1)")
-    public Object authWithOAuth1(ProceedingJoinPoint pjp) throws Throwable {
+    @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
+    public Object authWithOAuth1(ProceedingJoinPoint pjp, OAuth1Secured annotation) throws Throwable {
         try {
             validateOAuth1Token();
             return pjp.proceed();

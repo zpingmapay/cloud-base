@@ -1,5 +1,6 @@
 package com.xyz.cloud.jwt;
 
+import com.xyz.cloud.jwt.annotation.JwtSecured;
 import com.xyz.cloud.log.holder.DefaultHeadersHolder;
 import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
@@ -31,8 +32,8 @@ public class JwtAspect {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Around("@annotation(com.xyz.cloud.jwt.annotation.Jwt) || @within(com.xyz.cloud.jwt.annotation.Jwt)")
-    public Object authWithJwt(ProceedingJoinPoint pjp) throws Throwable {
+    @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
+    public Object authWithJwt(ProceedingJoinPoint pjp, JwtSecured annotation) throws Throwable {
         try {
             validJwt();
             return pjp.proceed();
