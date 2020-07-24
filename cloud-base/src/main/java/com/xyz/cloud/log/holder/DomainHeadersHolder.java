@@ -2,11 +2,14 @@ package com.xyz.cloud.log.holder;
 
 import com.xyz.utils.BeanUtils;
 import com.xyz.utils.JsonUtils;
+import com.xyz.utils.MapUtils;
+import com.xyz.utils.ValidationUtils;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.xyz.cloud.jwt.JwtTokenProvider.USER_ID;
@@ -18,7 +21,8 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
     private static final String HEADER_LNG = "lng";
     private static final String HEADER_LAT = "lat";
     private static final String HEADER_APP_ID = "app-id";
-  
+    private static final ThreadLocal<Map<String, Object>> headerThreadLocal = new ThreadLocal<>();
+
     @Override
     public Object extract(HttpServletRequest request) {
         DomainHeader domainHeader = new DomainHeader();
@@ -38,8 +42,25 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
 
     @Override
     public String getString(String key) {
-        Object headerObject = this.getHeaderObject();
-        return BeanUtils.beanToMap(headerObject).get(key).toString();
+        ValidationUtils.notBlank(key, "Key is required");
+
+        Map<String, Object> headers = headerThreadLocal.get();
+        if(headers == null) {
+            Object headerObject = this.getHeaderObject();
+
+            headers = MapUtils.transform(BeanUtils.beanToMap(headerObject), this::normalize, v ->v);
+            headerThreadLocal.set(headers);
+        }
+
+        String normalizedKey = normalize(key);
+        if (!headers.containsKey(normalizedKey)) {
+            return null;
+        }
+        return headers.get(normalizedKey).toString();
+    }
+
+    private String normalize(String key) {
+        return key.toLowerCase().replaceAll("-", "");
     }
 
     private String getUserIdFromCtx() {

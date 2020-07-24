@@ -37,7 +37,9 @@ public class SampleController {
     @JwtSecured
     @PostMapping("/")
     public ResultDto<String> doPost() {
-        DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader)httpHeadersHolder.getHeaderObject();
+        ValidationUtils.isTrue(httpHeadersHolder.getString("user-id").equals(this.getUserId()), "Incorrect user id found");
+
+        DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader) httpHeadersHolder.getHeaderObject();
         ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
         return ResultDto.ok("post ok");
     }
