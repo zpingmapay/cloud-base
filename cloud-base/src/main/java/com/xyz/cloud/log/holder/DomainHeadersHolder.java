@@ -18,7 +18,7 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
     private static final String HEADER_LNG = "lng";
     private static final String HEADER_LAT = "lat";
     private static final String HEADER_APP_ID = "app-id";
-    private static final ThreadLocal<Map<String, Object>> headerThreadLocal = new ThreadLocal<>();
+    private final ThreadLocal<Map<String, Object>> headerThreadLocal = new ThreadLocal<>();
 
     @Override
     public DomainHeader extract(HttpServletRequest request) {
