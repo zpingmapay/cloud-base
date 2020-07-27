@@ -17,7 +17,7 @@ import java.util.Objects;
  * </code>
  * Another method is via the converted domain object:
  * <code>
- * DomainHeadersHolder.DomainHeader headers = (DomainHeadersHolder.DomainHeader)holder.getHeaderObject();
+ * DomainHeadersHolder.DomainHeader headers = holder.getHeaderObject();
  * String appId = headers.getAppId());
  * String userId = headers.getUserId());
  * </code>
