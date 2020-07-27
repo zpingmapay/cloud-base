@@ -34,11 +34,12 @@ public class ControllerLogAspect {
         }
         HttpServletRequest request = requestAttributes.getRequest();
         String contentType = request.getContentType();
-        Object headers = httpHeadersHolder.extract(request);
 
         if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE)) {
             return proceedWithoutLog(pjp);
         }
+
+        Object headers = httpHeadersHolder.extract(request);
         return proceedWithLog(pjp, request, headers);
     }
 
@@ -58,6 +59,8 @@ public class ControllerLogAspect {
         } catch (Exception e) {
             logError(headersStr, requestUri, e, start);
             throw e;
+        } finally {
+            httpHeadersHolder.removeHeaderObject();
         }
     }
 

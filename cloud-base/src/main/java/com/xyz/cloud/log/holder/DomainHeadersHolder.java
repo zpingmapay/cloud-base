@@ -59,6 +59,12 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
         return headers.get(normalizedKey).toString();
     }
 
+    @Override
+    public void removeHeaderObject() {
+        headerThreadLocal.remove();
+        HttpHeadersHolder.super.removeHeaderObject();
+    }
+
     private String normalize(String key) {
         return key.toLowerCase().replaceAll("-", "");
     }

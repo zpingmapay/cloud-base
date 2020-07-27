@@ -35,6 +35,10 @@ public interface HttpHeadersHolder {
         return Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(HttpHeadersHolder.class.getName(), RequestAttributes.SCOPE_REQUEST);
     }
 
+    default void removeHeaderObject() {
+        Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).removeAttribute(HttpHeadersHolder.class.getName(), RequestAttributes.SCOPE_REQUEST);
+    }
+
     default int getInt(String key) {
         return Integer.valueOf(getString(key));
     }
