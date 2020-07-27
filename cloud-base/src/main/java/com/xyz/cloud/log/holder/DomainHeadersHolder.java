@@ -1,14 +1,12 @@
 package com.xyz.cloud.log.holder;
 
-import com.xyz.utils.BeanUtils;
-import com.xyz.utils.JsonUtils;
-import com.xyz.utils.MapUtils;
-import com.xyz.utils.ValidationUtils;
+import com.xyz.utils.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,15 +24,15 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
     @Override
     public Object extract(HttpServletRequest request) {
         DomainHeader domainHeader = new DomainHeader();
-        domainHeader.setTraceId(request.getHeader(HEADER_TRACE_ID));
-        domainHeader.setTimestamp(request.getHeader(HEADER_TIMESTAMP));
+        domainHeader.setAppId(this.getHeader(request, HEADER_APP_ID, String.valueOf(Integer.MIN_VALUE)));
+        domainHeader.setTraceId(this.getHeader(request, HEADER_TRACE_ID, Uuid.generate()));
+        domainHeader.setTimestamp(this.getHeader(request, HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis())));
         if (StringUtils.isNotBlank(request.getHeader(HEADER_LNG))) {
             domainHeader.setLng(Double.parseDouble(request.getHeader(HEADER_LNG)));
         }
         if (StringUtils.isNotBlank(request.getHeader(HEADER_LAT))) {
             domainHeader.setLat(Double.parseDouble(request.getHeader(HEADER_LAT)));
         }
-        domainHeader.setAppId(request.getHeader(HEADER_APP_ID));
         domainHeader.setUserId(getUserIdFromCtx());
         setHeaderObject(domainHeader);
         return domainHeader;
@@ -45,10 +43,10 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
         ValidationUtils.notBlank(key, "Key is required");
 
         Map<String, Object> headers = headerThreadLocal.get();
-        if(headers == null) {
+        if (headers == null) {
             Object headerObject = this.getHeaderObject();
 
-            headers = MapUtils.transform(BeanUtils.beanToMap(headerObject), this::normalize, v ->v);
+            headers = MapUtils.transform(BeanUtils.beanToMap(headerObject), this::normalize, v -> v);
             headerThreadLocal.set(headers);
         }
 
@@ -67,6 +65,11 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
 
     private String normalize(String key) {
         return key.toLowerCase().replaceAll("-", "");
+    }
+
+    private String getHeader(HttpServletRequest request, String key, String defaultValue) {
+        String header = request.getHeader(key);
+        return StringUtils.isBlank(header) ? defaultValue : header;
     }
 
     private String getUserIdFromCtx() {
