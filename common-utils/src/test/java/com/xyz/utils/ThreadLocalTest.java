@@ -36,6 +36,8 @@ public class ThreadLocalTest {
 
         ctx = new MyContext();
         Assert.isTrue(ctx.getMyId().equals(userId), "not the same user-id");
+
+        ctx.remove();
     }
 
     @Test
