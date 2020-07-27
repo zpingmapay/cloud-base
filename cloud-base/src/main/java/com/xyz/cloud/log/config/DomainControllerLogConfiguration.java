@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 
 public class DomainControllerLogConfiguration {
     @Bean
-    public HttpHeadersHolder domainHolder() {
+    public HttpHeadersHolder<DomainHeadersHolder.DomainHeader> domainHolder() {
         return new DomainHeadersHolder();
     }
 

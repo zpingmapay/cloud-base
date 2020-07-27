@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Map;
+
 @Slf4j
 public class DefaultControllerLogConfiguration {
     @Bean
-    public HttpHeadersHolder defaultHolder() {
+    public HttpHeadersHolder<Map<String, String>> defaultHolder() {
         return new DefaultHeadersHolder();
     }
 
