@@ -12,7 +12,7 @@ import java.util.Objects;
 import static com.xyz.cloud.jwt.JwtTokenProvider.USER_ID;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
-public class DomainHeadersHolder implements HttpHeadersHolder {
+public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolder.DomainHeader> {
     private static final String HEADER_TRACE_ID = "trace-id";
     private static final String HEADER_TIMESTAMP = "timestamp";
     private static final String HEADER_LNG = "lng";
@@ -21,7 +21,7 @@ public class DomainHeadersHolder implements HttpHeadersHolder {
     private static final ThreadLocal<Map<String, Object>> headerThreadLocal = new ThreadLocal<>();
 
     @Override
-    public Object extract(HttpServletRequest request) {
+    public DomainHeader extract(HttpServletRequest request) {
         DomainHeader domainHeader = new DomainHeader();
         domainHeader.setAppId(this.getHeader(request, HEADER_APP_ID, String.valueOf(Integer.MIN_VALUE)));
         domainHeader.setTraceId(this.getHeader(request, HEADER_TRACE_ID, Uuid.generate()));

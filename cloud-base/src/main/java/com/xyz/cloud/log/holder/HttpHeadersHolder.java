@@ -22,17 +22,18 @@ import java.util.Objects;
  * String userId = headers.getUserId());
  * </code>
  */
-public interface HttpHeadersHolder {
-    Object extract(HttpServletRequest httpServletRequest);
+public interface HttpHeadersHolder<D> {
+    D extract(HttpServletRequest httpServletRequest);
 
     String getString(String key);
 
-    default void setHeaderObject(Object header) {
+    default void setHeaderObject(D header) {
         Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).setAttribute(HttpHeadersHolder.class.getName(), header, RequestAttributes.SCOPE_REQUEST);
     }
 
-    default Object getHeaderObject() {
-        return Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(HttpHeadersHolder.class.getName(), RequestAttributes.SCOPE_REQUEST);
+    @SuppressWarnings("unchecked")
+    default D getHeaderObject() {
+        return (D)Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(HttpHeadersHolder.class.getName(), RequestAttributes.SCOPE_REQUEST);
     }
 
     default void removeHeaderObject() {
@@ -40,15 +41,15 @@ public interface HttpHeadersHolder {
     }
 
     default int getInt(String key) {
-        return Integer.valueOf(getString(key));
+        return Integer.parseInt(getString(key));
     }
 
     default boolean getBoolean(String key) {
-        return Boolean.valueOf(getString(key));
+        return Boolean.parseBoolean(getString(key));
     }
 
     default long getLong(String key) {
-        return Long.valueOf(getString(key));
+        return Long.parseLong(getString(key));
     }
 
     default <T> T getObject(String key, Class<T> clazz) {

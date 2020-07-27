@@ -20,7 +20,7 @@ public class SampleController {
     @Resource
     private JwtTokenProvider jwtTokenProvider;
     @Resource
-    private HttpHeadersHolder httpHeadersHolder;
+    private HttpHeadersHolder<DomainHeadersHolder.DomainHeader> httpHeadersHolder;
 
     @PostMapping("/login")
     public ResultDto<String> login() {
@@ -39,7 +39,7 @@ public class SampleController {
     public ResultDto<String> doPost() {
         ValidationUtils.isTrue(httpHeadersHolder.getString("user-id").equals(this.getUserId()), "Incorrect user id found");
 
-        DomainHeadersHolder.DomainHeader headerObject = (DomainHeadersHolder.DomainHeader) httpHeadersHolder.getHeaderObject();
+        DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
         ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
         return ResultDto.ok("post ok");
     }
