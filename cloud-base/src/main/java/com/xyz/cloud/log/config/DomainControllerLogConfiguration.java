@@ -4,7 +4,6 @@ import com.xyz.cloud.log.ControllerLogAspect;
 import com.xyz.cloud.log.holder.DomainHeadersHolder;
 import com.xyz.cloud.log.holder.HttpHeadersHolder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 public class DomainControllerLogConfiguration {
@@ -14,7 +13,7 @@ public class DomainControllerLogConfiguration {
     }
 
     @Bean
-    public ControllerLogAspect restLogAspect(ApplicationContext ctx, @Value("${cloud.log.with-header:true}") boolean logWithHeader,
+    public ControllerLogAspect restLogAspect(@Value("${cloud.log.with-header:true}") boolean logWithHeader,
                                              HttpHeadersHolder holder) {
         return new ControllerLogAspect(logWithHeader, holder);
     }
