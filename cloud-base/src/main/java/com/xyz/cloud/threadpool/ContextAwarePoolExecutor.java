@@ -55,9 +55,7 @@ public class ContextAwarePoolExecutor extends ThreadPoolTaskExecutor {
     }
 
     public static class ContextAwareCallable<T> implements Callable<T> {
-
         private final Callable<T> task;
-
         private final Map<String, String> threadContextMap;
 
         public ContextAwareCallable(Callable<T> task, Map<String, String> threadContextMap) {
@@ -84,9 +82,7 @@ public class ContextAwarePoolExecutor extends ThreadPoolTaskExecutor {
     }
 
     public static class ContextAwareRunnable implements Runnable {
-
         private final Runnable task;
-
         private final Map<String, String> threadContextMap;
 
         public ContextAwareRunnable(Runnable task, Map<String, String> threadContextMap) {
