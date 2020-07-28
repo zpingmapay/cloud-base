@@ -49,7 +49,7 @@ public interface EventRepository {
 
         public void redo(ApplicationContext ctx) {
             try {
-                log.debug("Retrying event {}", JsonUtils.beanToJson(event));
+                log.info("Retrying event {}", JsonUtils.beanToJson(event));
                 Object listener = ctx.getBean(Class.forName(listenerClassName));
                 Method method = BeanUtils.findDeclaredMethod(listener.getClass(), actionMethodName, event.getClass());
                 ValidationUtils.notNull(method, String.format("Method %s not found in class %s", actionMethodName, listenerClassName));

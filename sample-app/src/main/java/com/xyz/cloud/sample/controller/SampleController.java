@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.concurrent.Executor;
 
 @Slf4j
 @RestController
@@ -25,8 +24,6 @@ public class SampleController {
     @Resource
     private HttpHeadersHolder<DomainHeadersHolder.DomainHeader> httpHeadersHolder;
     @Resource
-    private Executor executor;
-    @Resource
     private SampleEventPublisher eventPublisher;
 
     @PostMapping("/login")
@@ -34,10 +31,7 @@ public class SampleController {
         String userId = getUserId();
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
 
-        executor.execute(() -> {
-            log.info("user {} login", userId);
-            eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));
-        });
+        eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));
         return ResultDto.ok(jwtTokenProvider.buildJwtToken(userId));
     }
 

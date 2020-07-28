@@ -3,44 +3,32 @@ package com.xyz.cloud.threadpool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
-@EnableScheduling
-public class ThreadPoolConfiguration implements SchedulingConfigurer {
-    @Value("${cloud.thread.pool.name: executor-pool-}")
-    private String poolName;
-    @Value("${cloud.thread.pool.size: 20}")
-    private int poolSize;
-    @Value("${cloud.thread.queue.size: 20}")
-    private int queueSize;
-
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.setScheduler(scheduler());
+public class ThreadPoolConfiguration {
+    @Bean(destroyMethod = "shutdown")
+    public ThreadPoolTaskScheduler taskScheduler(@Value("${cloud.scheduler.pool.name: job-pool-}") String jobPoolName,
+                                                 @Value("${cloud.scheduler.pool.size: 20}") int jobPoolSize) {
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setThreadNamePrefix(jobPoolName);
+        taskScheduler.setPoolSize(jobPoolSize);
+        return taskScheduler;
     }
 
     @Bean(destroyMethod = "shutdown")
-    public Executor scheduler() {
-        return Executors.newScheduledThreadPool(poolSize);
-    }
-
-    @Bean(destroyMethod = "shutdown")
-    public Executor executor() {
+    public ThreadPoolTaskExecutor taskExecutor(@Value("${cloud.thread.pool.name: task-pool-}") String poolName,
+                                               @Value("${cloud.thread.pool.size: 20}") int poolSize,
+                                               @Value("${cloud.thread.queue.capacity: 20}") int queueCapacity) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setThreadNamePrefix(poolName);
         executor.setCorePoolSize(poolSize);
         executor.setMaxPoolSize(poolSize);
-        executor.setQueueCapacity(queueSize);
+        executor.setQueueCapacity(queueCapacity);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        executor.initialize();
         return executor;
     }
 }
