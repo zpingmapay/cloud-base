@@ -46,7 +46,7 @@ public class ContextAwarePoolExecutor extends ThreadPoolTaskExecutor {
     private Map<String, String> getOrInitMdcCtx() {
         Map<String, String> mdcCtx = MDC.getCopyOfContextMap();
         if (mdcCtx == null) {
-            mdcCtx = Maps.newHashMap();
+            mdcCtx = Maps.newConcurrentMap();
         }
         if (!mdcCtx.containsKey(TID)) {
             mdcCtx.put(TID, Uuid.shortUuid());
