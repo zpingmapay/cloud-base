@@ -10,11 +10,14 @@ import com.xyz.cloud.sample.retry.SampleEvent;
 import com.xyz.cloud.sample.retry.SampleEventPublisher;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @RestController
@@ -25,12 +28,16 @@ public class SampleController {
     private HttpHeadersHolder<DomainHeadersHolder.DomainHeader> httpHeadersHolder;
     @Resource
     private SampleEventPublisher eventPublisher;
+    @Resource
+    @Qualifier(("taskExecutor"))
+    private Executor executor;
 
     @PostMapping("/login")
     public ResultDto<String> login() {
         String userId = getUserId();
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
 
+        executor.execute(()-> log.info("user {} login", userId));
         eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));
         return ResultDto.ok(jwtTokenProvider.buildJwtToken(userId));
     }
@@ -44,10 +51,10 @@ public class SampleController {
     @JwtSecured
     @PostMapping("/")
     public ResultDto<String> doPost() {
-        ValidationUtils.isTrue(httpHeadersHolder.getString("user-id").equals(this.getUserId()), "Incorrect user id found");
-
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
         ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
+        log.info("do post");
+        eventPublisher.publish(new SampleEvent(headerObject.getUserId(), headerObject.getTraceId()));
         return ResultDto.ok("post ok");
     }
 

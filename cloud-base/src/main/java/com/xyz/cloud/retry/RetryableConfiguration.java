@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @EnableAsync
 @EnableScheduling
@@ -38,8 +39,8 @@ public class RetryableConfiguration {
     }
 
     @Bean
-    public EventRepositoryMonitor eventRepositoryMonitor(ApplicationContext ctx) {
-        return new EventRepositoryMonitor(ctx);
+    public EventRepositoryMonitor eventRepositoryMonitor(ApplicationContext ctx, ThreadPoolTaskExecutor executor) {
+        return new EventRepositoryMonitor(ctx, executor);
     }
 
     @Bean

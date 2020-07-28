@@ -5,12 +5,15 @@ import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.TID;
 
 /**
  * Append-only repository for storing Spring Event
@@ -49,6 +52,7 @@ public interface EventRepository {
 
         public void redo(ApplicationContext ctx) {
             try {
+                MDC.put(TID, event.getTraceId());
                 log.info("Retrying event {}", JsonUtils.beanToJson(event));
                 Object listener = ctx.getBean(Class.forName(listenerClassName));
                 Method method = BeanUtils.findDeclaredMethod(listener.getClass(), actionMethodName, event.getClass());

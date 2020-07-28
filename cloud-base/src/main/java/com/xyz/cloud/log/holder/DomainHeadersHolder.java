@@ -3,6 +3,7 @@ package com.xyz.cloud.log.holder;
 import com.xyz.utils.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.xyz.cloud.jwt.JwtTokenProvider.USER_ID;
+import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.TID;
+import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.UID;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolder.DomainHeader> {
@@ -32,8 +35,14 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
         if (StringUtils.isNotBlank(request.getHeader(HEADER_LAT))) {
             domainHeader.setLat(Double.parseDouble(request.getHeader(HEADER_LAT)));
         }
-        domainHeader.setUserId(getUserIdFromCtx());
+        String userId = getUserIdFromCtx();
+        domainHeader.setUserId(userId);
         setHeaderObject(domainHeader);
+
+        MDC.put(TID, domainHeader.getTraceId());
+        if(StringUtils.isNotBlank(userId)) {
+            MDC.put(UID, userId);
+        }
         return domainHeader;
     }
 

@@ -7,14 +7,17 @@ import org.springframework.context.ApplicationContext;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 @Slf4j
 public class EventRepositoryMonitor {
     private static final int ALARM_THRESHOLD = 10;
     private final ApplicationContext ctx;
+    private final Executor executor;
 
-    public EventRepositoryMonitor(ApplicationContext ctx) {
+    public EventRepositoryMonitor(ApplicationContext ctx, Executor executor) {
         this.ctx = ctx;
+        this.executor = executor;
     }
 
     private final Set<EventRepository> set = Sets.newConcurrentHashSet();
@@ -35,6 +38,6 @@ public class EventRepositoryMonitor {
     }
 
     private void redoAll(EventRepository repository) {
-        repository.list().forEach(x -> x.redo(ctx));
+        repository.list().forEach(x -> executor.execute(() -> x.redo(ctx)));
     }
 }
