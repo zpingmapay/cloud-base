@@ -13,7 +13,7 @@ public class DomainControllerLogConfiguration {
     }
 
     @Bean
-    public ControllerLogAspect restLogAspect(@Value("${cloud.log.with-header:true}") boolean logWithHeader,
+    public ControllerLogAspect restLogAspect(@Value("${cloud.log.with-header:false}") boolean logWithHeader,
                                              HttpHeadersHolder holder) {
         return new ControllerLogAspect(logWithHeader, holder);
     }
