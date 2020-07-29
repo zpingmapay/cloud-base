@@ -14,4 +14,11 @@ public class UuidTest {
         Set<String> uuids = IntStream.range(0, size).mapToObj(x -> Uuid.generate()).collect(Collectors.toSet());
         Assert.isTrue(uuids.size() == size, "duplicated uuid found");
     }
+
+    @Test
+    public void testShortUuid() {
+        int size = 1000000;
+        Set<String> uuids = IntStream.range(0, size).mapToObj(x -> Uuid.shortUuid()).collect(Collectors.toSet());
+        Assert.isTrue(uuids.size() == size, "duplicated uuid found");
+    }
 }

@@ -12,7 +12,7 @@ public class Uuid {
 
     public static String shortUuid() {
         StringBuffer shortBuffer = new StringBuffer();
-        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String uuid = generate();
         for (int i = 0; i < 8; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);
             int x = Integer.parseInt(str, 16);
