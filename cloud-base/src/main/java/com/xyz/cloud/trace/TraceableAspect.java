@@ -1,6 +1,6 @@
-package com.xyz.cloud.log;
+package com.xyz.cloud.trace;
 
-import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +16,12 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 
 @Slf4j
 @Aspect
-public class ControllerLogAspect {
+public class TraceableAspect {
     private static final String JSON_CONTENT_TYPE = "application/json";
     private final boolean logWithHeader;
     private final HttpHeadersHolder httpHeadersHolder;
 
-    public ControllerLogAspect(boolean logWithHeader, HttpHeadersHolder holder) {
+    public TraceableAspect(boolean logWithHeader, HttpHeadersHolder holder) {
         this.logWithHeader = logWithHeader;
         this.httpHeadersHolder = holder;
     }

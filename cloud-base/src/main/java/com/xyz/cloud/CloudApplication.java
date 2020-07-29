@@ -3,9 +3,8 @@ package com.xyz.cloud;
 import com.xyz.cloud.exceptionhandler.DefaultGlobalExceptionHandler;
 import com.xyz.cloud.jwt.annotation.EnableJwt;
 import com.xyz.cloud.lock.annotation.EnableLock;
-import com.xyz.cloud.log.annotation.EnableControllerLog;
 import com.xyz.cloud.retry.annotation.EnableRetryableEvent;
-import com.xyz.cloud.threadpool.ThreadPoolConfiguration;
+import com.xyz.cloud.trace.annotation.EnableTraceable;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,7 +16,7 @@ import java.lang.annotation.*;
 @EnableJwt
 @EnableLock
 @EnableRetryableEvent
-@EnableControllerLog
-@Import({ThreadPoolConfiguration.class, DefaultGlobalExceptionHandler.class})
+@EnableTraceable
+@Import({DefaultGlobalExceptionHandler.class})
 public @interface CloudApplication {
 }

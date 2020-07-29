@@ -1,4 +1,4 @@
-package com.xyz.cloud.log.holder;
+package com.xyz.cloud.trace.holder;
 
 import com.google.common.collect.Maps;
 

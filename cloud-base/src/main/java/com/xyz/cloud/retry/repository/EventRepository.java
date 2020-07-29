@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.TID;
+import static com.xyz.cloud.trace.threadpool.ContextAwareable.TID;
 
 /**
  * Append-only repository for storing Spring Event

@@ -1,4 +1,4 @@
-package com.xyz.cloud.log.holder;
+package com.xyz.cloud.trace.holder;
 
 import com.xyz.utils.*;
 import lombok.Data;
@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.xyz.cloud.jwt.JwtTokenProvider.USER_ID;
-import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.TID;
-import static com.xyz.cloud.threadpool.ContextAwarePoolExecutor.UID;
+import static com.xyz.cloud.trace.threadpool.ContextAwareable.TID;
+import static com.xyz.cloud.trace.threadpool.ContextAwareable.UID;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolder.DomainHeader> {

@@ -1,7 +1,7 @@
 package com.xyz.cloud.oauth1;
 
-import com.xyz.cloud.log.holder.DefaultHeadersHolder;
-import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
+import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;

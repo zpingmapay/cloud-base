@@ -1,5 +1,6 @@
-package com.xyz.cloud.threadpool;
+package com.xyz.cloud.trace.config;
 
+import com.xyz.cloud.trace.threadpool.TraceableExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
-public class ThreadPoolConfiguration implements AsyncConfigurer {
+public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     @Value("${cloud.thread.pool.name: task-pool-}")
     private String poolName;
     @Value("${cloud.thread.pool.size: 20}")
@@ -20,7 +21,7 @@ public class ThreadPoolConfiguration implements AsyncConfigurer {
 
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ContextAwarePoolExecutor();
+        ThreadPoolTaskExecutor executor = new TraceableExecutor();
         executor.setThreadNamePrefix(poolName);
         executor.setCorePoolSize(poolSize);
         executor.setMaxPoolSize(poolSize);
