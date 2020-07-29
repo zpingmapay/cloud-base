@@ -3,6 +3,7 @@ package com.xyz.cloud.sample.controller;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.jwt.JwtTokenProvider;
 import com.xyz.cloud.jwt.annotation.JwtSecured;
+import com.xyz.cloud.sample.service.SampleRemoteService;
 import com.xyz.cloud.trace.holder.DomainHeadersHolder;
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
@@ -30,6 +31,8 @@ public class SampleController {
     @Resource
     @Qualifier(("taskExecutor"))
     private Executor executor;
+    @Resource
+    SampleRemoteService remoteService;
 
     @PostMapping("/login")
     public ResultDto<String> login() {
@@ -49,11 +52,13 @@ public class SampleController {
 
     @JwtSecured
     @PostMapping("/")
-    public ResultDto<String> doPost() {
+    public ResultDto<String> doPost() throws Exception {
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
-        ValidationUtils.isTrue(headerObject.getUserId().equals(this.getUserId()), "Incorrect user id found");
+        String userId = headerObject.getUserId();
+        remoteService.echo(userId);
+        ValidationUtils.isTrue(userId.equals(this.getUserId()), "Incorrect user id found");
         log.info("do post");
-        eventPublisher.publish(new SampleEvent(headerObject.getUserId(), headerObject.getTraceId()));
+        eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));
         return ResultDto.ok("post ok");
     }
 
