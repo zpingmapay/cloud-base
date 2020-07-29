@@ -20,6 +20,6 @@ public class ContextAwareRunnable implements Runnable, ContextAwareable {
 
     @Override
     public void run() {
-        this.consume((Void) -> task.run());
+        this.execute(task::run);
     }
 }

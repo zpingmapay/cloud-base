@@ -2,11 +2,11 @@ package com.xyz.cloud.trace.threadpool;
 
 import com.google.common.collect.Maps;
 import com.xyz.function.ThrowingFunction;
+import com.xyz.function.VoidConsumer;
 import com.xyz.utils.Uuid;
 import org.slf4j.MDC;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 public interface ContextAwareable {
     String TID = "tid";
@@ -42,14 +42,14 @@ public interface ContextAwareable {
         }
     }
 
-    default void consume(Consumer<Void> consumer) {
+    default void execute(VoidConsumer consumer) {
         Map<String, String> threadContextMap = this.getThreadContextMap();
         if (threadContextMap != null) {
             MDC.setContextMap(threadContextMap);
         }
 
         try {
-            consumer.accept(null);
+            consumer.accept();
         } finally {
             try {
                 MDC.clear();
