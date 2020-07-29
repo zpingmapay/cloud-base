@@ -14,7 +14,7 @@ public interface CacheManager {
         ICache<K, V> cache = localRepo.get(namespace);
         if(cache == null) {
             cache = new LocalCache<>();
-            localRepo.put(namespace, cache);
+            localRepo.putIfAbsent(namespace, cache);
         }
         return cache;
     }
@@ -24,7 +24,7 @@ public interface CacheManager {
         ICache<K, V> cache = redisRepo.get(namespace);
         if(cache == null) {
             cache = new RedisCache<>(redissonClient, namespace);
-            redisRepo.put(namespace, cache);
+            redisRepo.putIfAbsent(namespace, cache);
         }
         return cache;
     }
