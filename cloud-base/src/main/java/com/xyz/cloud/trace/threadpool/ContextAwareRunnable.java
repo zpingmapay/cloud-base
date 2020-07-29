@@ -1,9 +1,10 @@
 package com.xyz.cloud.trace.threadpool;
 
-import org.slf4j.MDC;
+import lombok.Getter;
 
 import java.util.Map;
 
+@Getter
 public class ContextAwareRunnable implements Runnable, ContextAwareable {
     private final Runnable task;
     private final Map<String, String> threadContextMap;
@@ -19,18 +20,6 @@ public class ContextAwareRunnable implements Runnable, ContextAwareable {
 
     @Override
     public void run() {
-        if (threadContextMap != null) {
-            MDC.setContextMap(threadContextMap);
-        }
-
-        try {
-            task.run();
-        } finally {
-            try {
-                MDC.clear();
-            } catch (Throwable e) {
-                //ignored
-            }
-        }
+        this.consume((Void) -> task.run());
     }
 }

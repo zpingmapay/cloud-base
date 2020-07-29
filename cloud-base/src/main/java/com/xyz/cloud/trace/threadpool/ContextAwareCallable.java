@@ -1,10 +1,11 @@
 package com.xyz.cloud.trace.threadpool;
 
-import org.slf4j.MDC;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+@Getter
 public class ContextAwareCallable<T> implements Callable<T>, ContextAwareable {
     private final Callable<T> task;
     private final Map<String, String> threadContextMap;
@@ -20,18 +21,6 @@ public class ContextAwareCallable<T> implements Callable<T>, ContextAwareable {
 
     @Override
     public T call() throws Exception {
-        if (threadContextMap != null) {
-            MDC.setContextMap(threadContextMap);
-        }
-
-        try {
-            return task.call();
-        } finally {
-            try {
-                MDC.clear();
-            } catch (Throwable e) {
-                //ignored
-            }
-        }
+        return this.execute((Void t) -> task.call());
     }
 }
