@@ -33,6 +33,6 @@ public class PerformanceWatchAspect {
     }
 
     private void logSlowApi(String method, Object[] args, Instant start) {
-        log.info(SLOW_RESPONSE_PATTEN, method, JsonUtils.beanToJson(args), TimeUtils.millisElapsed(start));
+        log.warn(SLOW_RESPONSE_PATTEN, method, JsonUtils.beanToJson(args), TimeUtils.millisElapsed(start));
     }
 }
