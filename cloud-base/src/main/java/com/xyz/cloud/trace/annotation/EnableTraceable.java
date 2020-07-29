@@ -1,8 +1,7 @@
 package com.xyz.cloud.trace.annotation;
 
-import com.xyz.cloud.trace.config.TraceableConfigSelector;
-import com.xyz.cloud.trace.holder.DomainHeadersHolder;
-import com.xyz.cloud.trace.holder.HttpHeadersHolder;
+import com.xyz.cloud.trace.config.TraceableConfiguration;
+import com.xyz.cloud.trace.config.TraceableThreadPoolConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -10,7 +9,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({TraceableConfigSelector.class})
+@Import({TraceableConfiguration.class, TraceableThreadPoolConfiguration.class})
 public @interface EnableTraceable {
-    Class<? extends HttpHeadersHolder> holder() default DomainHeadersHolder.class;
 }
