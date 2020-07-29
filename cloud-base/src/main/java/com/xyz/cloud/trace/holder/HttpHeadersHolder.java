@@ -1,14 +1,10 @@
 package com.xyz.cloud.trace.holder;
 
-import com.google.common.collect.Maps;
 import com.xyz.utils.JsonUtils;
-import com.xyz.utils.Uuid;
-import org.slf4j.MDC;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Objects;
 
 /**
