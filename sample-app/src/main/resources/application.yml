@@ -5,7 +5,7 @@ cloud:
   retry:
     interval-in-seconds: 30
 
-  log:
+  trace:
     with-header: false
 
   jwt:
