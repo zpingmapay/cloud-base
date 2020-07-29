@@ -17,8 +17,3 @@ cloud:
   oauth1:
     config-folder: /etc/sample/config
     config-name: oauth1-keys.json
-
-
-logging:
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %X{tid} %X{uid} %logger{36} - %msg%n"
