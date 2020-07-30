@@ -24,6 +24,14 @@ cloud:
     config-folder: /etc/sample/config
     config-name: oauth1-keys.json
 
-  openapi:
-    app-id: 2824
-    app-key: F96502BD5D1D4224B55FE24503EFB52C
+  client:
+    remote-service-1:
+      url: $cloud.client.remote-service-1.url$
+      consumer-key: $cloud.client.remote-service-1.consumer-key$
+      consumer-secret: $cloud.client.remote-service-1.consumer-secret$
+    remote-service-2:
+      url: $cloud.client.remote-service-2.url$
+    remote-service-3:
+      url: $cloud.client.remote-service-3.url$
+      app-id: $cloud.client.remote-service-3.app-id$
+      app-key: $cloud.client.remote-service-3.app-key$

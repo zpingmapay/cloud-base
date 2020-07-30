@@ -11,7 +11,7 @@ import java.util.List;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "payment-service", url = "http://test.pay-trade.51zhaoyou.com")
+@FeignClient(name = "remote-service-2", url = "${cloud.client.remote-service-2.url}")
 public interface PaymentFeignClient {
 
     /**
