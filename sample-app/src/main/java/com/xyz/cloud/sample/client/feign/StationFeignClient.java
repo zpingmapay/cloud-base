@@ -20,13 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
         FeignPhpSignConfig.HEADER_APP_KEY_PREFIX + "${cloud.client.remote-service-3.app-key}",
 })
 public interface StationFeignClient {
-
-    /**
-     * 站点调价
-     *
-     * @param request 请求参数
-     * @return 调价结果
-     */
     @PostMapping(value = "/", headers = "method=station.setDiyPrice", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResultDto<DiyPriceDto.Response> setStationDiyPrice(DiyPriceDto.Request request);
 

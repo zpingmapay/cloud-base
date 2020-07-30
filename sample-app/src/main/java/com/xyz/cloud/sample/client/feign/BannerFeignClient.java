@@ -20,13 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
         "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"
 })
 public interface BannerFeignClient {
-
-    /**
-     * banner活动信息查询
-     *
-     * @param param 参数
-     * @return banner活动信息
-     */
     @PostMapping(value = "api/v1/banner/query")
     ResultDto<PageVo<BannerQueryVo.Response>> bannerActivityQuery(BannerQueryVo.Request param);
 

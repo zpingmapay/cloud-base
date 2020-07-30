@@ -13,13 +13,6 @@ import java.util.List;
  */
 @FeignClient(name = "remote-service-2", url = "${cloud.client.remote-service-2.url}")
 public interface PaymentFeignClient {
-
-    /**
-     * 商户支付渠道信息接口
-     *
-     * @param reqDto 参数
-     * @return 商户支付渠道信息
-     */
     @PostMapping(value = "/channel/mchChannelGet")
     ResultDto<List<ChannelGetDto.RespDto>> mchChannelGet(ChannelGetDto.ReqDto reqDto);
 
