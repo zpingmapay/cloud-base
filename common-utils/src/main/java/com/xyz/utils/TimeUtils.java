@@ -74,4 +74,19 @@ public class TimeUtils {
     public static LocalDateTime toLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
+
+    /**
+     * @return 秒级时间戳
+     */
+    public static long getSecondTimestamp(Date date) {
+        return date.toInstant().getEpochSecond();
+    }
+
+    /**
+     * @return 当前时间秒级时间戳
+     */
+    public static long currentSecondTimestamp() {
+        return Instant.now().getEpochSecond();
+    }
+
 }

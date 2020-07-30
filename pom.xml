@@ -19,6 +19,7 @@
         <module>common-utils</module>
         <module>cloud-base</module>
         <module>sample-app</module>
+        <module>common-clients</module>
     </modules>
 
     <properties>
