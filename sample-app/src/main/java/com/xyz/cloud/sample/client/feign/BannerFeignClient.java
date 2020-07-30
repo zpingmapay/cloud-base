@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample.client.feign;
 
-import com.xyz.client.FeignOauthClient;
+import com.xyz.client.FeignOAuth1Client;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
 import com.xyz.cloud.sample.client.feign.dto.PageVo;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2020/7/23 15:40
  */
 @FeignClient(name = "remote-service-1", url = "${cloud.client.remote-service-1.url}",
-        configuration = {FeignOauthClient.class})
+        configuration = {FeignOAuth1Client.class})
 @RequestMapping(headers = {
         "consumer-key=${cloud.client.remote-service-1.consumer-key}",
         "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"

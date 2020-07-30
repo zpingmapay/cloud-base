@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * @author sxl
  */
 @Slf4j
-public class FeignOauthClient implements Client {
+public class FeignOAuth1Client implements Client {
     private static final String ACCEPT_HEADER_NAME = "Accept";
     public static final String CONSUMER_KEY = "consumer-key";
     public static final String CONSUMER_SECRET = "consumer-secret";
@@ -65,7 +65,7 @@ public class FeignOauthClient implements Client {
 
     private final Map<String, OAuthConsumer> consumerCache = new ConcurrentHashMap<>();
 
-    public FeignOauthClient() {
+    public FeignOAuth1Client() {
         client = httpClient();
     }
 
@@ -332,7 +332,7 @@ public class FeignOauthClient implements Client {
         String consumerMapKey = consumerKey.toUpperCase();
         OAuthConsumer authConsumer = consumerCache.get(consumerMapKey);
         if (authConsumer == null) {
-            synchronized (FeignOauthClient.class) {
+            synchronized (FeignOAuth1Client.class) {
                 authConsumer = consumerCache.get(consumerMapKey);
                 if (authConsumer == null) {
                     log.info("创建新的OauthConsumer...");
