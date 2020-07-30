@@ -1,6 +1,7 @@
 package com.xyz.client;
 
 import com.xyz.utils.JsonUtils;
+import com.xyz.utils.Uuid;
 import feign.Client;
 import feign.Request;
 import feign.Response;
@@ -30,6 +31,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +55,11 @@ public class FeignOauthClient implements Client {
     private static final String ACCEPT_HEADER_NAME = "Accept";
     public static final String CONSUMER_KEY = "consumer-key";
     public static final String CONSUMER_SECRET = "consumer-secret";
+
+    private static final String HEADER_TRACE_ID = "trace-id";
+    private static final String HEADER_TIMESTAMP = "timestamp";
+    private static final String TID = "tid";
+
     private final CloseableHttpClient client;
 
     private final Map<String, OAuthConsumer> consumerCache = new ConcurrentHashMap<>();
@@ -286,8 +293,10 @@ public class FeignOauthClient implements Client {
     }
 
     private void addHeader(HttpUriRequest requestBase) {
-        requestBase.addHeader("timestamp", String.valueOf(System.currentTimeMillis()));
-        requestBase.addHeader("request-id", UUID.randomUUID().toString().replaceAll("-", ""));
+        requestBase.addHeader(HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        String tid = MDC.get(TID);
+        tid = StringUtils.isBlank(tid)? Uuid.shortUuid():tid;
+        requestBase.addHeader(HEADER_TRACE_ID, tid);
     }
 
     private OAuthConsumer newOauthConsumer(String consumerKey, String consumerSecret) {
