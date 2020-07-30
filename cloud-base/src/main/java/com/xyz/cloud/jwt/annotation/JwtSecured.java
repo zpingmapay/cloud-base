@@ -1,9 +1,10 @@
-package com.xyz.cloud.oauth1.annotation;
+package com.xyz.cloud.jwt.annotation;
 
 import java.lang.annotation.*;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface OAuth1 {
+public @interface JwtSecured {
+
 }

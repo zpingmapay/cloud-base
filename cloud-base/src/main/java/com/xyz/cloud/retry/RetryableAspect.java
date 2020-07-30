@@ -12,8 +12,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import java.lang.reflect.Method;
-
 @Slf4j
 @Aspect
 public class RetryableAspect {
@@ -27,10 +25,9 @@ public class RetryableAspect {
         this.deadEventHandler = deadEventHandler;
     }
 
-    @Around("@annotation(com.xyz.cloud.retry.annotation.Retryable)")
-    public Object onEventHandling(ProceedingJoinPoint pjp) throws Throwable {
-        Retryable retryableInfo = getRetryableInfo(pjp);
-        ValidationUtils.notNull(retryableInfo, "Retryable event is not properly configured");
+    @Around(value = "@annotation(annotation)", argNames = "pjp,annotation")
+    public Object onEventHandling(ProceedingJoinPoint pjp, Retryable annotation) throws Throwable {
+        ValidationUtils.notNull(annotation, "Retryable event is not properly configured");
         RetryableEvent event = getRetryableEvent(pjp);
         ValidationUtils.notNull(event, "Not a Retryable Event arg");
 
@@ -38,7 +35,7 @@ public class RetryableAspect {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         String listenerClassName = methodSignature.getDeclaringTypeName();
         String actionMethodName = methodSignature.getName();
-        EventRepository.EventItem<? extends RetryableEvent> item = EventRepository.EventItem.create(listenerClassName, actionMethodName, event, retryableInfo.maxAttempts());
+        EventRepository.EventItem<? extends RetryableEvent> item = EventRepository.EventItem.create(listenerClassName, actionMethodName, event, annotation.maxAttempts());
 
         try {
             Object result = pjp.proceed();
@@ -55,7 +52,7 @@ public class RetryableAspect {
             log.warn("Failed to handle event {}, at attempts {}", JsonUtils.beanToJson(event), event.getAttempts());
             event.attemptIncrementAndGet();
             //Exceed max attempts
-            if (event.getAttempts() > retryableInfo.maxAttempts()) {
+            if (event.getAttempts() > annotation.maxAttempts()) {
                 eventRepository.remove(item);
                 deadEventHandler.handleDeadEvent(listenerClassName, actionMethodName, event);
             } else {
@@ -64,12 +61,6 @@ public class RetryableAspect {
             }
             return null;
         }
-    }
-
-    private Retryable getRetryableInfo(ProceedingJoinPoint pjp) {
-        MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-        Method method = methodSignature.getMethod();
-        return method.getAnnotation(Retryable.class);
     }
 
     private RetryableEvent getRetryableEvent(ProceedingJoinPoint pjp) {

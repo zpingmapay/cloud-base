@@ -11,11 +11,11 @@ public class LocalLockProvider implements LockProvider {
     private final ICache<String, LocalLock> cache = CacheManager.getLocalCache(CACHE_NAMESPACE);
 
     @Override
-    public Lock getLock(String key) {
+    public synchronized Lock getLock(String key) {
         LocalLock lock = cache.get(key);
         if(lock == null) {
             lock = new LocalLock(new ReentrantLock());
-            cache.put(key, lock);
+            cache.putIfAbsent(key, lock);
         }
         return lock;
     }

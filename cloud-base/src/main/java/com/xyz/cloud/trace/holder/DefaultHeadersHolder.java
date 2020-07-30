@@ -1,4 +1,4 @@
-package com.xyz.cloud.log.holder;
+package com.xyz.cloud.trace.holder;
 
 import com.google.common.collect.Maps;
 
@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.Map;
 
-public class DefaultHeadersHolder implements HttpHeadersHolder {
+public class DefaultHeadersHolder implements HttpHeadersHolder<Map<String, String>> {
     @Override
     public Map<String, String> extract(HttpServletRequest httpServletRequest) {
         Map<String, String> result = Maps.newHashMap();
@@ -23,9 +23,8 @@ public class DefaultHeadersHolder implements HttpHeadersHolder {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String getString(String key) {
-        Map<String, String> headers = (Map<String, String>)getHeaderObject();
+        Map<String, String> headers = getHeaderObject();
         return headers.get(key);
     }
 }

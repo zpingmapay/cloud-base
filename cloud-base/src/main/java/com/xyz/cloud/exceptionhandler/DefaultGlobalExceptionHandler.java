@@ -2,7 +2,7 @@ package com.xyz.cloud.exceptionhandler;
 
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.lock.FailedToObtainLockException;
-import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.CommonException;
 import com.xyz.exception.ValidationException;

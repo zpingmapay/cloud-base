@@ -1,6 +1,6 @@
-package com.xyz.cloud.log;
+package com.xyz.cloud.trace;
 
-import com.xyz.cloud.log.holder.HttpHeadersHolder;
+import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,14 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Aspect
 public class ControllerLogAspect {
     private static final String JSON_CONTENT_TYPE = "application/json";
+
+    private static final String REQUEST_PATTEN_WITH_HEARERS = "{},URI:{}, param:{}";
+    private static final String REQUEST_PATTEN_WITHOUT_HEARERS = "URI:{}, param:{}";
+    private static final String RESPONSE_PATTEN_WITH_HEARERS = "{},URI:{}, res:{}, took:{}ms";
+    private static final String RESPONSE_PATTEN_WITHOUT_HEARERS = "URI:{}, res:{}, took:{}ms";
+    private static final String ERROR_PATTEN_WITH_HEARERS = "{},URI:{}, err:{}, took:{}ms";
+    private static final String ERROR_PATTEN_WITHOUT_HEARERS = "URI:{}, err:{}, took:{}ms";
+
     private final boolean logWithHeader;
     private final HttpHeadersHolder httpHeadersHolder;
 
@@ -34,11 +42,12 @@ public class ControllerLogAspect {
         }
         HttpServletRequest request = requestAttributes.getRequest();
         String contentType = request.getContentType();
-        Object headers = httpHeadersHolder.extract(request);
 
         if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE)) {
             return proceedWithoutLog(pjp);
         }
+
+        Object headers = httpHeadersHolder.extract(request);
         return proceedWithLog(pjp, request, headers);
     }
 
@@ -58,32 +67,34 @@ public class ControllerLogAspect {
         } catch (Exception e) {
             logError(headersStr, requestUri, e, start);
             throw e;
+        } finally {
+            httpHeadersHolder.removeHeaderObject();
         }
     }
 
     private void logRequest(String headersStr, String requestUri, Object[] args) {
-        if(logWithHeader) {
-            log.info("{},Uri:{}, parameters:{}", headersStr, requestUri, JsonUtils.beanToJson(args));
+        if (logWithHeader) {
+            log.info(REQUEST_PATTEN_WITH_HEARERS, headersStr, requestUri, JsonUtils.beanToJson(args));
         } else {
-            log.info("Uri:{}, parameters:{}", requestUri, JsonUtils.beanToJson(args));
+            log.info(REQUEST_PATTEN_WITHOUT_HEARERS, requestUri, JsonUtils.beanToJson(args));
         }
     }
 
     private void logResponse(String headersStr, String requestUri, Object result, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
-        if(logWithHeader) {
-            log.info("{},Uri:{}, return:{}, took:{}ms", headersStr, requestUri, JsonUtils.beanToJson(result), timeElapsed);
+        if (logWithHeader) {
+            log.info(RESPONSE_PATTEN_WITH_HEARERS, headersStr, requestUri, JsonUtils.beanToJson(result), timeElapsed);
         } else {
-            log.info("Uri:{}, return:{}, took:{}ms", requestUri, JsonUtils.beanToJson(result), timeElapsed);
+            log.info(RESPONSE_PATTEN_WITHOUT_HEARERS, requestUri, JsonUtils.beanToJson(result), timeElapsed);
         }
     }
 
     private void logError(String headersStr, String requestUri, Throwable t, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
-        if(logWithHeader) {
-            log.error("{},Uri:{}, error:{}, took:{}ms", headersStr, requestUri, t.getMessage(), timeElapsed);
+        if (logWithHeader) {
+            log.error(ERROR_PATTEN_WITH_HEARERS, headersStr, requestUri, t.getMessage(), timeElapsed);
         } else {
-            log.error("Uri:{}, error:{}, took:{}ms", requestUri, t.getMessage(), timeElapsed);
+            log.error(ERROR_PATTEN_WITHOUT_HEARERS, requestUri, t.getMessage(), timeElapsed);
         }
     }
 }

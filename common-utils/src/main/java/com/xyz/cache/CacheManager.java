@@ -9,21 +9,28 @@ public interface CacheManager {
     Map<String, ICache> localRepo = Maps.newConcurrentMap();
     Map<String, ICache> redisRepo = Maps.newConcurrentMap();
 
-    @SuppressWarnings("unchecked")
-    static  <K,V> ICache<K,V> getLocalCache(String namespace) {
+    static <K, V> ICache<K, V> getLocalCache(String namespace) {
+        @SuppressWarnings("unchecked")
         ICache<K, V> cache = localRepo.get(namespace);
-        if(cache == null) {
+        if (cache == null) {
             cache = new LocalCache<>();
-            localRepo.put(namespace, cache);
+            ICache previousCache = localRepo.putIfAbsent(namespace, cache);
+            if (previousCache != null) {
+                cache = previousCache;
+            }
         }
         return cache;
     }
 
-    static <K,V> ICache<K,V> getRedisCache(String namespace, RedissonClient redissonClient) {
+    static <K, V> ICache<K, V> getRedisCache(String namespace, RedissonClient redissonClient) {
+        @SuppressWarnings("unchecked")
         ICache<K, V> cache = redisRepo.get(namespace);
-        if(cache == null) {
+        if (cache == null) {
             cache = new RedisCache<>(redissonClient, namespace);
-            redisRepo.put(namespace, cache);
+            ICache previousCache = redisRepo.putIfAbsent(namespace, cache);
+            if (previousCache != null) {
+                cache = previousCache;
+            }
         }
         return cache;
     }
