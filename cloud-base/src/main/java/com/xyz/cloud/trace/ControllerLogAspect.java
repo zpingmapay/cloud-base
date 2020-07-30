@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,12 +44,16 @@ public class ControllerLogAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         String contentType = request.getContentType();
 
-        if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE)) {
+        if (contentType == null || !isRestController(pjp) || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE)) {
             return proceedWithoutLog(pjp);
         }
 
         Object headers = httpHeadersHolder.extract(request);
         return proceedWithLog(pjp, request, headers);
+    }
+
+    private boolean isRestController(ProceedingJoinPoint pjp) {
+        return pjp.getTarget().getClass().isAnnotationPresent(RestController.class);
     }
 
     private Object proceedWithoutLog(ProceedingJoinPoint pjp) throws Throwable {
