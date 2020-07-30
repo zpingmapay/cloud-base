@@ -1,8 +1,9 @@
 package com.xyz.client;
 
+import com.xyz.cache.CacheManager;
 import com.xyz.function.TryWithCatch;
-import com.xyz.utils.JsonUtils;
 import com.xyz.utils.Uuid;
+import com.xyz.utils.ValidationUtils;
 import feign.Client;
 import feign.Request;
 import feign.Response;
@@ -45,7 +46,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,15 +63,12 @@ public class FeignOAuth1Client implements Client {
 
     private final CloseableHttpClient client;
 
-    private final Map<String, OAuthConsumer> consumerCache = new ConcurrentHashMap<>();
-
     public FeignOAuth1Client() {
         client = httpClient();
     }
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-        // 请求转换为ApacheHttpClient支持的request
         HttpUriRequest httpRequest;
         try {
             httpRequest = toHttpUriRequest(request, options);
@@ -79,9 +76,7 @@ public class FeignOAuth1Client implements Client {
             throw new IOException("URL '" + request.url() + "' couldn't be parsed into a URI", e);
         }
 
-        // 添加请求头
-        addHeader(httpRequest);
-        // 签名
+        addTraceableHeader(httpRequest);
         try {
             sign(httpRequest);
         } catch (Exception e) {
@@ -282,18 +277,18 @@ public class FeignOAuth1Client implements Client {
 
     private CloseableHttpClient httpClient() {
         RequestConfig requestConfig = RequestConfig.custom()
-                                                   .setConnectionRequestTimeout(REQUEST_TIMEOUT)
-                                                   .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT)
-                                                   .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT).build();
+                .setConnectionRequestTimeout(REQUEST_TIMEOUT)
+                .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT)
+                .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT).build();
 
         return HttpClients.custom()
-                          .evictIdleConnections(CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS, TimeUnit.SECONDS)
-                          .setDefaultRequestConfig(requestConfig)
-                          .setConnectionManager(poolingConnectionManager())
-                          .build();
+                .evictIdleConnections(CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS, TimeUnit.SECONDS)
+                .setDefaultRequestConfig(requestConfig)
+                .setConnectionManager(poolingConnectionManager())
+                .build();
     }
 
-    private void addHeader(HttpUriRequest requestBase) {
+    private void addTraceableHeader(HttpUriRequest requestBase) {
         requestBase.addHeader(HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         TryWithCatch.run(() -> {
             String tid = MDC.get(TID);
@@ -302,47 +297,26 @@ public class FeignOAuth1Client implements Client {
         });
     }
 
-    private OAuthConsumer newOauthConsumer(String consumerKey, String consumerSecret) {
-        OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-        oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-        return oauthConsumer;
-    }
-
     private void sign(HttpUriRequest httpRequest) throws Exception {
-        Optional<String> consumerKeyOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_KEY)).findFirst().map(NameValuePair::getValue);
-        Optional<String> consumerSecretOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_SECRET)).findFirst().map(NameValuePair::getValue);
+        try {
+            Optional<String> consumerKeyOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_KEY)).findFirst().map(NameValuePair::getValue);
+            ValidationUtils.isTrue(consumerKeyOp.isPresent(), "OAuth1 consumer key not correct");
+            Optional<String> consumerSecretOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_SECRET)).findFirst().map(NameValuePair::getValue);
+            ValidationUtils.isTrue(consumerSecretOp.isPresent(), "OAuth1 consumer secret not correct");
+            String consumerKey = consumerKeyOp.get();
+            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerKey), "OAuth1 consumer key not correct");
+            String consumerSecret = consumerSecretOp.get();
+            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
 
-        if (!consumerKeyOp.isPresent() || !consumerSecretOp.isPresent()) {
-            log.error("请求头中consumer相关配置信息不正确,headers: {}", JsonUtils.beanToJson(httpRequest.getAllHeaders()));
-            throw new IllegalStateException("请求头中consumer相关配置信息不正确");
+            OAuthConsumer authConsumer = CacheManager.getFromLocalCacheOrCreate(FeignOAuth1Client.class.getName(), consumerKey.toUpperCase(), () -> {
+                OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+                oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
+                return oauthConsumer;
+            });
+            authConsumer.sign(httpRequest);
+        } finally {
+            httpRequest.removeHeaders(CONSUMER_KEY);
+            httpRequest.removeHeaders(CONSUMER_SECRET);
         }
-
-        String consumerKey = consumerKeyOp.get();
-        String consumerSecret = consumerSecretOp.get();
-        if (StringUtils.isBlank(consumerKey) || StringUtils.isBlank(consumerSecret)) {
-            log.error("请求头中consumer相关配置信息不正确!,headers: {}", JsonUtils.beanToJson(httpRequest.getAllHeaders()));
-            throw new IllegalStateException("请求头中consumer相关配置信息不正确!");
-        }
-
-        // 移除铭感信息
-        httpRequest.removeHeaders(CONSUMER_KEY);
-        httpRequest.removeHeaders(CONSUMER_SECRET);
-
-        // 获取consumer相关配置信息,不存在放入
-        String consumerMapKey = consumerKey.toUpperCase();
-        OAuthConsumer authConsumer = consumerCache.get(consumerMapKey);
-        if (authConsumer == null) {
-            synchronized (FeignOAuth1Client.class) {
-                authConsumer = consumerCache.get(consumerMapKey);
-                if (authConsumer == null) {
-                    log.info("创建新的OauthConsumer...");
-                    authConsumer = newOauthConsumer(consumerKey, consumerSecret);
-                    consumerCache.put(consumerMapKey, authConsumer);
-                }
-            }
-        }
-
-        authConsumer.sign(httpRequest);
     }
-
 }

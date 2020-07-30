@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import org.redisson.api.RedissonClient;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public interface CacheManager {
     Map<String, ICache> localRepo = Maps.newConcurrentMap();
@@ -33,5 +34,25 @@ public interface CacheManager {
             }
         }
         return cache;
+    }
+
+    static  <T> T getFromLocalCacheOrCreate(String namespace, String key, Supplier<T> func) {
+        ICache<String, T> cache = CacheManager.getLocalCache(namespace);
+        T t = cache.get(key);
+        if(t == null) {
+            t = func.get();
+            cache.putIfAbsent(key, t);
+        }
+        return t;
+    }
+
+    static  <T> T getFromRedisOrCreate(String namespace, String key, RedissonClient redissonClient, Supplier<T> func) {
+        ICache<String, T> cache = CacheManager.getRedisCache(namespace, redissonClient);
+        T t = cache.get(key);
+        if(t == null) {
+            t = func.get();
+            cache.putIfAbsent(key, t);
+        }
+        return t;
     }
 }
