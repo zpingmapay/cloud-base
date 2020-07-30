@@ -13,20 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "promotion-service", url = "https://promotion-service.51zhaoyou.com/test",
+@FeignClient(name = "remote-service-1", url = "${cloud.client.remote-service-1.url}",
         configuration = {FeignOauthClient.class})
 @RequestMapping(headers = {
-        "app-id=4",
-        "consumer-key=Zpetrolservice51serviceY",
-        "consumer-secret=215419DCDF9E9F5160545E517624FEBB"
+        "consumer-key=${cloud.client.remote-service-1.consumer-key}",
+        "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"
 })
 public interface BannerFeignClient {
 
     /**
-     * 商户支付渠道信息接口
+     * banner活动信息查询
      *
      * @param param 参数
-     * @return 商户支付渠道信息
+     * @return banner活动信息
      */
     @PostMapping(value = "api/v1/banner/query")
     ResultDto<PageVo<BannerQueryVo.Response>> bannerActivityQuery(BannerQueryVo.Request param);

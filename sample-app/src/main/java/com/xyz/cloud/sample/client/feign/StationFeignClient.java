@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "open-data", url = "https://open-data.51zhaoyou.com/test",
+@FeignClient(name = "remote-service-3", url = "${cloud.client.remote-service-3.url}",
         configuration = {FeignFormSupportConfig.class, FeignPhpSignConfig.class})
 @RequestMapping(headers = {
-        FeignPhpSignConfig.HEADER_APP_ID_PREFIX + "${cloud.openapi.app-id}",
-        FeignPhpSignConfig.HEADER_APP_KEY_PREFIX + "${cloud.openapi.app-key}",
+        FeignPhpSignConfig.HEADER_APP_ID_PREFIX + "${cloud.client.remote-service-3.app-id}",
+        FeignPhpSignConfig.HEADER_APP_KEY_PREFIX + "${cloud.client.remote-service-3.app-key}",
 })
 public interface StationFeignClient {
 
