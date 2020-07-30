@@ -1,6 +1,12 @@
 server:
   port: 1008
 
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
 cloud:
   retry:
     interval-in-seconds: 30
@@ -17,3 +23,7 @@ cloud:
   oauth1:
     config-folder: /etc/sample/config
     config-name: oauth1-keys.json
+
+  openapi:
+    app-id: 2824
+    app-key: F96502BD5D1D4224B55FE24503EFB52C
