@@ -17,7 +17,7 @@ public class JwtConfiguration {
     public JwtConfig jwtConfig(@Value("${cloud.jwt.app-id:0}") String appId,
                                @Value("${cloud.jwt.secret:20200808qa1zwsxedc3rfv4tgbyhnujm5ikolp9ttt$QA0ZWSXED2CRFV8TGB2YHNU7JM3IKO8LPa12*@(cloud.jwt)}") String secret,
                                @Value("${cloud.jwt.ttl-in-hours:720}") int ttlInHours,
-                               @Value("${cloud.jwt.multi-login-check:false}") boolean multiLoginCheck) {
+                               @Value("${cloud.jwt.multi-login-check:true}") boolean multiLoginCheck) {
         JwtConfig jwtConfig = new JwtConfig();
         jwtConfig.setAppId(appId);
         jwtConfig.setSecretSeed(secret);
