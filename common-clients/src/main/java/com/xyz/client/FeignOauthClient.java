@@ -1,5 +1,6 @@
 package com.xyz.client;
 
+import com.xyz.function.TryWithCatch;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.Uuid;
 import feign.Client;
@@ -294,13 +295,11 @@ public class FeignOauthClient implements Client {
 
     private void addHeader(HttpUriRequest requestBase) {
         requestBase.addHeader(HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        try {
+        TryWithCatch.run(() -> {
             String tid = MDC.get(TID);
             tid = StringUtils.isBlank(tid) ? Uuid.shortUuid() : tid;
             requestBase.addHeader(HEADER_TRACE_ID, tid);
-        } catch (Exception e) {
-            //keep silence here
-        }
+        });
     }
 
     private OAuthConsumer newOauthConsumer(String consumerKey, String consumerSecret) {
