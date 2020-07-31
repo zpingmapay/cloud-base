@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class CommonException extends RuntimeException implements Serializable {
-     private String code;
+    private String code;
     private String msg;
 
     public CommonException(String code, String msg) {
