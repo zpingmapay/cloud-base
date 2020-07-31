@@ -49,8 +49,8 @@ public class RetryableConfiguration {
     }
 
     @Bean
-    public EventRepositoryFactory eventRepositoryFactory(EventRepositoryMonitor eventRepositoryMonitor, ApplicationContext ctx) {
-        return new EventRepositoryFactory(eventRepositoryMonitor, ctx);
+    public EventRepositoryFactory eventRepositoryFactory(ApplicationContext ctx) {
+        return new EventRepositoryFactory(ctx);
     }
 
     @Bean

@@ -1,7 +1,10 @@
 package com.xyz.cloud.retry.monitor;
 
 import com.google.common.collect.Sets;
+import com.xyz.cache.CacheManager;
+import com.xyz.cache.ICache;
 import com.xyz.cloud.retry.repository.EventRepository;
+import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -20,14 +23,9 @@ public class EventRepositoryMonitor {
         this.executor = executor;
     }
 
-    private final Set<EventRepository> set = Sets.newConcurrentHashSet();
-
-    public void register(@NotNull EventRepository repository) {
-        this.set.add(repository);
-    }
-
     public void monitor() {
-        set.forEach(x -> {
+        ICache<String, EventRepository> cache = CacheManager.getLocalCache(EventRepositoryFactory.class.getName());
+        cache.values().forEach(x -> {
             if (x.size() >= ALARM_THRESHOLD) {
                 log.warn("monitoring repository {}, size = {}", x.getEventClass().getName(), x.size());
             } else {
