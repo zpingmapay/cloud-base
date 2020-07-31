@@ -8,8 +8,6 @@ import feign.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.Configurable;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
@@ -43,44 +41,28 @@ public class FeignOAuth1Client implements Client {
     private static final int DEFAULT_MAX_TOTAL = 200;
     private static final int DEFAULT_MAX_PER_ROUTE = 20;
 
-    private final CloseableHttpClient client;
+    private final CloseableHttpClient httpClient;
 
     public FeignOAuth1Client() {
-        client = HttpClientUtils.buildHttpClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
+        httpClient = HttpClientUtils.buildHttpClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
     }
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
         HttpUriRequest httpRequest;
         try {
-            httpRequest = toHttpUriRequest(request, options);
-        } catch (URISyntaxException e) {
-            throw new IOException("URL '" + request.url() + "' couldn't be parsed into a URI", e);
-        }
-
-        try {
+            httpRequest = toHttpUriRequest(request);
             OAuth1HttpClient oAuth1HttpClient = buildOAuth1HttpClient(httpRequest);
-
-
             return oAuth1HttpClient.execute(httpRequest, (x) -> toFeignResponse(x, request));
-
         } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
-    HttpUriRequest toHttpUriRequest(Request request, Request.Options options)
+    private HttpUriRequest toHttpUriRequest(Request request)
             throws URISyntaxException {
         RequestBuilder requestBuilder = RequestBuilder.create(request.httpMethod().name());
-
-        // per request timeouts
-        RequestConfig requestConfig =
-                (client instanceof Configurable ? RequestConfig.copy(((Configurable) client).getConfig())
-                        : RequestConfig.custom())
-                        .setConnectTimeout(options.connectTimeoutMillis())
-                        .setSocketTimeout(options.readTimeoutMillis())
-                        .build();
-        requestBuilder.setConfig(requestConfig);
+        requestBuilder.setConfig(HttpClientUtils.buildRequestConfig(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT));
 
         URI uri = new URIBuilder(request.url()).build();
 
@@ -150,7 +132,7 @@ public class FeignOAuth1Client implements Client {
         return contentType;
     }
 
-    Response toFeignResponse(HttpResponse httpResponse, Request request) {
+    private Response toFeignResponse(HttpResponse httpResponse, Request request) {
         StatusLine statusLine = httpResponse.getStatusLine();
         int statusCode = statusLine.getStatusCode();
         String reason = statusLine.getReasonPhrase();
@@ -166,7 +148,7 @@ public class FeignOAuth1Client implements Client {
         return Response.builder().status(statusCode).reason(reason).headers(headers).request(request).body(this.toFeignBody(httpResponse)).build();
     }
 
-    Response.Body toFeignBody(HttpResponse httpResponse) {
+    private Response.Body toFeignBody(HttpResponse httpResponse) {
         final HttpEntity entity = httpResponse.getEntity();
         return entity == null ? null : new Response.Body() {
             @Override
@@ -191,7 +173,7 @@ public class FeignOAuth1Client implements Client {
 
             @Override
             public Reader asReader(Charset charset) throws IOException {
-                Util.checkNotNull(charset, "charset should not be null", new Object[0]);
+                Util.checkNotNull(charset, "charset should not be null");
                 return new InputStreamReader(this.asInputStream(), charset);
             }
 
@@ -213,7 +195,7 @@ public class FeignOAuth1Client implements Client {
             String consumerSecret = consumerSecretOp.get();
             ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
 
-            return OAuth1HttpClient.getOrCreate(client, consumerKey, consumerSecret);
+            return OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
         } finally {
             httpRequest.removeHeaders(CONSUMER_KEY);
             httpRequest.removeHeaders(CONSUMER_SECRET);
