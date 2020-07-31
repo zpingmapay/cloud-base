@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.Configurable;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
@@ -39,13 +40,13 @@ public class FeignOAuth1Client implements Client {
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 6000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
-    private static final int DEFAULT_MAX_CONNECTIONS = 200;
+    private static final int DEFAULT_MAX_TOTAL = 200;
     private static final int DEFAULT_MAX_PER_ROUTE = 20;
 
-    private final CloseableHttpClient httpClient;
+    private final CloseableHttpClient client;
 
     public FeignOAuth1Client() {
-        this.httpClient = HttpClientUtils.buildHttpClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_MAX_CONNECTIONS, DEFAULT_MAX_PER_ROUTE);
+        client = HttpClientUtils.buildHttpClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
     }
 
     @Override
@@ -53,33 +54,32 @@ public class FeignOAuth1Client implements Client {
         HttpUriRequest httpRequest;
         try {
             httpRequest = toHttpUriRequest(request, options);
-            OAuth1HttpClient oAuth1HttpClient = getOrCreateOAuth1HttpClient(httpRequest);
-            HttpResponse httpResponse = oAuth1HttpClient.execute(httpRequest, (x) -> x);
-            return toFeignResponse(httpResponse, request);
+        } catch (URISyntaxException e) {
+            throw new IOException("URL '" + request.url() + "' couldn't be parsed into a URI", e);
+        }
+
+        try {
+            OAuth1HttpClient oAuth1HttpClient = buildOAuth1HttpClient(httpRequest);
+
+
+            return oAuth1HttpClient.execute(httpRequest, (x) -> toFeignResponse(x, request));
+
         } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
-    private OAuth1HttpClient getOrCreateOAuth1HttpClient(HttpUriRequest httpRequest) {
-        Optional<String> consumerKeyOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_KEY)).findFirst().map(NameValuePair::getValue);
-        ValidationUtils.isTrue(consumerKeyOp.isPresent(), "OAuth1 consumer key not correct");
-        Optional<String> consumerSecretOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_SECRET)).findFirst().map(NameValuePair::getValue);
-        ValidationUtils.isTrue(consumerSecretOp.isPresent(), "OAuth1 consumer secret not correct");
-        String consumerKey = consumerKeyOp.get();
-        ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerKey), "OAuth1 consumer key not correct");
-        String consumerSecret = consumerSecretOp.get();
-        ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
-
-        return OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
-    }
-
-    private HttpUriRequest toHttpUriRequest(Request request, Request.Options options)
+    HttpUriRequest toHttpUriRequest(Request request, Request.Options options)
             throws URISyntaxException {
         RequestBuilder requestBuilder = RequestBuilder.create(request.httpMethod().name());
 
         // per request timeouts
-        RequestConfig requestConfig = HttpClientUtils.buildRequestConfig(options.connectTimeoutMillis(), options.readTimeoutMillis());
+        RequestConfig requestConfig =
+                (client instanceof Configurable ? RequestConfig.copy(((Configurable) client).getConfig())
+                        : RequestConfig.custom())
+                        .setConnectTimeout(options.connectTimeoutMillis())
+                        .setSocketTimeout(options.readTimeoutMillis())
+                        .build();
         requestBuilder.setConfig(requestConfig);
 
         URI uri = new URIBuilder(request.url()).build();
@@ -150,7 +150,7 @@ public class FeignOAuth1Client implements Client {
         return contentType;
     }
 
-    private Response toFeignResponse(HttpResponse httpResponse, Request request) {
+    Response toFeignResponse(HttpResponse httpResponse, Request request) {
         StatusLine statusLine = httpResponse.getStatusLine();
         int statusCode = statusLine.getStatusCode();
         String reason = statusLine.getReasonPhrase();
@@ -166,7 +166,7 @@ public class FeignOAuth1Client implements Client {
         return Response.builder().status(statusCode).reason(reason).headers(headers).request(request).body(this.toFeignBody(httpResponse)).build();
     }
 
-    private Response.Body toFeignBody(HttpResponse httpResponse) {
+    Response.Body toFeignBody(HttpResponse httpResponse) {
         final HttpEntity entity = httpResponse.getEntity();
         return entity == null ? null : new Response.Body() {
             @Override
@@ -191,7 +191,7 @@ public class FeignOAuth1Client implements Client {
 
             @Override
             public Reader asReader(Charset charset) throws IOException {
-                Util.checkNotNull(charset, "charset should not be null");
+                Util.checkNotNull(charset, "charset should not be null", new Object[0]);
                 return new InputStreamReader(this.asInputStream(), charset);
             }
 
@@ -200,5 +200,23 @@ public class FeignOAuth1Client implements Client {
                 EntityUtils.consume(entity);
             }
         };
+    }
+
+    private OAuth1HttpClient buildOAuth1HttpClient(HttpUriRequest httpRequest) {
+        try {
+            Optional<String> consumerKeyOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_KEY)).findFirst().map(NameValuePair::getValue);
+            ValidationUtils.isTrue(consumerKeyOp.isPresent(), "OAuth1 consumer key not correct");
+            Optional<String> consumerSecretOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_SECRET)).findFirst().map(NameValuePair::getValue);
+            ValidationUtils.isTrue(consumerSecretOp.isPresent(), "OAuth1 consumer secret not correct");
+            String consumerKey = consumerKeyOp.get();
+            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerKey), "OAuth1 consumer key not correct");
+            String consumerSecret = consumerSecretOp.get();
+            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
+
+            return OAuth1HttpClient.getOrCreate(client, consumerKey, consumerSecret);
+        } finally {
+            httpRequest.removeHeaders(CONSUMER_KEY);
+            httpRequest.removeHeaders(CONSUMER_SECRET);
+        }
     }
 }

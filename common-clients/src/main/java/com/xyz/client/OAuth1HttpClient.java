@@ -7,6 +7,9 @@ import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -68,12 +71,15 @@ public class OAuth1HttpClient {
     public <T> T execute(HttpUriRequest requestBase, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         HttpClientUtils.addTraceableHeaders(requestBase);
 
+        sign(requestBase);
+        CloseableHttpResponse response = httpClient.execute(requestBase);
+        return responseHandler.apply(response);
+    }
+
+    public void sign(HttpUriRequest requestBase) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
         OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
         oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
         oauthConsumer.sign(requestBase);
-        try (CloseableHttpResponse response = httpClient.execute(requestBase)) {
-            return responseHandler.apply(response);
-        }
     }
 
     private String responseToString(CloseableHttpResponse response) {
