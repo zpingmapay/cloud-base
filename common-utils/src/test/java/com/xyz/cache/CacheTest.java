@@ -15,4 +15,14 @@ public class CacheTest {
         cache.remove("1");
         Assert.isTrue(!cache.containsKey("1"), "1 is removed from the cache");
     }
+
+    @Test
+    public void testGetOrCreate() {
+        ICache<String, String> cache = CacheManager.getLocalCache("test");
+        String value = cache.getOrCreate("1", (k) -> "test1");
+        Assert.isTrue("test1".equals(value), "not test1");
+        Assert.isTrue(!cache.putIfAbsent("1", "test2"), "key 1 already exist");
+        Assert.isTrue("test1".equals(cache.getOrCreate("1", (k) -> "test2")), "key 1 already exist");
+        Assert.isTrue("test2".equals(cache.getOrCreate("2", (k) -> "test2")), "key 2 should put success");
+    }
 }
