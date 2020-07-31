@@ -14,7 +14,10 @@ import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.util.LinkedMultiValueMap;
@@ -72,8 +75,9 @@ public class OAuth1HttpClient {
         HttpClientUtils.addTraceableHeaders(requestBase);
 
         sign(requestBase);
-        CloseableHttpResponse response = httpClient.execute(requestBase);
-        return responseHandler.apply(response);
+        try (CloseableHttpResponse response = httpClient.execute(requestBase)) {
+            return responseHandler.apply(response);
+        }
     }
 
     public void sign(HttpUriRequest requestBase) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {

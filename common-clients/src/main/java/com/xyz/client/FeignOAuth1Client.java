@@ -8,6 +8,7 @@ import feign.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
@@ -53,7 +54,12 @@ public class FeignOAuth1Client implements Client {
         try {
             httpRequest = toHttpUriRequest(request);
             OAuth1HttpClient oAuth1HttpClient = buildOAuth1HttpClient(httpRequest);
-            return oAuth1HttpClient.execute(httpRequest, (x) -> toFeignResponse(x, request));
+
+            HttpClientUtils.addTraceableHeaders(httpRequest);
+            oAuth1HttpClient.sign(httpRequest);
+            CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
+
+            return toFeignResponse(httpResponse, request);
         } catch (Exception e) {
             throw new IOException(e);
         }
