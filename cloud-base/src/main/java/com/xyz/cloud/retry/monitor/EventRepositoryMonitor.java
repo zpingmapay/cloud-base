@@ -1,6 +1,5 @@
 package com.xyz.cloud.retry.monitor;
 
-import com.google.common.collect.Sets;
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
 import com.xyz.cloud.retry.repository.EventRepository;
@@ -8,8 +7,6 @@ import com.xyz.cloud.retry.repository.EventRepositoryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
-import javax.validation.constraints.NotNull;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 @Slf4j
