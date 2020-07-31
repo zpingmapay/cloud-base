@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class LocalCache<K, V> implements ICache<K, V> {
     private final Cache<K, V> cache = CacheBuilder.newBuilder()
@@ -18,8 +19,8 @@ public class LocalCache<K, V> implements ICache<K, V> {
     }
 
     @Override
-    public void putIfAbsent(K key, V value) {
-        this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
+    public boolean putIfAbsent(K key, V value) {
+        return this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
     }
 
     @Override
@@ -28,15 +29,32 @@ public class LocalCache<K, V> implements ICache<K, V> {
     }
 
     @Override
-    public void putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
+    public boolean putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
         if (!this.containsKey(key)) {
             this.cache.put(key, value);
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
     public V get(K key) {
         return this.cache.getIfPresent(key);
+    }
+
+    @Override
+    public V getOrCreate(K key, Function<? super K, ? extends V> func) {
+        V v;
+        if ((v = this.get(key)) == null) {
+            V newValue = func.apply(key);
+            if (newValue != null && this.putIfAbsent(key, newValue)) {
+                v = newValue;
+            } else {
+                v = this.get(key);
+            }
+        }
+        return v;
     }
 
     @Override

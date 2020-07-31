@@ -6,6 +6,8 @@ import org.redisson.client.codec.StringCodec;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class RedisCache<K, V> implements ICache<K, V> {
     private final RMapCache<K, V> rMapCache;
@@ -20,8 +22,8 @@ public class RedisCache<K, V> implements ICache<K, V> {
     }
 
     @Override
-    public void putIfAbsent(K key, V value) {
-        this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
+    public boolean putIfAbsent(K key, V value) {
+        return this.putIfAbsent(key, value, 30, TimeUnit.DAYS);
     }
 
     @Override
@@ -30,13 +32,18 @@ public class RedisCache<K, V> implements ICache<K, V> {
     }
 
     @Override
-    public void putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
-        this.rMapCache.putIfAbsent(key, value, timeout, timeUnit);
+    public boolean putIfAbsent(K key, V value, long timeout, TimeUnit timeUnit) {
+        return this.rMapCache.putIfAbsent(key, value, timeout, timeUnit) == value;
     }
 
     @Override
     public V get(K key) {
         return this.rMapCache.get(key);
+    }
+
+    @Override
+    public V getOrCreate(K key, Function<? super K, ? extends V> func) {
+        return this.rMapCache.computeIfAbsent(key, func);
     }
 
     @Override

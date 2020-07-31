@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import org.redisson.api.RedissonClient;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface CacheManager {
@@ -11,48 +12,20 @@ public interface CacheManager {
     Map<String, ICache> redisRepo = Maps.newConcurrentMap();
 
     static <K, V> ICache<K, V> getLocalCache(String namespace) {
-        @SuppressWarnings("unchecked")
-        ICache<K, V> cache = localRepo.get(namespace);
-        if (cache == null) {
-            cache = new LocalCache<>();
-            ICache previousCache = localRepo.putIfAbsent(namespace, cache);
-            if (previousCache != null) {
-                cache = previousCache;
-            }
-        }
-        return cache;
+        return localRepo.computeIfAbsent(namespace, c -> new LocalCache<>());
     }
 
     static <K, V> ICache<K, V> getRedisCache(String namespace, RedissonClient redissonClient) {
-        @SuppressWarnings("unchecked")
-        ICache<K, V> cache = redisRepo.get(namespace);
-        if (cache == null) {
-            cache = new RedisCache<>(redissonClient, namespace);
-            ICache previousCache = redisRepo.putIfAbsent(namespace, cache);
-            if (previousCache != null) {
-                cache = previousCache;
-            }
-        }
-        return cache;
+        return redisRepo.computeIfAbsent(namespace, c -> new RedisCache<>(redissonClient, namespace));
     }
 
-    static  <T> T getFromLocalCacheOrCreate(String namespace, String key, Supplier<T> func) {
+    static <T> T getFromLocalOrCreate(String namespace, String key, Function<String, ? extends T> func) {
         ICache<String, T> cache = CacheManager.getLocalCache(namespace);
-        T t = cache.get(key);
-        if(t == null) {
-            t = func.get();
-            cache.putIfAbsent(key, t);
-        }
-        return t;
+        return  cache.getOrCreate(key, func);
     }
 
-    static  <T> T getFromRedisOrCreate(String namespace, String key, RedissonClient redissonClient, Supplier<T> func) {
+    static <T> T getFromRedisOrCreate(String namespace, String key, RedissonClient redissonClient, Function<String, ? extends T> func) {
         ICache<String, T> cache = CacheManager.getRedisCache(namespace, redissonClient);
-        T t = cache.get(key);
-        if(t == null) {
-            t = func.get();
-            cache.putIfAbsent(key, t);
-        }
-        return t;
+        return  cache.getOrCreate(key, func);
     }
 }

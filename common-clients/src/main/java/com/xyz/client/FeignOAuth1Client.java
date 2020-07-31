@@ -308,7 +308,7 @@ public class FeignOAuth1Client implements Client {
             String consumerSecret = consumerSecretOp.get();
             ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
 
-            OAuthConsumer authConsumer = CacheManager.getFromLocalCacheOrCreate(FeignOAuth1Client.class.getName(), consumerKey.toUpperCase(), () -> {
+            OAuthConsumer authConsumer = CacheManager.getFromLocalOrCreate(FeignOAuth1Client.class.getName(), consumerKey.toUpperCase(), (K) -> {
                 OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
                 oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
                 return oauthConsumer;
