@@ -13,7 +13,6 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -30,7 +29,6 @@ import java.util.function.Function;
 
 @Slf4j
 public class OAuth1HttpClient {
-    private static final int DEFAULT_TIMEOUT = 30 * 1000;
     private final CloseableHttpClient httpClient;
     private final String consumerKey;
     private final String consumerSecret;
@@ -46,24 +44,14 @@ public class OAuth1HttpClient {
     }
 
     public String doGet(String url, Object parameters) throws Exception {
-        return doGet(url, parameters, DEFAULT_TIMEOUT);
-    }
-
-    public String doGet(String url, Object parameters, int timeout) throws Exception {
         String getUrl = UriComponentsBuilder.fromHttpUrl(url).queryParams(initQueryParams(parameters)).toUriString();
         HttpGet httpGet = new HttpGet(getUrl);
-        httpGet.setConfig(initRequestConfig(timeout));
 
         return execute(httpGet, this::responseToString);
     }
 
     public String doPost(String url, String body) throws Exception {
-        return doPost(url, body, DEFAULT_TIMEOUT);
-    }
-
-    public String doPost(String url, String body, int timeout) throws Exception {
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setConfig(initRequestConfig(timeout));
 
         StringEntity httpEntity = new StringEntity(body, Charsets.UTF_8);
         httpPost.setEntity(httpEntity);
@@ -94,11 +82,6 @@ public class OAuth1HttpClient {
         } catch (IOException e) {
             throw new CommonException(null, "Extract response failed", e);
         }
-    }
-
-    private RequestConfig initRequestConfig(int timeout) {
-        return RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
-                .setConnectionRequestTimeout(timeout).build();
     }
 
     private MultiValueMap<String, String> initQueryParams(Object obj) {
