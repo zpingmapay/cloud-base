@@ -5,16 +5,17 @@ import org.redisson.api.RedissonClient;
 
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface CacheManager {
     Map<String, ICache> localRepo = Maps.newConcurrentMap();
     Map<String, ICache> redisRepo = Maps.newConcurrentMap();
 
+    @SuppressWarnings("unchecked")
     static <K, V> ICache<K, V> getLocalCache(String namespace) {
         return localRepo.computeIfAbsent(namespace, c -> new LocalCache<>());
     }
 
+    @SuppressWarnings("unchecked")
     static <K, V> ICache<K, V> getRedisCache(String namespace, RedissonClient redissonClient) {
         return redisRepo.computeIfAbsent(namespace, c -> new RedisCache<>(redissonClient, namespace));
     }
