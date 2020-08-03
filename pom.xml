@@ -92,6 +92,13 @@
         </dependencies>
     </dependencyManagement>
 
+    <!--git 远程仓库配置-->
+    <scm>
+        <connection>https://github.com/dev-sxl/cloud-base.git</connection>
+        <url>https://github.com/dev-sxl/cloud-base</url>
+        <developerConnection>scm:https://github.com/dev-sxl/cloud-base.git</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <!-- Source -->
@@ -116,6 +123,16 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>
         </plugins>
