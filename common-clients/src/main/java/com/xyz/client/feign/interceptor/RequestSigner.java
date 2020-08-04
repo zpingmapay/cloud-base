@@ -1,4 +1,4 @@
-package com.xyz.client.feign;
+package com.xyz.client.feign.interceptor;
 
 import com.google.common.base.Joiner;
 import com.xyz.exception.ValidationException;
@@ -17,12 +17,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Feign client php接口签名配置
+ * Feign client
  *
  * @author sxl
  */
 @Slf4j
-public class FeignPhpSignConfig implements RequestInterceptor {
+public class RequestSigner implements RequestInterceptor {
     public static final String HEADER_APP_ID_PREFIX = "app-id=";
     public static final String HEADER_APP_KEY_PREFIX = "app-key=";
 
@@ -31,12 +31,9 @@ public class FeignPhpSignConfig implements RequestInterceptor {
     private static final String HEADER_APP_ID = "app-id";
     private static final String HEADER_APP_KEY = "app-key";
 
-    /**
-     * php接口参数,签名处理
-     */
     @Override
     public void apply(RequestTemplate template) {
-        // php不同接口是通过method区分的
+        //通过method区分
         String method = extractMethod(template);
         // 业务参数
         Map<String, Object> data = bodyParams(template);
@@ -95,10 +92,9 @@ public class FeignPhpSignConfig implements RequestInterceptor {
     private Map<String, Object> bodyParams(RequestTemplate template) {
         Map<String, Object> paramMap = new TreeMap<>();
         Request.Body body = template.requestBody();
-        if (body.length()==0) {
+        if (body.length() == 0) {
             return paramMap;
         }
-        //relId=2824&setModel=21&setType=2&setVal=-20&skuCode=D100G06&stationId=3254
         String bodyStr = body.asString();
         for (String param : StringUtils.split(bodyStr, "&")) {
             String[] kv = StringUtils.split(param, "=");
@@ -125,5 +121,4 @@ public class FeignPhpSignConfig implements RequestInterceptor {
         String md5 = appKey.concat(appId).concat(param).concat(method).concat(timestamp).concat(appKey);
         return DigestUtils.md5Hex(md5).toUpperCase();
     }
-
 }
