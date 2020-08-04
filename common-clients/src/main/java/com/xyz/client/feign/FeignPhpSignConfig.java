@@ -1,4 +1,4 @@
-package com.xyz.client;
+package com.xyz.client.feign;
 
 import com.google.common.base.Joiner;
 import com.xyz.exception.ValidationException;
