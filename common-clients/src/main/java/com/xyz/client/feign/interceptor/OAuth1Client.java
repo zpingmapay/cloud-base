@@ -31,6 +31,8 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 /**
+ * OAuth1 client
+ *
  * @author sxl
  */
 @Slf4j

@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Feign client
+ * Request signer
  *
  * @author sxl
  */
