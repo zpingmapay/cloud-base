@@ -37,7 +37,7 @@ public class FeignClientConfiguration {
 
     @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean(CloseableHttpClient.class)
-    public CloseableHttpClient closeableHttpClient(@Value("${cloud.client.timeout.connect:6000}") int connectTimeout,
+    public CloseableHttpClient httpClient(@Value("${cloud.client.timeout.connect:6000}") int connectTimeout,
                                                    @Value("${cloud.client.timeout.read:30000}") int readTimeout,
                                                    @Value("${cloud.client.connections.max:200}") int maxConnections,
                                                    @Value("${cloud.client.connections.per-route:20}") int maxPerRoute) {

@@ -1,4 +1,4 @@
-package com.xyz.client.feign;
+package com.xyz.client.feign.interceptor;
 
 import com.xyz.client.HttpClientUtils;
 import com.xyz.client.OAuth1HttpClient;
@@ -34,10 +34,8 @@ import java.util.*;
  * @author sxl
  */
 @Slf4j
-public class FeignOAuth1Client implements Client {
+public class OAuth1Client implements Client {
     private static final String ACCEPT_HEADER_NAME = "Accept";
-    public static final String CONSUMER_KEY = "consumer-key";
-    public static final String CONSUMER_SECRET = "consumer-secret";
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 6000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
@@ -45,7 +43,7 @@ public class FeignOAuth1Client implements Client {
     private final CloseableHttpClient httpClient;
     private final OAuth1KeyProvider oAuth1KeyProvider;
 
-    public FeignOAuth1Client(CloseableHttpClient httpClient, OAuth1KeyProvider oAuth1KeyProvider) {
+    public OAuth1Client(CloseableHttpClient httpClient, OAuth1KeyProvider oAuth1KeyProvider) {
         this.httpClient = httpClient;
         this.oAuth1KeyProvider = oAuth1KeyProvider;
     }
