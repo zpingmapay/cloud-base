@@ -5,5 +5,7 @@ public interface OAuth1KeyProvider {
 
     String findConsumerSecretByKey(String consumerKey);
 
-    OAuthKey findByHost(String host);
+    OAuthKey findByUrl(String host);
+
+    OAuthKey findByName(String name);
 }

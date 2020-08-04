@@ -55,7 +55,7 @@ public class FeignOAuth1Client implements Client {
         try {
             HttpUriRequest httpRequest = toHttpUriRequest(request);
 
-            OAuthKey oauthKey = oAuth1KeyProvider.findByHost(httpRequest.getURI().getHost());
+            OAuthKey oauthKey = oAuth1KeyProvider.findByUrl(request.url());
             OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
             oAuth1HttpClient.sign(httpRequest);
 
