@@ -1,7 +1,6 @@
 package com.xyz.cloud.oauth1.provider;
 
 import com.xyz.utils.JsonConfig;
-import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -28,10 +27,4 @@ public class JsonConfigKeyProvider implements OAuth1KeyProvider {
         return keys.get(consumerKey);
     }
 
-    @Data
-    public static class OAuthKey {
-        private String key;
-        private String secret;
-        private String desc;
-    }
 }
