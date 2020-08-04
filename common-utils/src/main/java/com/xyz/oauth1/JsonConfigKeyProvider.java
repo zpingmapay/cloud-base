@@ -25,12 +25,7 @@ public class JsonConfigKeyProvider implements OAuth1KeyProvider {
     }
 
     @Override
-    public OAuthKey findByServiceName(String serviceName) {
-        return keys.stream().filter(x -> serviceName.equals(x.getServiceName())).findAny().orElse(null);
-    }
-
-    @Override
-    public OAuthKey findByAppId(String appId) {
-        return keys.stream().filter(x -> appId.equals(x.getAppId())).findAny().orElse(null);
+    public OAuthKey findByHost(String host) {
+        return keys.stream().filter(x -> host.equals(x.getHost())).findAny().orElse(null);
     }
 }

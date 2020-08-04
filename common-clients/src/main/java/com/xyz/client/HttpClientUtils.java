@@ -1,5 +1,6 @@
 package com.xyz.client;
 
+import com.google.common.collect.Maps;
 import com.xyz.function.TryWithCatch;
 import com.xyz.utils.Uuid;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.slf4j.MDC;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 @Slf4j
 public class HttpClientUtils {
@@ -28,12 +30,18 @@ public class HttpClientUtils {
     public static final String TID = "tid";
 
     public static void addTraceableHeaders(HttpUriRequest requestBase) {
-        requestBase.addHeader(HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        getTraceableHeaders().forEach((k, v) -> requestBase.addHeader(k, v));
+    }
+
+    public static Map<String, String> getTraceableHeaders() {
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put(HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         TryWithCatch.run(() -> {
             String tid = MDC.get(TID);
             tid = StringUtils.isBlank(tid) ? Uuid.shortUuid() : tid;
-            requestBase.addHeader(HEADER_TRACE_ID, tid);
+            headers.put(HEADER_TRACE_ID, tid);
         });
+        return headers;
     }
 
     public static RequestConfig buildRequestConfig(int connectTimeout, int readTimeout) {

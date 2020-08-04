@@ -2,13 +2,13 @@ package com.xyz.client.feign;
 
 import com.xyz.client.HttpClientUtils;
 import com.xyz.client.OAuth1HttpClient;
-import com.xyz.utils.ValidationUtils;
+import com.xyz.oauth1.OAuth1KeyProvider;
+import com.xyz.oauth1.OAuthKey;
 import feign.Client;
 import feign.Request;
 import feign.Response;
 import feign.Util;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -43,22 +43,23 @@ public class FeignOAuth1Client implements Client {
     private static final int DEFAULT_READ_TIMEOUT = 30000;
 
     private final CloseableHttpClient httpClient;
+    private final OAuth1KeyProvider oAuth1KeyProvider;
 
-    public FeignOAuth1Client(CloseableHttpClient httpClient) {
+    public FeignOAuth1Client(CloseableHttpClient httpClient, OAuth1KeyProvider oAuth1KeyProvider) {
         this.httpClient = httpClient;
+        this.oAuth1KeyProvider = oAuth1KeyProvider;
     }
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-        HttpUriRequest httpRequest;
         try {
-            httpRequest = toHttpUriRequest(request);
-            OAuth1HttpClient oAuth1HttpClient = buildOAuth1HttpClient(httpRequest);
+            HttpUriRequest httpRequest = toHttpUriRequest(request);
 
-            HttpClientUtils.addTraceableHeaders(httpRequest);
+            OAuthKey oauthKey = oAuth1KeyProvider.findByHost(httpRequest.getURI().getHost());
+            OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
             oAuth1HttpClient.sign(httpRequest);
-            CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
 
+            CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
             return toFeignResponse(httpResponse, request);
         } catch (Exception e) {
             throw new IOException(e);
@@ -188,23 +189,5 @@ public class FeignOAuth1Client implements Client {
                 EntityUtils.consume(entity);
             }
         };
-    }
-
-    private OAuth1HttpClient buildOAuth1HttpClient(HttpUriRequest httpRequest) {
-        try {
-            Optional<String> consumerKeyOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_KEY)).findFirst().map(NameValuePair::getValue);
-            ValidationUtils.isTrue(consumerKeyOp.isPresent(), "OAuth1 consumer key not correct");
-            Optional<String> consumerSecretOp = Arrays.stream(httpRequest.getHeaders(CONSUMER_SECRET)).findFirst().map(NameValuePair::getValue);
-            ValidationUtils.isTrue(consumerSecretOp.isPresent(), "OAuth1 consumer secret not correct");
-            String consumerKey = consumerKeyOp.get();
-            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerKey), "OAuth1 consumer key not correct");
-            String consumerSecret = consumerSecretOp.get();
-            ValidationUtils.isTrue(StringUtils.isNoneBlank(consumerSecret), "OAuth1 consumer secret not correct");
-
-            return OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
-        } finally {
-            httpRequest.removeHeaders(CONSUMER_KEY);
-            httpRequest.removeHeaders(CONSUMER_SECRET);
-        }
     }
 }

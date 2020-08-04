@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "remote-service-1", url = "${cloud.client.remote-service-1.url}",
-        configuration = {FeignOAuth1Client.class})
-@RequestMapping(headers = {
-        "consumer-key=${cloud.client.remote-service-1.consumer-key}",
-        "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"
-})
+@FeignClient(name = "sample1", url = "${cloud.client.remote-service-1.url}"
+        ,configuration = {FeignOAuth1Client.class}
+)
+@RequestMapping(
+//        headers = {
+//                "consumer-key=${cloud.client.remote-service-1.consumer-key}",
+//                "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"
+//        }
+)
 public interface BannerFeignClient {
     @PostMapping(value = "api/v1/banner/query")
     ResultDto<PageVo<BannerQueryVo.Response>> bannerActivityQuery(BannerQueryVo.Request param);

@@ -1,9 +1,9 @@
 package com.xyz.oauth1;
 
 public interface OAuth1KeyProvider {
+    String HEADER_AUTH_TOKEN = "Authorization";
+
     String findConsumerSecretByKey(String consumerKey);
 
-    OAuthKey findByServiceName(String serviceName);
-
-    OAuthKey findByAppId(String appId);
+    OAuthKey findByHost(String host);
 }
