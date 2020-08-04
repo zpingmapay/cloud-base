@@ -1,7 +1,7 @@
 package com.xyz.cloud.oauth1;
 
-import com.xyz.cloud.oauth1.provider.JsonConfigKeyProvider;
-import com.xyz.cloud.oauth1.provider.OAuth1KeyProvider;
+import com.xyz.oauth1.JsonConfigKeyProvider;
+import com.xyz.oauth1.OAuth1KeyProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

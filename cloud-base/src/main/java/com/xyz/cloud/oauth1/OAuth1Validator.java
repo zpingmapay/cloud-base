@@ -1,6 +1,6 @@
 package com.xyz.cloud.oauth1;
 
-import com.xyz.cloud.oauth1.provider.OAuth1KeyProvider;
+import com.xyz.oauth1.OAuth1KeyProvider;
 import com.xyz.exception.AccessException;
 import com.xyz.utils.ValidationUtils;
 import net.oauth.*;
