@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample;
 
-import com.xyz.client.annotation.EnableFeignLogger;
+import com.xyz.client.feign.annotation.EnableFeignClient;
 import com.xyz.cloud.CloudApplication;
 import com.xyz.cloud.oauth1.annotation.EnableOAuth1;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignLogger
+@EnableFeignClient
 @EnableFeignClients(basePackages = "com.xyz.cloud.sample.client.feign")
 @EnableOAuth1
 @CloudApplication

@@ -1,4 +1,4 @@
-package com.xyz.client;
+package com.xyz.client.feign;
 
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;

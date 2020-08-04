@@ -1,5 +1,7 @@
-package com.xyz.client;
+package com.xyz.client.feign;
 
+import com.xyz.client.HttpClientUtils;
+import com.xyz.client.OAuth1HttpClient;
 import com.xyz.utils.ValidationUtils;
 import feign.Client;
 import feign.Request;
@@ -39,13 +41,11 @@ public class FeignOAuth1Client implements Client {
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 6000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
-    private static final int DEFAULT_MAX_TOTAL = 200;
-    private static final int DEFAULT_MAX_PER_ROUTE = 20;
 
     private final CloseableHttpClient httpClient;
 
-    public FeignOAuth1Client() {
-        httpClient = HttpClientUtils.buildHttpClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_MAX_TOTAL, DEFAULT_MAX_PER_ROUTE);
+    public FeignOAuth1Client(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.xyz.cloud.sample.client.feign;
 
-import com.xyz.client.FeignFormSupportConfig;
-import com.xyz.client.FeignPhpSignConfig;
+import com.xyz.client.feign.FeignFormSupportConfig;
+import com.xyz.client.feign.FeignPhpSignConfig;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.sample.client.feign.dto.DiyPriceDto;
 import org.springframework.cloud.openfeign.FeignClient;

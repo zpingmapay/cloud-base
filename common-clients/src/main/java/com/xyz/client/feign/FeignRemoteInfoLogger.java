@@ -1,4 +1,4 @@
-package com.xyz.client;
+package com.xyz.client.feign;
 
 import feign.Logger;
 import feign.Request;

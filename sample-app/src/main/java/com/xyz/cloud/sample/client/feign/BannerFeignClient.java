@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample.client.feign;
 
-import com.xyz.client.FeignOAuth1Client;
+import com.xyz.client.feign.FeignOAuth1Client;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
 import com.xyz.cloud.sample.client.feign.dto.PageVo;

@@ -1,6 +1,6 @@
-package com.xyz.client.annotation;
+package com.xyz.client.feign.annotation;
 
-import com.xyz.client.config.FeignLoggerAutoConfiguration;
+import com.xyz.client.feign.config.FeignClientConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({FeignLoggerAutoConfiguration.class})
-public @interface EnableFeignLogger {
+@Import({FeignClientConfiguration.class})
+public @interface EnableFeignClient {
 
 }
