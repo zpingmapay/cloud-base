@@ -11,6 +11,7 @@ import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -39,7 +40,9 @@ public class SimpleRequestSigner implements RequestInterceptor {
         // 时间戳参数
         String timestamp = String.valueOf(TimeUtils.currentSecondTimestamp());
         // 签名
-        ClientCredentialConfig.SignerConfig signerConfig = credentialConfig.findSignerConfigByUrl(template.url());
+        FeignClient annotation = template.feignTarget().type().getAnnotation(FeignClient.class);
+        ClientCredentialConfig.SignerConfig signerConfig = credentialConfig.findSignerConfigByUrl(annotation.url());
+
         String appId = signerConfig.getAppId();
         String key = signerConfig.getAppKey();
         String sign = sign(appId, key, method, timestamp, data);

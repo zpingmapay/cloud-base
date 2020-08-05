@@ -16,7 +16,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -105,14 +104,7 @@ public class OAuth1FeignClient implements Client {
 
         // request body
         if (request.body() != null) {
-            HttpEntity entity;
-            if (request.charset() != null) {
-                ContentType contentType = getContentType(request);
-                String content = request.requestBody().asString();
-                entity = new StringEntity(content, contentType);
-            } else {
-                entity = new ByteArrayEntity(request.requestBody().asBytes());
-            }
+            HttpEntity entity = new ByteArrayEntity(request.body());
             requestBuilder.setEntity(entity);
         } else {
             requestBuilder.setEntity(new ByteArrayEntity(new byte[0]));

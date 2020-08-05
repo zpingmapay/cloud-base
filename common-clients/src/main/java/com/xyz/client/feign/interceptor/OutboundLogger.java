@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+import static com.alibaba.fastjson.util.IOUtils.UTF8;
+
 /**
  * outbound logger
  *
@@ -23,7 +25,7 @@ public class OutboundLogger extends Logger {
     @Override
     protected void logRequest(String configKey, Logger.Level logLevel, Request request) {
         String url = request.url();
-        String params = request.requestBody().asString();
+        String params = new String(request.body(), UTF8);
         Request.HttpMethod httpMethod = request.httpMethod();
         log.info("请求第三方路径开始: url: {}, 参数: {}, 请求方式: {}, configKey: {}",
                 url, params, httpMethod, configKey);
