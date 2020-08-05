@@ -2,7 +2,7 @@ package com.xyz.client.feign.interceptor;
 
 import com.xyz.client.HttpClientUtils;
 import com.xyz.client.OAuth1HttpClient;
-import com.xyz.client.config.OAuthClientConfig;
+import com.xyz.client.config.ClientCredentialConfig;
 import feign.Client;
 import feign.Request;
 import feign.Response;
@@ -42,11 +42,11 @@ public class OAuth1FeignClient implements Client {
     private static final int DEFAULT_READ_TIMEOUT = 30000;
 
     private final CloseableHttpClient httpClient;
-    private final OAuthClientConfig oAuthClientConfig;
+    private final ClientCredentialConfig clientCredentialConfig;
 
-    public OAuth1FeignClient(CloseableHttpClient httpClient, OAuthClientConfig oAuthClientConfig) {
+    public OAuth1FeignClient(CloseableHttpClient httpClient, ClientCredentialConfig clientCredentialConfig) {
         this.httpClient = httpClient;
-        this.oAuthClientConfig = oAuthClientConfig;
+        this.clientCredentialConfig = clientCredentialConfig;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class OAuth1FeignClient implements Client {
         try {
             HttpUriRequest httpRequest = toHttpUriRequest(request);
 
-            OAuthClientConfig.OAuthConfig oauthKey = oAuthClientConfig.findByUrl(request.url());
+            ClientCredentialConfig.OAuthConfig oauthKey = clientCredentialConfig.findOAuthConfigByUrl(request.url());
             OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
             oAuth1HttpClient.sign(httpRequest);
 

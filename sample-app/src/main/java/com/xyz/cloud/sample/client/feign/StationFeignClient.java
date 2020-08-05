@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @FeignClient(name = "remote-service-3", url = "${cloud.client.signer.remote-service-3.url}",
         configuration = {FeignFormSupportConfig.class, SimpleRequestSigner.class})
-@RequestMapping(headers = {
-        SimpleRequestSigner.HEADER_APP_ID_PREFIX + "${cloud.client.remote-service-3.app-id}",
-        SimpleRequestSigner.HEADER_APP_KEY_PREFIX + "${cloud.client.remote-service-3.app-key}",
-})
+@RequestMapping
 public interface StationFeignClient {
     @PostMapping(value = "/", headers = "method=station.setDiyPrice", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResultDto<DiyPriceDto.Response> setStationDiyPrice(DiyPriceDto.Request request);
