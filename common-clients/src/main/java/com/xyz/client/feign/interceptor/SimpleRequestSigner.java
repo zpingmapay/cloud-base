@@ -22,7 +22,7 @@ import java.util.*;
  * @author sxl
  */
 @Slf4j
-public class RequestSigner implements RequestInterceptor {
+public class SimpleRequestSigner implements RequestInterceptor {
     public static final String HEADER_APP_ID_PREFIX = "app-id=";
     public static final String HEADER_APP_KEY_PREFIX = "app-key=";
 

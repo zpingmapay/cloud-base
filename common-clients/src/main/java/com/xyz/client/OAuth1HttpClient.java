@@ -28,10 +28,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.xyz.oauth1.OAuth1KeyProvider.HEADER_AUTH_TOKEN;
-
 @Slf4j
 public class OAuth1HttpClient {
+    private static final String HEADER_AUTH_TOKEN = "Authorization";
     private final CloseableHttpClient httpClient;
     private final String consumerKey;
     private final String consumerSecret;

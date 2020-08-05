@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample;
 
-import com.xyz.client.feign.annotation.EnableFeignClient;
+import com.xyz.client.annotation.EnableFeignClient;
 import com.xyz.cloud.CloudApplication;
 import com.xyz.cloud.oauth1.annotation.EnableOAuth1;
 import org.springframework.boot.SpringApplication;

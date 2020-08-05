@@ -2,8 +2,7 @@ package com.xyz.client.feign.interceptor;
 
 import com.xyz.client.HttpClientUtils;
 import com.xyz.client.OAuth1HttpClient;
-import com.xyz.oauth1.OAuth1KeyProvider;
-import com.xyz.oauth1.OAuthKey;
+import com.xyz.client.config.OAuthClientConfig;
 import feign.Client;
 import feign.Request;
 import feign.Response;
@@ -36,18 +35,18 @@ import java.util.*;
  * @author sxl
  */
 @Slf4j
-public class OAuth1Client implements Client {
+public class OAuth1FeignClient implements Client {
     private static final String ACCEPT_HEADER_NAME = "Accept";
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 6000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
 
     private final CloseableHttpClient httpClient;
-    private final OAuth1KeyProvider oAuth1KeyProvider;
+    private final OAuthClientConfig oAuthClientConfig;
 
-    public OAuth1Client(CloseableHttpClient httpClient, OAuth1KeyProvider oAuth1KeyProvider) {
+    public OAuth1FeignClient(CloseableHttpClient httpClient, OAuthClientConfig oAuthClientConfig) {
         this.httpClient = httpClient;
-        this.oAuth1KeyProvider = oAuth1KeyProvider;
+        this.oAuthClientConfig = oAuthClientConfig;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class OAuth1Client implements Client {
         try {
             HttpUriRequest httpRequest = toHttpUriRequest(request);
 
-            OAuthKey oauthKey = oAuth1KeyProvider.findByUrl(request.url());
+            OAuthClientConfig.OAuthConfig oauthKey = oAuthClientConfig.findByUrl(request.url());
             OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
             oAuth1HttpClient.sign(httpRequest);
 

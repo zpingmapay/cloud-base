@@ -1,6 +1,5 @@
 package com.xyz.cloud.oauth1;
 
-import com.xyz.oauth1.OAuth1KeyProvider;
 import com.xyz.exception.AccessException;
 import com.xyz.utils.ValidationUtils;
 import net.oauth.*;
@@ -15,14 +14,14 @@ public class OAuth1Validator {
     private static final AtomicLong lastReleaseTime = new AtomicLong(System.currentTimeMillis());
     private static final long releasePeriod = 3600000;  // one hour
 
-    private final OAuth1KeyProvider oAuth1KeyProvider;
+    private final OAuthServerConfig oAuthServerConfig;
 
-    public OAuth1Validator(OAuth1KeyProvider oAuth1KeyProvider) {
-        this.oAuth1KeyProvider = oAuth1KeyProvider;
+    public OAuth1Validator(OAuthServerConfig oAuthServerConfig) {
+        this.oAuthServerConfig = oAuthServerConfig;
     }
 
     public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
-        String consumerSecret = oAuth1KeyProvider.findConsumerSecretByKey(consumerKey);
+        String consumerSecret = oAuthServerConfig.findConsumerSecretByKey(consumerKey);
         ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
         OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
         OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, null);

@@ -1,6 +1,6 @@
 package com.xyz.cloud.sample.client.feign;
 
-import com.xyz.client.feign.interceptor.OAuth1Client;
+import com.xyz.client.feign.interceptor.OAuth1FeignClient;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
 import com.xyz.cloud.sample.client.feign.dto.PageVo;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "sample1", url = "${cloud.client.remote-service-1.url}"
-        ,configuration = {OAuth1Client.class}
+@FeignClient(name = "sample1", url = "${cloud.client.oauth.remote-service-1.url}"
+        ,configuration = {OAuth1FeignClient.class}
 )
 @RequestMapping(
 //        headers = {
