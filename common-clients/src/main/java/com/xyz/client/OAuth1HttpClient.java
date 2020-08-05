@@ -10,6 +10,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.http.HttpRequest;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -29,6 +30,7 @@ import java.util.function.Function;
 
 @Slf4j
 public class OAuth1HttpClient {
+    private static final String HEADER_AUTH_TOKEN = "Authorization";
     private final CloseableHttpClient httpClient;
     private final String consumerKey;
     private final String consumerSecret;
@@ -68,10 +70,11 @@ public class OAuth1HttpClient {
         }
     }
 
-    public void sign(HttpUriRequest requestBase) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
+    public String sign(HttpUriRequest requestBase) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
         OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
         oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-        oauthConsumer.sign(requestBase);
+        HttpRequest signedRequest = oauthConsumer.sign(requestBase);
+        return signedRequest.getHeader(HEADER_AUTH_TOKEN);
     }
 
     private String responseToString(CloseableHttpResponse response) {

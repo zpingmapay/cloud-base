@@ -1,6 +1,8 @@
-package com.xyz.client.feign.annotation;
+package com.xyz.client.annotation;
 
+import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.client.feign.config.FeignClientConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -12,6 +14,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@EnableConfigurationProperties(ClientCredentialConfig.class)
 @Import({FeignClientConfiguration.class})
 public @interface EnableFeignClient {
 

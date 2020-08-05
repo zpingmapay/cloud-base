@@ -25,6 +25,6 @@ public class DefaultHeadersHolder implements HttpHeadersHolder<Map<String, Strin
     @Override
     public String getString(String key) {
         Map<String, String> headers = getHeaderObject();
-        return headers.get(key);
+        return headers.get(key.toLowerCase());
     }
 }

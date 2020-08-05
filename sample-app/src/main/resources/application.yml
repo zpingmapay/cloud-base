@@ -7,6 +7,10 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
+  redis:
+    address:
+      redis://192.168.92.56:6379,//192.168.92.64:6379,//192.168.92.65:6379,//192.168.92.56:6380,//192.168.92.64:6380,//192.168.92.65:6380
+
 cloud:
   retry:
     interval-in-seconds: 30
@@ -20,18 +24,25 @@ cloud:
     ttl-in-hours: 24
     multi-login-check: true
 
-  oauth1:
-    config-folder: /etc/sample/config
-    config-name: oauth1-keys.json
+  server:
+    oauth:
+      sample_service:
+        app-id: 1008
+        key: oauth1_consumer_key_of_sample_service
+        secret: oauth1_consumer_secret_of_sample_service
 
   client:
-    remote-service-1:
-      url: $cloud.client.remote-service-1.url$
-      consumer-key: $cloud.client.remote-service-1.consumer-key$
-      consumer-secret: $cloud.client.remote-service-1.consumer-secret$
+    oauth:
+      remote-service-1:
+        url: $cloud.client.remote-service-1.url$
+        key: $cloud.client.remote-service-1.consumer-key$
+        secret: $cloud.client.remote-service-1.consumer-secret$
+
+    signer:
+      remote-service-3:
+        url: $cloud.client.remote-service-3.url$
+        app-id: $cloud.client.remote-service-3.app-id$
+        app-key: $cloud.client.remote-service-3.app-key$
+
     remote-service-2:
       url: $cloud.client.remote-service-2.url$
-    remote-service-3:
-      url: $cloud.client.remote-service-3.url$
-      app-id: $cloud.client.remote-service-3.app-id$
-      app-key: $cloud.client.remote-service-3.app-key$

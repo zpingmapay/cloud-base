@@ -1,8 +1,8 @@
 package com.xyz.cloud.oauth1;
 
+import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
-import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.ValidationUtils;
@@ -25,7 +25,7 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Aspect
 @Order(1000)
 public class OAuth1Aspect {
-    private static final String HEADER_AUTH_TOKEN = "authorization";
+    private static final String HEADER_AUTH_TOKEN = "Authorization";
     private static final String OAUTH_PREFIX = "OAuth ";
     private static final String CONSUMER_KEY = "oauth_consumer_key";
 

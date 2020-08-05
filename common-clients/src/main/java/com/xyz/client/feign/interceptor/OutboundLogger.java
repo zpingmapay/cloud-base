@@ -1,4 +1,4 @@
-package com.xyz.client.feign;
+package com.xyz.client.feign.interceptor;
 
 import feign.Logger;
 import feign.Request;
@@ -9,12 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 /**
- * feign client 日志
+ * outbound logger
  *
  * @author sxl
  */
 @Slf4j
-public class FeignRemoteInfoLogger extends Logger {
+public class OutboundLogger extends Logger {
 
     @Override
     protected void log(String s, String s1, Object... objects) {
