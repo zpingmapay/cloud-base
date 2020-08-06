@@ -34,15 +34,15 @@ cloud:
   client:
     oauth:
       remote-service-1:
-        url: $cloud.client.remote-service-1.url$
-        key: $cloud.client.remote-service-1.consumer-key$
-        secret: $cloud.client.remote-service-1.consumer-secret$
+        url: https://promotion-service.51zhaoyou.com/test
+        key: Zpetrolservice51serviceY
+        secret: 215419DCDF9E9F5160545E517624FEBB
 
     signer:
       remote-service-3:
-        url: $cloud.client.remote-service-3.url$
-        app-id: $cloud.client.remote-service-3.app-id$
-        app-key: $cloud.client.remote-service-3.app-key$
+        url: https://open-data.51zhaoyou.com/test
+        app-id: 2824
+        app-key: F96502BD5D1D4224B55FE24503EFB52C
 
     remote-service-2:
       url: $cloud.client.remote-service-2.url$

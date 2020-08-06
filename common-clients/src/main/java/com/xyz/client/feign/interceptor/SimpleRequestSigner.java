@@ -39,7 +39,7 @@ public class SimpleRequestSigner implements RequestInterceptor {
         // 时间戳参数
         String timestamp = String.valueOf(TimeUtils.currentSecondTimestamp());
         // 签名
-        ClientCredentialConfig.SignerConfig signerConfig = credentialConfig.findSignerConfigByUrl(template.url());
+        ClientCredentialConfig.SignerConfig signerConfig = credentialConfig.findSignerConfigByUrl(template.feignTarget().url());
         String appId = signerConfig.getAppId();
         String key = signerConfig.getAppKey();
         String sign = sign(appId, key, method, timestamp, data);

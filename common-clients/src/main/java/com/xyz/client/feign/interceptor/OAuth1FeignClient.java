@@ -108,10 +108,10 @@ public class OAuth1FeignClient implements Client {
             HttpEntity entity;
             if (request.charset() != null) {
                 ContentType contentType = getContentType(request);
-                String content = request.requestBody().asString();
+                String content = request.requestTemplate().requestBody().asString();
                 entity = new StringEntity(content, contentType);
             } else {
-                entity = new ByteArrayEntity(request.requestBody().asBytes());
+                entity = new ByteArrayEntity(request.body());
             }
             requestBuilder.setEntity(entity);
         } else {
@@ -170,11 +170,6 @@ public class OAuth1FeignClient implements Client {
             @Override
             public InputStream asInputStream() throws IOException {
                 return entity.getContent();
-            }
-
-            @Override
-            public Reader asReader() throws IOException {
-                return new InputStreamReader(this.asInputStream(), Util.UTF_8);
             }
 
             @Override

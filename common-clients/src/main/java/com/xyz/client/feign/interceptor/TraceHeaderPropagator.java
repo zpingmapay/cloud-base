@@ -7,6 +7,6 @@ import feign.RequestTemplate;
 public class TraceHeaderPropagator implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
-        HttpClientUtils.getTraceableHeaders().forEach((k, v) -> template.header(k, v));
+        HttpClientUtils.getTraceableHeaders().forEach(template::header);
     }
 }
