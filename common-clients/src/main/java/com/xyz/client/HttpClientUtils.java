@@ -35,7 +35,7 @@ public class HttpClientUtils {
     public static final String TID = "tid";
 
     public static void addTraceableHeaders(HttpUriRequest request) {
-        getTraceableHeaders().forEach((k, v) -> request.addHeader(k, v));
+        getTraceableHeaders().forEach(request::addHeader);
     }
 
     public static void addContentType(HttpUriRequest request) {
