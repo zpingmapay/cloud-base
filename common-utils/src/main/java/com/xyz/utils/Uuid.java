@@ -11,7 +11,7 @@ public class Uuid {
             "W", "X", "Y", "Z"};
 
     public static String shortUuid() {
-        StringBuffer shortBuffer = new StringBuffer();
+        StringBuilder shortBuffer = new StringBuilder();
         String uuid = generate();
         for (int i = 0; i < 8; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);

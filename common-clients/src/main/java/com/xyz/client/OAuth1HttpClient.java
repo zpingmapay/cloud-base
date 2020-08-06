@@ -44,7 +44,8 @@ public class OAuth1HttpClient {
     }
 
     public static OAuth1HttpClient getOrCreate(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
-        return CacheManager.getFromLocalOrCreate(OAuth1HttpClient.class.getName(), consumerKey, (x) -> new OAuth1HttpClient(httpClient, consumerKey, consumerSecret));
+        return CacheManager.getFromLocalOrCreate(OAuth1HttpClient.class.getName(), consumerKey, (x) -> new OAuth1HttpClient(httpClient,
+                consumerKey, consumerSecret));
     }
 
     public <T> T doGet(String url, Object parameters, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
@@ -93,16 +94,20 @@ public class OAuth1HttpClient {
         HttpClientUtils.addTraceableHeaders(request);
         HttpClientUtils.addContentType(request);
         sign(request);
-        Instant start = Instant.now();
         try (CloseableHttpResponse response = httpClient.execute(request)) {
-            T res = responseHandler.apply(response);
-            return res;
+            return responseHandler.apply(response);
         }
     }
 
-    public String sign(HttpUriRequest request) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
-        OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-        oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
+    public String sign(HttpUriRequest request) throws OAuthCommunicationException, OAuthExpectationFailedException,
+            OAuthMessageSignerException {
+        OAuthConsumer oauthConsumer = CacheManager.getFromLocalOrCreate(CommonsHttpOAuthConsumer.class.getName()
+                , consumerKey, (x) -> {
+                    OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+                    consumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
+                    return consumer;
+                });
+
         HttpRequest signedRequest = oauthConsumer.sign(request);
         return signedRequest.getHeader(HEADER_AUTH_TOKEN);
     }
