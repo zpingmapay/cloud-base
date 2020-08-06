@@ -33,7 +33,7 @@ public class SampleController {
     SampleRemoteService remoteService;
 
     @PostMapping("/login")
-    public ResultDto<String> login(@RequestParam String userName) {
+    public ResultDto<String> login() {
         String userId = getUserId();
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
 
@@ -62,7 +62,8 @@ public class SampleController {
 
     @OAuth1Secured
     @GetMapping("/me")
-    public ResultDto<String> myUserId() {
+    public ResultDto<String> myUserId(@RequestParam String userName) {
+        ValidationUtils.notBlank(userName, "user name is required");
         return ResultDto.ok(getUserId());
     }
 
