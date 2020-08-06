@@ -59,7 +59,7 @@ public class OAuth1HttpClient {
             HttpClientUtils.logResponse(getUrl, res, start);
             return res;
         } catch (Exception e) {
-            HttpClientUtils.logError(getUrl, e, start);
+            HttpClientUtils.logError(e, start);
             throw e;
         }
     }
@@ -80,7 +80,7 @@ public class OAuth1HttpClient {
             HttpClientUtils.logResponse(url, res, start);
             return res;
         } catch (Exception e) {
-            HttpClientUtils.logError(url, e, start);
+            HttpClientUtils.logError(e, start);
             throw e;
         }
     }
