@@ -19,13 +19,12 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Aspect
 public class ControllerLogAspect {
     private static final String JSON_CONTENT_TYPE = "application/json";
-
-    private static final String REQUEST_PATTEN_WITH_HEARERS = "{},URI:{}, param:{}";
     private static final String REQUEST_PATTEN_WITHOUT_HEARERS = "URI:{}, param:{}";
-    private static final String RESPONSE_PATTEN_WITH_HEARERS = "{},URI:{}, res:{}, took:{}ms";
+    private static final String REQUEST_PATTEN_WITH_HEARERS = "{}," + REQUEST_PATTEN_WITHOUT_HEARERS;
     private static final String RESPONSE_PATTEN_WITHOUT_HEARERS = "URI:{}, res:{}, took:{}ms";
-    private static final String ERROR_PATTEN_WITH_HEARERS = "{},URI:{}, err:{}, took:{}ms";
+    private static final String RESPONSE_PATTEN_WITH_HEARERS = "{}," + RESPONSE_PATTEN_WITHOUT_HEARERS;
     private static final String ERROR_PATTEN_WITHOUT_HEARERS = "URI:{}, err:{}, took:{}ms";
+    private static final String ERROR_PATTEN_WITH_HEARERS = "{}," + ERROR_PATTEN_WITHOUT_HEARERS;
 
     private final boolean logWithHeader;
     private final HttpHeadersHolder httpHeadersHolder;
