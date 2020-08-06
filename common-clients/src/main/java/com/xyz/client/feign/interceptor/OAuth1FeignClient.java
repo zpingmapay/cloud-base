@@ -16,6 +16,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -104,7 +105,14 @@ public class OAuth1FeignClient implements Client {
 
         // request body
         if (request.body() != null) {
-            HttpEntity entity = new ByteArrayEntity(request.body());
+            HttpEntity entity;
+            if (request.charset() != null) {
+                ContentType contentType = getContentType(request);
+                String content = request.requestTemplate().requestBody().asString();
+                entity = new StringEntity(content, contentType);
+            } else {
+                entity = new ByteArrayEntity(request.body());
+            }
             requestBuilder.setEntity(entity);
         } else {
             requestBuilder.setEntity(new ByteArrayEntity(new byte[0]));
@@ -162,11 +170,6 @@ public class OAuth1FeignClient implements Client {
             @Override
             public InputStream asInputStream() throws IOException {
                 return entity.getContent();
-            }
-
-            @Override
-            public Reader asReader() throws IOException {
-                return new InputStreamReader(this.asInputStream(), Util.UTF_8);
             }
 
             @Override

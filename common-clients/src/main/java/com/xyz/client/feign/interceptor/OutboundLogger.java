@@ -26,7 +26,7 @@ public class OutboundLogger extends Logger {
     @Override
     protected void logRequest(String configKey, Logger.Level logLevel, Request request) {
         String url = request.url();
-        String params = request.body() == null ? StringUtils.EMPTY : new String(request.body(), UTF8);
+        String params = request.body() == null ? StringUtils.EMPTY : new String(request.body(), request.charset());
         Request.HttpMethod httpMethod = request.httpMethod();
         log.info("请求第三方路径开始: url: {}, 参数: {}, 请求方式: {}, configKey: {}",
                 url, params, httpMethod, configKey);
