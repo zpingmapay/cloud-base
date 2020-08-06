@@ -37,7 +37,7 @@ public class OAuth1HttpClient {
     private final String consumerKey;
     private final String consumerSecret;
 
-    public OAuth1HttpClient(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
+    private OAuth1HttpClient(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
         this.httpClient = httpClient;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
