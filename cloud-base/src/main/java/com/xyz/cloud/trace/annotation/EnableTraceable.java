@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  * class and also import {@link TraceableThreadPoolConfiguration configuration}, which
  * initiate a {@code ThreadPoolExecutor} bean.
  * <p>
- * Request, response exception (if any) and execution time of Methods annotated with
+ * Request, response, exception (if any) and execution time of Methods annotated with
  * {@code GetMapping} or {@code PostMapping} in a {@link RestController controller} class
  * will be logged automatically after trace feature enabled.
  * <p>
@@ -21,11 +21,11 @@ import java.lang.annotation.*;
  * in the whole request life circle.
  * If a {@code trace-id} exists in http headers, it will be populated, otherwise a uuid
  * will be generated automatically. Trace-id will be logged in logback file as {@code TID}
- * column. It will be also passed to remoted Rest services or an async functions.
+ * column. It will be also passed to remoted Rest services or an async function.
  * <p>
  * If a {@user-id} is populated in the context, it will also be logged as as {@code UID} column.
  * <p>
- * Annotation {@code Traceable} is a way to enable trace feature on the other methods.
+ * Annotation {@code Traceable} is another way to enable trace feature on the other methods.
  *
  * @author Zaiping Ma
  */
