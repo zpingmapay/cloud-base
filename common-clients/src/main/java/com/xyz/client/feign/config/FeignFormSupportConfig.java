@@ -1,4 +1,4 @@
-package com.xyz.cloud.sample.client.feign.config;
+package com.xyz.client.feign.config;
 
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;

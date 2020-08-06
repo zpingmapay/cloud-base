@@ -1,0 +1,30 @@
+server:
+  port: 1009
+
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+cloud:
+  client:
+    oauth:
+      sample:
+        url: http://localhost:1008
+        key: oauth1_consumer_key_of_sample_service
+        secret: oauth1_consumer_secret_of_sample_service
+
+      remote-service-1:
+        url: cloud.client.remote-service-1.url
+        key: cloud.client.remote-service-1.key
+        secret: cloud.client.remote-service-1.secret
+
+    signer:
+      remote-service-2:
+        url: cloud.client.remote-service-2.url
+        app-id: cloud.client.remote-service-2.app-id
+        app-key: cloud.client.remote-service-2.app-key
+
+    remote-service-3:
+      url: $cloud.client.remote-service-3.url$

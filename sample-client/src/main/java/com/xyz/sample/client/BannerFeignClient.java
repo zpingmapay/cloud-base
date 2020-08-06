@@ -1,12 +1,11 @@
-package com.xyz.cloud.sample.client.feign;
+package com.xyz.sample.client;
 
 import com.xyz.client.feign.interceptor.OAuth1FeignClient;
 import com.xyz.cloud.dto.ResultDto;
-import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
-import com.xyz.cloud.sample.client.feign.dto.PageVo;
+import com.xyz.sample.client.dto.BannerQueryVo;
+import com.xyz.sample.client.dto.PageVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -15,12 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @FeignClient(name = "sample1", url = "${cloud.client.oauth.remote-service-1.url}"
         ,configuration = {OAuth1FeignClient.class}
-)
-@RequestMapping(
-//        headers = {
-//                "consumer-key=${cloud.client.remote-service-1.consumer-key}",
-//                "consumer-secret=${cloud.client.remote-service-1.consumer-secret}"
-//        }
 )
 public interface BannerFeignClient {
     @PostMapping(value = "api/v1/banner/query")

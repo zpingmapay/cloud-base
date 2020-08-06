@@ -1,11 +1,11 @@
-package com.xyz.cloud.sample.client.feign;
+package com.xyz.sample.client;
 
 import com.alibaba.fastjson.JSON;
 import com.xyz.cloud.dto.ResultDto;
-import com.xyz.cloud.sample.ApplicationTests;
-import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
-import com.xyz.cloud.sample.client.feign.dto.PageVo;
+import com.xyz.sample.client.dto.BannerQueryVo;
+import com.xyz.sample.client.dto.PageVo;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
@@ -13,8 +13,8 @@ import javax.annotation.Resource;
  * @author sxl
  * @since 2020/7/24 14:56
  */
-class BannerFeignClientTest extends ApplicationTests {
-
+@SpringBootTest
+public class BannerFeignClientTest {
     @Resource
     private BannerFeignClient bannerFeignClient;
 

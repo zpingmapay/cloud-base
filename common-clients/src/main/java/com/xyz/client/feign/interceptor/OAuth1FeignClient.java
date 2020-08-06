@@ -53,7 +53,7 @@ public class OAuth1FeignClient implements Client {
     public Response execute(Request request, Request.Options options) throws IOException {
         try {
             HttpUriRequest httpRequest = toHttpUriRequest(request);
-
+            HttpClientUtils.addContentType(httpRequest);
             ClientCredentialConfig.OAuthConfig oauthKey = clientCredentialConfig.findOAuthConfigByUrl(request.url());
             OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
             oAuth1HttpClient.sign(httpRequest);

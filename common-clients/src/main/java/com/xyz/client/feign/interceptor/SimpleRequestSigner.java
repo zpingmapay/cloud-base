@@ -11,6 +11,7 @@ import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

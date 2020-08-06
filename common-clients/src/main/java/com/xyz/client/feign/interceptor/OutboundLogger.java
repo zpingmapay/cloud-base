@@ -5,8 +5,11 @@ import feign.Request;
 import feign.Response;
 import feign.Util;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+
+import static com.alibaba.fastjson.util.IOUtils.UTF8;
 
 /**
  * outbound logger
@@ -23,7 +26,7 @@ public class OutboundLogger extends Logger {
     @Override
     protected void logRequest(String configKey, Logger.Level logLevel, Request request) {
         String url = request.url();
-        String params = new String(request.body(), request.charset());
+        String params = request.body() == null ? StringUtils.EMPTY : new String(request.body(), request.charset());
         Request.HttpMethod httpMethod = request.httpMethod();
         log.info("请求第三方路径开始: url: {}, 参数: {}, 请求方式: {}, configKey: {}",
                 url, params, httpMethod, configKey);

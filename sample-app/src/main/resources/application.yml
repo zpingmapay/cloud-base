@@ -30,19 +30,3 @@ cloud:
         app-id: 1008
         key: oauth1_consumer_key_of_sample_service
         secret: oauth1_consumer_secret_of_sample_service
-
-  client:
-    oauth:
-      remote-service-1:
-        url: https://promotion-service.51zhaoyou.com/test
-        key: Zpetrolservice51serviceY
-        secret: 215419DCDF9E9F5160545E517624FEBB
-
-    signer:
-      remote-service-3:
-        url: https://open-data.51zhaoyou.com/test
-        app-id: 2824
-        app-key: F96502BD5D1D4224B55FE24503EFB52C
-
-    remote-service-2:
-      url: $cloud.client.remote-service-2.url$

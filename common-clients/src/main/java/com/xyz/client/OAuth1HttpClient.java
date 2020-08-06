@@ -25,12 +25,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
 public class OAuth1HttpClient {
     private static final String HEADER_AUTH_TOKEN = "Authorization";
+
     private final CloseableHttpClient httpClient;
     private final String consumerKey;
     private final String consumerSecret;
@@ -45,39 +47,67 @@ public class OAuth1HttpClient {
         return CacheManager.getFromLocalOrCreate(OAuth1HttpClient.class.getName(), consumerKey, (x) -> new OAuth1HttpClient(httpClient, consumerKey, consumerSecret));
     }
 
-    public String doGet(String url, Object parameters) throws Exception {
+    public <T> T doGet(String url, Object parameters, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         String getUrl = UriComponentsBuilder.fromHttpUrl(url).queryParams(initQueryParams(parameters)).toUriString();
         HttpGet httpGet = new HttpGet(getUrl);
+        HttpClientUtils.logRequest(getUrl, parameters, httpGet.getMethod());
+        Instant start = Instant.now();
 
-        return execute(httpGet, this::responseToString);
-    }
-
-    public String doPost(String url, String body) throws Exception {
-        HttpPost httpPost = new HttpPost(url);
-
-        StringEntity httpEntity = new StringEntity(body, Charsets.UTF_8);
-        httpPost.setEntity(httpEntity);
-        return execute(httpPost, this::responseToString);
-    }
-
-
-    public <T> T execute(HttpUriRequest requestBase, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
-        HttpClientUtils.addTraceableHeaders(requestBase);
-
-        sign(requestBase);
-        try (CloseableHttpResponse response = httpClient.execute(requestBase)) {
-            return responseHandler.apply(response);
+        try {
+            T res = execute(httpGet, responseHandler);
+            HttpClientUtils.logResponse(getUrl, res, start);
+            return res;
+        } catch (Exception e) {
+            HttpClientUtils.logError(getUrl, e, start);
+            throw e;
         }
     }
 
-    public String sign(HttpUriRequest requestBase) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
+    public String doGet(String url, Object parameters) throws Exception {
+        return doGet(url, parameters, this::responseToString);
+    }
+
+    public <T> T doPost(String url, String body, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+        HttpPost httpPost = new HttpPost(url);
+        StringEntity httpEntity = new StringEntity(body, Charsets.UTF_8);
+        httpPost.setEntity(httpEntity);
+        HttpClientUtils.logRequest(url, body, httpPost.getMethod());
+        Instant start = Instant.now();
+
+        try {
+            T res = execute(httpPost, responseHandler);
+            HttpClientUtils.logResponse(url, res, start);
+            return res;
+        } catch (Exception e) {
+            HttpClientUtils.logError(url, e, start);
+            throw e;
+        }
+    }
+
+    public String doPost(String url, String body) throws Exception {
+        return this.doPost(url, body, this::responseToString);
+    }
+
+
+    public <T> T execute(HttpUriRequest request, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+        HttpClientUtils.addTraceableHeaders(request);
+        HttpClientUtils.addContentType(request);
+        sign(request);
+        Instant start = Instant.now();
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+            T res = responseHandler.apply(response);
+            return res;
+        }
+    }
+
+    public String sign(HttpUriRequest request) throws OAuthCommunicationException, OAuthExpectationFailedException, OAuthMessageSignerException {
         OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
         oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-        HttpRequest signedRequest = oauthConsumer.sign(requestBase);
+        HttpRequest signedRequest = oauthConsumer.sign(request);
         return signedRequest.getHeader(HEADER_AUTH_TOKEN);
     }
 
-    private String responseToString(CloseableHttpResponse response) {
+    public String responseToString(CloseableHttpResponse response) {
         ValidationUtils.notNull(response, "No response");
         ValidationUtils.notNull(response.getEntity(), "No response");
         try {

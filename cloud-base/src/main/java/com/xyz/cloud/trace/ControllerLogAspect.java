@@ -44,7 +44,7 @@ public class ControllerLogAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         String contentType = request.getContentType();
 
-        if (contentType == null || !isRestController(pjp) || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE)) {
+        if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE) || !isRestController(pjp)) {
             return proceedWithoutLog(pjp);
         }
 

@@ -1,10 +1,12 @@
-package com.xyz.cloud.sample.client;
+package com.xyz.sample.client;
 
 import com.xyz.client.OAuth1HttpClient;
+import com.xyz.cloud.dto.ResultDto;
+import com.xyz.utils.JsonUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 
@@ -14,14 +16,16 @@ public class OAuth1HttpClientTest {
     private CloseableHttpClient httpClient;
 
     @Test
-    @Ignore
     public void testDoGet() throws Exception {
         String url = "http://localhost:1008/me";
         String consumerKey = "oauth1_consumer_key_of_sample_service";
         String consumerSecret = "oauth1_consumer_secret_of_sample_service";
 
         OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
-        String userId = oAuth1HttpClient.doGet(url, null);
-        System.out.println(userId);
+        ResultDto<String> result = oAuth1HttpClient.doGet(url, null, (x) -> {
+            String response = oAuth1HttpClient.responseToString(x);
+            return JsonUtils.jsonToBean(response, ResultDto.class, String.class);
+        });
+        Assert.isTrue(result.resultOk(), "Failed to get my user id");
     }
 }

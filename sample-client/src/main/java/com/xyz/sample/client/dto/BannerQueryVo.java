@@ -1,4 +1,4 @@
-package com.xyz.cloud.sample.client.feign.dto;
+package com.xyz.sample.client.dto;
 
 import lombok.Data;
 
