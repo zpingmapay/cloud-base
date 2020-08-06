@@ -18,6 +18,8 @@ import java.lang.annotation.*;
  * {@code @EnableLock}, {@code @EnableRetryableEvent}, {@code EnableRetryableEvent}
  * and {@code EnableTraceable}.
  *
+ * Typically this annotation is for a BFF(backend for front-end) application.
+ *
  * @author Zaiping Ma
  */
 @Target(ElementType.TYPE)
