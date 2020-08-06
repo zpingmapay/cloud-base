@@ -1,14 +1,16 @@
 package com.xyz.sample.client;
 
-import com.xyz.client.feign.interceptor.OAuth1FeignClient;
 import com.xyz.cloud.dto.ResultDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "sample", url = "${cloud.client.oauth.sample.url}"
-        ,configuration = {OAuth1FeignClient.class}
-)
+/**
+ * @author sxl
+ * @since 2020/7/23 15:40
+ */
+@FeignClient(name = "sample", url = "${cloud.client.sample.url}")
 public interface SampleServiceSpi {
-    @GetMapping("/me")
-    ResultDto<String> myUserId();
+    @PostMapping(value = "/login")
+    ResultDto<String> login();
+
 }

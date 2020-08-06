@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @author sxl
  * @since 2020/7/23 15:40
  */
-@FeignClient(name = "remote-service-2", url = "${cloud.client.signer.remote-service-2.url}",
+@FeignClient(name = "sample-signer", url = "${cloud.client.signer.sample-signer.url}",
         configuration = {FeignFormSupportConfig.class, SimpleRequestSigner.class})
-public interface StationFeignClient {
+public interface SampleSignerServiceSpi {
 
     @PostMapping(value = "/", headers = "method=station.setDiyPrice", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResultDto<DiyPriceDto.Response> setStationDiyPrice(DiyPriceDto.Request request);

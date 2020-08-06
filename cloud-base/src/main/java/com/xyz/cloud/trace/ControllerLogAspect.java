@@ -42,13 +42,13 @@ public class ControllerLogAspect {
             return proceedWithoutLog(pjp);
         }
         HttpServletRequest request = requestAttributes.getRequest();
-        String contentType = request.getContentType();
+        Object headers = httpHeadersHolder.extract(request);
 
+        String contentType = request.getContentType();
         if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE) || !isRestController(pjp)) {
             return proceedWithoutLog(pjp);
         }
 
-        Object headers = httpHeadersHolder.extract(request);
         return proceedWithLog(pjp, request, headers);
     }
 

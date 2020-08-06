@@ -7,18 +7,14 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 
-/**
- * @author sxl
- * @since 2020/7/24 10:16
- */
 @SpringBootTest
-public class SampleServiceSpiTest {
+public class SampleOAuthServiceSpiTest {
     @Resource
-    private SampleServiceSpi sampleServiceSpi;
+    private SampleOAuthServiceSpi SampleOAuthServiceSpi;
 
     @Test
-    void testLogin() {
-        ResultDto<String> result = sampleServiceSpi.login();
-        Assert.isTrue(result.resultOk(), "login failed");
+    public void testMyUserId() {
+        ResultDto<String> result = SampleOAuthServiceSpi.myUserId();
+        Assert.isTrue(result.resultOk(), "failed to get my user id");
     }
 }
