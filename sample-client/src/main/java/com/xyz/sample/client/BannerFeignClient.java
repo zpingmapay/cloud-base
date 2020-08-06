@@ -1,9 +1,9 @@
-package com.xyz.cloud.sample.client.feign;
+package com.xyz.sample.client;
 
 import com.xyz.client.feign.interceptor.OAuth1FeignClient;
 import com.xyz.cloud.dto.ResultDto;
-import com.xyz.cloud.sample.client.feign.dto.BannerQueryVo;
-import com.xyz.cloud.sample.client.feign.dto.PageVo;
+import com.xyz.sample.client.dto.BannerQueryVo;
+import com.xyz.sample.client.dto.PageVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 

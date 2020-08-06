@@ -1,10 +1,10 @@
-package com.xyz.cloud.sample.client.feign;
+package com.xyz.sample.client;
 
 import com.alibaba.fastjson.JSON;
 import com.xyz.cloud.dto.ResultDto;
-import com.xyz.cloud.sample.ApplicationTests;
-import com.xyz.cloud.sample.client.feign.dto.DiyPriceDto;
+import com.xyz.sample.client.dto.DiyPriceDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
@@ -12,8 +12,8 @@ import javax.annotation.Resource;
  * @author sxl
  * @since 2020/5/13 16:42
  */
-class StationClientTest extends ApplicationTests {
-
+@SpringBootTest
+public class StationClientTest {
     @Resource
     private StationFeignClient stationFeignClient;
 
