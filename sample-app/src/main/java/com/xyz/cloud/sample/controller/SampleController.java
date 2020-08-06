@@ -12,9 +12,7 @@ import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.concurrent.Executor;
@@ -35,7 +33,7 @@ public class SampleController {
     SampleRemoteService remoteService;
 
     @PostMapping("/login")
-    public ResultDto<String> login() {
+    public ResultDto<String> login(@RequestParam String userName) {
         String userId = getUserId();
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
 

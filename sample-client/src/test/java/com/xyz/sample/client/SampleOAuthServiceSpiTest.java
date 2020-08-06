@@ -14,7 +14,7 @@ public class SampleOAuthServiceSpiTest {
 
     @Test
     public void testMyUserId() {
-        ResultDto<String> result = SampleOAuthServiceSpi.myUserId();
+        ResultDto<String> result = SampleOAuthServiceSpi.myUserId("test");
         Assert.isTrue(result.resultOk(), "failed to get my user id");
     }
 }

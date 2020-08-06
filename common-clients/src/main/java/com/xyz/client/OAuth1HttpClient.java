@@ -31,7 +31,7 @@ import java.util.function.Function;
 
 @Slf4j
 public class OAuth1HttpClient {
-    private static final String HEADER_AUTH_TOKEN = "Authorization";
+    public static final String HEADER_AUTH_TOKEN = "Authorization";
 
     private final CloseableHttpClient httpClient;
     private final String consumerKey;
