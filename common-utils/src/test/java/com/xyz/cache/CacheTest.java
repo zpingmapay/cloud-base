@@ -29,10 +29,9 @@ public class CacheTest {
         Assert.isTrue("test2".equals(cache.getOrCreate("2", (k) -> "test2")), "key 2 should put success");
     }
 
-    //Test
     @Resource
     private RedissonClient redissonClient;
-
+    //Test
     public void testRedisCache() {
         String value = CacheManager.getFromRedisOrCreate(CacheTest.class.getName(), "1", redissonClient, (k) -> "test1");
         Assert.isTrue("test1".equals(value), "value is not test1");
