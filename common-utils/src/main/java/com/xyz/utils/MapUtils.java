@@ -1,7 +1,8 @@
 package com.xyz.utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.ImmutableSortedMap;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MapUtils {
@@ -26,8 +27,12 @@ public class MapUtils {
                         HashMap::new));
     }
 
+    public static <K, V> List<Map.Entry<K, V>> sort(Map<K, V> map, Comparator<? super Map.Entry<? super K, ? super V>> comparator) {
+        return map.entrySet().stream().sorted(comparator).collect(Collectors.toList());
+    }
+
     @FunctionalInterface
-    public interface Transformer<F,T> {
+    public interface Transformer<F, T> {
         T transform(F f);
     }
 }
