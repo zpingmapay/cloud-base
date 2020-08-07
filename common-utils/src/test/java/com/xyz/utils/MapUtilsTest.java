@@ -49,6 +49,13 @@ public class MapUtilsTest {
         Assert.isTrue("test1_value".equals(sortedMap.get(0).getValue()), "sort by value not correct");
     }
 
+    @Test
+    public void testSortAndJoin() {
+        Map<String, String> map = initMap();
+        String joinedString = MapUtils.sortAndJoin(map, Comparator.comparing(x -> x.getKey().toString()), "=", "&");
+        Assert.isTrue(joinedString.startsWith("Test1="), "sort and join not correct");
+    }
+
     private Map<String, String> initMap() {
         Map<String, String> map = Maps.newHashMap();
         map.put("Test1", "test1_value");
