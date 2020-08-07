@@ -101,12 +101,8 @@ public class OAuth1HttpClient {
 
     public String sign(HttpUriRequest request) throws OAuthCommunicationException, OAuthExpectationFailedException,
             OAuthMessageSignerException {
-        OAuthConsumer oauthConsumer = CacheManager.getFromLocalOrCreate(CommonsHttpOAuthConsumer.class.getName()
-                , consumerKey, (x) -> {
-                    OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-                    consumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-                    return consumer;
-                });
+        OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+        oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
 
         HttpRequest signedRequest = oauthConsumer.sign(request);
         return signedRequest.getHeader(HEADER_AUTH_TOKEN);
