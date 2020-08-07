@@ -16,6 +16,9 @@ import java.io.IOException;
  */
 @Slf4j
 public class OutboundLogger extends Logger {
+    private static final String REQUEST_LOG_PATTEN = "请求第三方开始: url: {}, 参数: {}, 请求方式: {}, method: {}";
+    private static final String RESPONSE_LOG_PATTEN = "请求第三方完成: url: {}, 响应: {}, method: {}, 耗时: {}ms";
+    private static final String ERROR_LOG_PATTEN = "请求第三方失败: 错误: {}, method: {}, 耗时: {}ms";
 
     @Override
     protected void log(String configKey, String format, Object... args) {
@@ -50,5 +53,9 @@ public class OutboundLogger extends Logger {
 //        return response;
 //    }
 
-
+    @Override
+    protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {
+        log.info(ERROR_LOG_PATTEN, ioe.getMessage(), configKey, elapsedTime);
+        return ioe;
+    }
 }

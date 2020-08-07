@@ -17,7 +17,7 @@ public class OAuth1HttpClientTest {
 
     @Test
     public void testDoGet() throws Exception {
-        String url = "http://localhost:1008/me";
+        String url = "http://localhost:1008/me?userName=test";
         String consumerKey = "oauth1_consumer_key_of_sample_service";
         String consumerSecret = "oauth1_consumer_secret_of_sample_service";
 

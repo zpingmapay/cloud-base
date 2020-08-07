@@ -1,6 +1,10 @@
 package com.xyz.utils;
 
+import com.google.common.base.Joiner;
+
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,8 +30,17 @@ public class MapUtils {
                         HashMap::new));
     }
 
+    public static <K, V> List<Map.Entry<K, V>> sort(Map<K, V> map, Comparator<? super Map.Entry<? super K, ? super V>> comparator) {
+        return map.entrySet().stream().sorted(comparator).collect(Collectors.toList());
+    }
+
+    public static <K, V> String sortAndJoin(Map<K, V> map, Comparator<? super Map.Entry<? super K, ? super V>> comparator, String joiner, String separator) {
+        List<Map.Entry<K, V>> sortedList = sort(map, comparator);
+        return Joiner.on(separator).withKeyValueSeparator(joiner).join(sortedList.iterator());
+    }
+
     @FunctionalInterface
-    public interface Transformer<F,T> {
+    public interface Transformer<F, T> {
         T transform(F f);
     }
 }
