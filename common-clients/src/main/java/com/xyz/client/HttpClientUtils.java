@@ -9,20 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.MDC;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Map;
 
@@ -64,12 +52,6 @@ public class HttpClientUtils {
                 .setSocketTimeout(readTimeout).build();
     }
 
-    public static CloseableHttpClient buildHttpClient(int connectTimeout,int readTimeout, int maxConnections, int maxPerRoute) {
-        return HttpClients.custom()
-                .setDefaultRequestConfig(buildRequestConfig(connectTimeout, readTimeout))
-                .setConnectionManager(poolingConnectionManager(maxConnections, maxPerRoute))
-                .build();
-    }
 
     public static void logRequest(String url, Object request, String method) {
         log.info(REQUEST_LOG_PATTEN, url, JsonUtils.beanToJson(request), method);
@@ -83,30 +65,4 @@ public class HttpClientUtils {
         log.warn(ERROR_LOG_PATTEN, e.getMessage(), TimeUtils.millisElapsed(start), e);
     }
 
-    private static PoolingHttpClientConnectionManager poolingConnectionManager(int maxConnections, int maxPerRoute) {
-        SSLContextBuilder builder = new SSLContextBuilder();
-        try {
-            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-        } catch (NoSuchAlgorithmException | KeyStoreException e) {
-            log.warn("Pooling Connection Manager Initialisation failure because of " + e.getMessage(), e);
-        }
-        SSLConnectionSocketFactory sslSf = null;
-        try {
-            sslSf = new SSLConnectionSocketFactory(builder.build());
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            log.warn("Pooling Connection Manager Initialisation failure because of " + e.getMessage(), e);
-        }
-
-        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", new PlainConnectionSocketFactory());
-        if (sslSf != null) {
-            registryBuilder.register("https", sslSf);
-        }
-
-        PoolingHttpClientConnectionManager poolingConnectionManager = new PoolingHttpClientConnectionManager(registryBuilder.build());
-        poolingConnectionManager.setMaxTotal(maxConnections);
-        poolingConnectionManager.setDefaultMaxPerRoute(maxPerRoute);
-
-        return poolingConnectionManager;
-    }
 }
