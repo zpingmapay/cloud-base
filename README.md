@@ -15,12 +15,6 @@
 ## Quick start
 
 #### Maven 
-    <!--feign client-->  
-    <dependency>
-       <groupId>com.xyz</groupId>
-       <artifactId>common-clients</artifactId>
-          <version>1.1-SNAPSHOT</version>
-    </dependency>  
      <!--cloud  base-->  
     <dependency>
            <groupId>com.xyz</groupId>
@@ -115,8 +109,39 @@
 #### spring cloud feign
 
 
+#### Maven 
+
+    <dependency>
+       <groupId>com.xyz</groupId>
+       <artifactId>common-clients</artifactId>
+          <version>1.1-SNAPSHOT</version>
+    </dependency>  
+    
 ```
+
   您需要使用@EnableFeignClient注解在您的启动类上
 
-   
+@FeignClient(name = "sample-signer", url = "${cloud.client.signer.sample-signer.url}",
+        configuration = {FeignFormSupportConfig.class, SimpleRequestSigner.class})
+public interface SampleSignerServiceSpi {
+
+    @PostMapping(value = "/", headers = "method=station.setDiyPrice", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    ResultDto<DiyPriceDto.Response> setStationDiyPrice(DiyPriceDto.Request request);
+}
+
+配置文件.yml
+  cloud:
+    client:
+      oauth:
+        sample-oauth:
+          url: http://localhost:1008
+          key: oauth1_consumer_key_of_sample_service
+          secret: oauth1_consumer_secret_of_sample_service
+  
+      signer:
+        sample-signer:
+          url: cloud.client.sample-signer.url
+          app-id: cloud.client.sample-signer.app-id
+          app-key: cloud.client.sample-signer.app-key
+     
 ```
