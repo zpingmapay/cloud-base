@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DefaultRepository implements EventRepository {
-    public static final String CACHE_NAMESPACE = EventRepository.class.getName();
     private final Class<? extends RetryableEvent> eventClass;
     private final ICache<String, String> cache;
 

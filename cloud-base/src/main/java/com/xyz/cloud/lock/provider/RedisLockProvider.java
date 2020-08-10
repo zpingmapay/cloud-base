@@ -14,7 +14,7 @@ public class RedisLockProvider implements LockProvider {
 
     @Override
     public Lock getLock(String key) {
-        RLock lock = redissonClient.getLock(CACHE_NAMESPACE.concat(key));
+        RLock lock = redissonClient.getLock(LockProvider.class.getName().concat(key));
         return new RedisLock(lock);
     }
 

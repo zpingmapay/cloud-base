@@ -26,7 +26,7 @@ public class RetryableConfiguration {
     @Bean("RamEventRepository")
     @ConditionalOnMissingBean(RedissonClient.class)
     public EventRepository ramEventRepository() {
-        ICache<String, String> cache = CacheManager.getLocalCache(DefaultRepository.CACHE_NAMESPACE);
+        ICache<String, String> cache = CacheManager.getLocalCache(EventRepository.class.getName());
         return new DefaultRepository(null, cache);
     }
 
@@ -34,7 +34,7 @@ public class RetryableConfiguration {
     @ConditionalOnBean(RedissonClient.class)
     @ConditionalOnMissingBean(EventRepository.class)
     public EventRepository redisEventRepository(RedissonClient redissonClient) {
-        ICache<String, String> cache = CacheManager.getRedisCache(DefaultRepository.CACHE_NAMESPACE, redissonClient);
+        ICache<String, String> cache = CacheManager.getRedisCache(EventRepository.class.getName(), redissonClient);
         return new DefaultRepository(null, cache);
     }
 
