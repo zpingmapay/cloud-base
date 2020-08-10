@@ -28,9 +28,9 @@
            <version>1.1-SNAPSHOT</version>
     </dependency>  
 
-#### Java
+#### 分布式锁
 
-```java   distributed locks
+```
  您需要使用@EnableLock 注解在您的启动类上
 
  @Lock(key = "'sample.'+#input")
@@ -43,8 +43,9 @@
          }
      } 
 ```
+#### 缓存
 
-```java cache
+```
   //1 local cache
      public void should_all_success() {
             ICache<String, String> cache = CacheManager.getLocalCache("test");
@@ -62,8 +63,9 @@
              Assert.isTrue("test1".equals(value), "value is not test1");
          }
 ```
+#### 基于JWT token 验签
 
-```java 基于JWT token 验签
+```
  您需要使用@EnableJwt 注解在您的启动类上;
  在您需要验签的类或者方法上使用JwtSecured注解，容器会自动为您验签
      @JwtSecured
@@ -77,8 +79,18 @@
              return ResultDto.ok("post ok");
          }
 ```
-```java retry
+#### 基于OAuth1 验签
+
+```
+  你可以直接使用OAuth1HttpClient来进行oauth1验签并调用
+  
+```
+
+#### retry
+
+```
  您需要使用@EnableRetryableEvent 注解在您的启动类上;
+
          @Retryable(maxAttempts = 5)
          @EventListener
          @Async
@@ -86,12 +98,6 @@
          public void handleTestEvent(SampleEvent event) {
              throw new RetryableException("Failed to handle sample event");
          }
-```
-
-```java 基于OAuth1 验签
-  你可以直接使用OAuth1HttpClient来进行oauth1验签并调用
-  
-
 ```
 
 
@@ -106,8 +112,10 @@
 
 ```
 
+#### spring cloud feign
 
-```java spring cloud feign
+
+```
   您需要使用@EnableFeignClient注解在您的启动类上
 
    
