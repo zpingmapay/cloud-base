@@ -31,12 +31,12 @@ public class RetryableAspect {
         RetryableEvent event = getRetryableEvent(pjp);
         ValidationUtils.notNull(event, "Not a Retryable Event arg");
 
-        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         String listenerClassName = methodSignature.getDeclaringTypeName();
         String actionMethodName = methodSignature.getName();
         EventRepository.EventItem<? extends RetryableEvent> item = EventRepository.EventItem.create(listenerClassName, actionMethodName, event, annotation.maxAttempts());
 
+        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
         try {
             Object result = pjp.proceed();
             eventRepository.remove(item);
