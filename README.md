@@ -40,6 +40,7 @@
 #### 缓存
 
 ```
+
   //1 local cache
      public void should_all_success() {
             ICache<String, String> cache = CacheManager.getLocalCache("test");
@@ -48,6 +49,7 @@
             String value = cache.get("1");
             cache.remove("1");
         }
+
 //2 redission cache
      public void testRedisCache() {
              RedissonClient redissonClient = Redisson.create();
@@ -56,10 +58,13 @@
              value = CacheManager.getFromRedisOrCreate(CacheTest.class.getName(), "1", redissonClient, (k) -> "test2");
              Assert.isTrue("test1".equals(value), "value is not test1");
          }
+
 ```
+
 #### 基于JWT token 验签
 
 ```
+
  您需要使用@EnableJwt 注解在您的启动类上;
  在您需要验签的类或者方法上使用JwtSecured注解，容器会自动为您验签
      @JwtSecured
@@ -72,6 +77,15 @@
              eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));
              return ResultDto.ok("post ok");
          }
+
+您可以在yml自定义属性
+
+cloud:
+  jwt:
+    app-id: 1008
+    secret: sample.app20200808qa1z3838wsxedc3rfv4tgbyhnujm5ikolp9ttt$QA0ZWSXED2CRFV8TGB2YHNU7JM3IKO8LPa12*@(cloud.jwt)
+    ttl-in-hours: 24
+    multi-login-check: true
 ```
 #### 基于OAuth1 验签
 
