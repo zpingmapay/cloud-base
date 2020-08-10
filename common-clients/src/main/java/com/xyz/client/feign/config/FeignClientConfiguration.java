@@ -4,6 +4,7 @@ import com.xyz.client.HttpClientUtils;
 import com.xyz.client.feign.interceptor.OutboundLogger;
 import com.xyz.client.feign.interceptor.TraceHeaderPropagator;
 import feign.Logger;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,9 +37,15 @@ public class FeignClientConfiguration {
     @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean(CloseableHttpClient.class)
     public CloseableHttpClient httpClient(@Value("${cloud.client.timeout.connect:6000}") int connectTimeout,
-                                                   @Value("${cloud.client.timeout.read:30000}") int readTimeout,
-                                                   @Value("${cloud.client.connections.max:200}") int maxConnections,
-                                                   @Value("${cloud.client.connections.per-route:20}") int maxPerRoute) {
-        return HttpClientUtils.buildHttpClient(connectTimeout, readTimeout, maxConnections, maxPerRoute);
+                                          @Value("${cloud.client.timeout.read:30000}") int readTimeout,
+                                          HttpClientConnectionManager connectionManager) {
+        return HttpClientUtils.buildHttpClient(connectTimeout, readTimeout, connectionManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(HttpClientConnectionManager.class)
+    public HttpClientConnectionManager poolingConnectionManager(@Value("${cloud.client.connections.max:200}") int maxConnections,
+                                                                @Value("${cloud.client.connections.per-route:20}") int maxPerRoute) {
+        return HttpClientUtils.poolingConnectionManager(maxConnections, maxPerRoute);
     }
 }

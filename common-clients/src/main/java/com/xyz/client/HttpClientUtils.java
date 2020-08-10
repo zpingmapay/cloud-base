@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -65,9 +66,13 @@ public class HttpClientUtils {
     }
 
     public static CloseableHttpClient buildHttpClient(int connectTimeout,int readTimeout, int maxConnections, int maxPerRoute) {
+        return buildHttpClient(connectTimeout, readTimeout, poolingConnectionManager(maxConnections, maxPerRoute));
+    }
+
+    public static CloseableHttpClient buildHttpClient(int connectTimeout, int readTimeout, HttpClientConnectionManager connectionManager) {
         return HttpClients.custom()
                 .setDefaultRequestConfig(buildRequestConfig(connectTimeout, readTimeout))
-                .setConnectionManager(poolingConnectionManager(maxConnections, maxPerRoute))
+                .setConnectionManager(connectionManager)
                 .build();
     }
 
@@ -83,7 +88,7 @@ public class HttpClientUtils {
         log.warn(ERROR_LOG_PATTEN, e.getMessage(), TimeUtils.millisElapsed(start), e);
     }
 
-    private static PoolingHttpClientConnectionManager poolingConnectionManager(int maxConnections, int maxPerRoute) {
+    public static PoolingHttpClientConnectionManager poolingConnectionManager(int maxConnections, int maxPerRoute) {
         SSLContextBuilder builder = new SSLContextBuilder();
         try {
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
