@@ -77,8 +77,14 @@ Cloud-base项目初衷是希望：
 #### @EnableRetryableEvent注解
 在项目中引入@EnableRetryableEvent注解，通常加在启动类上
 
+#### RetryableEvent
+可重试事件都需要继承自RetryableEvent
+```javascript
+public class SampleEvent extends RetryableEvent
+```
+
 #### @Retryable注解
-在需要重试的事件处理方法上，加@Retryable注解
+在需要重试的事件处理方法上，加@Retryable注解，且方法的唯一参数是个RetryableEvent
 ```javascript
     @Retryable(maxAttempts = 5)
     @EventListener
@@ -109,24 +115,6 @@ Cloud-base项目初衷是希望：
     public DeadEventHandler infiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
         return new InfiniteRetryDeadEventHandler(eventRepositoryTemplate, eventRepositoryFactory);
     }
-```
-InfiniteRetryDeadEventHandler的实现：
-```javascript
-public class InfiniteRetryDeadEventHandler implements DeadEventHandler {
-    private final EventRepository eventRepositoryTemplate;
-    private final EventRepositoryFactory eventRepositoryFactory;
-
-    public InfiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
-        this.eventRepositoryTemplate = eventRepositoryTemplate;
-        this.eventRepositoryFactory = eventRepositoryFactory;
-    }
-
-    @Override
-    public <T extends RetryableEvent> void handleDeadEvent(String listenerClassName, String actionMethodName, T event) {
-        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
-        eventRepository.add(EventRepository.EventItem.create(listenerClassName, actionMethodName, event, Integer.MAX_VALUE));
-    }
-}
 ```
 
 ### 可跟踪日志(Traceable Log)
