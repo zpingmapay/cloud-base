@@ -4,7 +4,7 @@ Cloud-base项目初衷是：
 <p>希望提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
 
 ## Features
-* 缓存(Cache) (#缓存)
+* 缓存(Cache)(#"缓存(Cache)")
 * 声明式锁(Declarative Lock)
 * 分布式可重试事件(Distributed Retryable Event)
 * 可跟踪日志(Traceable Log)
@@ -34,7 +34,7 @@ Cloud-base项目初衷是：
 
 ### 缓存(Cache)
 <li>优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
-<li>使用Cache的前提是：被缓存的对象要么是不可以变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
+<li>使用Cache的前提是：被缓存的对象要么是**不可以变的(Immutable)**，要么对象的**全生命周期**都在该应用中管理，否则会产生一致性(Consistency)问题
 
 #### 1. 本地缓存(Local Cache)
 ```
@@ -69,8 +69,8 @@ Cloud-base项目初衷是：
 
 ### 分布式可重试事件(Distributed Retryable Event)
 <li>在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
-<li>可重试的事件一定保证可以幂等执行
-<li>通常是异步事件，一般不会在同步事件中引入重试机制
+<li>可重试的事件一定保证可以**幂等**执行
+<li>通常是**异步事件**，一般不会在同步事件中引入重试机制
 <li>分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
 <li>分布式可重试事件基于Spring Event框架
 
