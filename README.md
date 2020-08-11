@@ -173,9 +173,17 @@ logback配置中加入TID/UID：
     private Executor executor;
     
     public void foo() {
-         executor.execute(()-> log.info("hello cloud-base"));
+        executor.execute(()-> log.info("hello cloud-base"));
     }
 ```
+或者通过@Async注解：
+```javascript
+    @Async
+    public void foo() {
+        log.info("hello cloud-base");
+    }
+```
+
 TID/UID将被传播到异步线程中去，logback日志：
 ```
 14:10:01.403 INFO [ task-pool-1] c.x.c.s.c.SampleController 12347-123 hello cloud-base
