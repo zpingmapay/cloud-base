@@ -101,6 +101,34 @@ Cloud-base项目初衷是希望：
 ```
 目前仅支持固定间隔
 
+#### DeadEventHandler
+超过最大重试次数(max-attempts)仍然不能成功处理的事件称为"Dead Event"，默认的处理方式是记录并丢弃。
+可以通过扩展DeadEventHandler来改变默认的处理行为，例如：
+```javascript
+    @Bean
+    public DeadEventHandler infiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
+        return new InfiniteRetryDeadEventHandler(eventRepositoryTemplate, eventRepositoryFactory);
+    }
+```
+InfiniteRetryDeadEventHandler的实现：
+```javascript
+public class InfiniteRetryDeadEventHandler implements DeadEventHandler {
+    private final EventRepository eventRepositoryTemplate;
+    private final EventRepositoryFactory eventRepositoryFactory;
+
+    public InfiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
+        this.eventRepositoryTemplate = eventRepositoryTemplate;
+        this.eventRepositoryFactory = eventRepositoryFactory;
+    }
+
+    @Override
+    public <T extends RetryableEvent> void handleDeadEvent(String listenerClassName, String actionMethodName, T event) {
+        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
+        eventRepository.add(EventRepository.EventItem.create(listenerClassName, actionMethodName, event, Integer.MAX_VALUE));
+    }
+}
+```
+
 ### 可跟踪日志(Traceable Log)
 
 #### @EnableTraceable注解
