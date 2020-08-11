@@ -4,13 +4,13 @@ Cloud-base项目初衷是：
 <p>希望提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
 
 ## Features
-* [缓存(Cache)](#缓存(Cache))
-* [声明式锁(Declarative Lock)](#声明式锁(Declarative Lock))
-* [分布式可重试事件(Distributed Retryable Event)](#分布式可重试事件(Distributed Retryable Event))
-* [可跟踪日志(Traceable Log)](#可跟踪日志(Traceable Log))
-* [前端的后端(Backend for Front-end)JWT认证](#前端的后端(Backend for Front-end)JWT认证)
-* [后端的后端(Backend for Backend)OAuth1认证](#后端的后端(Backend for Backend)OAuth1认证)
-* [声明式Feign客户端(Declarative Feign Client)](#声明式Feign客户端(Declarative Feign Client))
+* [缓存(Cache)](#缓存)
+* [声明式锁(Declarative Lock)](#声明式锁)
+* [分布式可重试事件(Distributed Retryable Event)](#分布式可重试事件)
+* [可跟踪日志(Traceable Log)](#可跟踪日志)
+* [前端的后端(Backend for Front-end)JWT认证](#前端的后端)
+* [后端的后端(Backend for Backend)OAuth1认证](#后端的后端)
+* [声明式Feign客户端(Declarative Feign Client)](#声明式Feign客户端)
 
 ## Quick start
 
