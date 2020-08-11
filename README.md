@@ -1,5 +1,3 @@
-# cloud-base - <br/>Utils and tools for cloud projects.
-
 [Quick start](https://github.com/zpingmapay/cloud-base#quick-start) | [Documentation]() | [Javadocs]() | [Changelog]() | [Code examples]() | [FAQs]() | [Report an issue]()
 
 ## Features

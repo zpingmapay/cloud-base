@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LocalLockProvider implements LockProvider {
-    private final ICache<String, LocalLock> cache = CacheManager.getLocalCache(CACHE_NAMESPACE);
+    private final ICache<String, LocalLock> cache = CacheManager.getLocalCache(LockProvider.class.getName());
 
     @Override
     public synchronized Lock getLock(String key) {
