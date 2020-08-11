@@ -1,6 +1,7 @@
 package com.xyz.cache;
 
 import org.junit.jupiter.api.Test;
+import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.springframework.util.Assert;
 
@@ -31,8 +32,10 @@ public class CacheTest {
 
     @Resource
     private RedissonClient redissonClient;
+
     //Test
     public void testRedisCache() {
+        RedissonClient redissonClient = Redisson.create();
         String value = CacheManager.getFromRedisOrCreate(CacheTest.class.getName(), "1", redissonClient, (k) -> "test1");
         Assert.isTrue("test1".equals(value), "value is not test1");
         value = CacheManager.getFromRedisOrCreate(CacheTest.class.getName(), "1", redissonClient, (k) -> "test2");
