@@ -1,16 +1,16 @@
 [Quick start](#quick-start) | [Documentation]() | [Javadocs]() | [Changelog]() | [Code examples]() | [FAQs]() | [Report an issue]()
 
-Cloud-base项目初衷是：
-<p>希望提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
+Cloud-base项目初衷是希望：
+<p>提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
 
 ## Features
-* [缓存(Cache)](#缓存)
-* [声明式锁(Declarative Lock)](#声明式锁)
-* [分布式可重试事件(Distributed Retryable Event)](#分布式可重试事件)
-* [可跟踪日志(Traceable Log)](#可跟踪日志)
-* [前端的后端(Backend for Front-end)JWT认证](#前端的后端)
-* [后端的后端(Backend for Backend)OAuth1认证](#后端的后端)
-* [声明式Feign客户端(Declarative Feign Client)](#声明式Feign客户端)
+* [缓存(Cache)](#缓存cache)
+* [声明式锁(Declarative Lock)](#声明式锁declarative-lock)
+* [分布式可重试事件(Distributed Retryable Event)](#分布式可重试事件distributed-retryable-event)
+* [可跟踪日志(Traceable Log)](#可跟踪日志traceable-log)
+* [前端的后端(Backend for Front-end)JWT认证](#前端的后端backend-for-front-endjwt认证)
+* [后端的后端(Backend for Backend)OAuth1认证](#后端的后端backend-for-backendoauth1认证)
+* [声明式Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)
 
 ## Quick start
 
@@ -182,7 +182,7 @@ TID/UID将被传播到异步线程中去，logback日志：
 ```
 
 #### TID/UID在远程调用中传播
-详见：声明式Feign客户端(Declarative Feign Client)，TraceHeaderPropagator拦截器
+详见：声明式[Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)，[TraceHeaderPropagator拦截器](#traceheaderpropagator拦截器)
 
 #### @PerformanceWatch注解
 被@PerformanceWatch注解标注的方法，如果响应时间较慢(默认500毫秒)，将被记录在logback日志中:
