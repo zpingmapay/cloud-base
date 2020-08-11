@@ -34,10 +34,10 @@ Cloud-base项目初衷是：
 
 ### 缓存(Cache)
 <li>优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
-<li>使用Cache的前提是：被缓存的对象要么是**不可以变的(Immutable)**，要么对象的**全生命周期**都在该应用中管理，否则会产生一致性(Consistency)问题
+<li>使用Cache的前提是：被缓存的对象要么是不可以变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
 
 #### 1. 本地缓存(Local Cache)
-```
+```javascript
     ICache<String, String> cache = CacheManager.getLocalCache("test");
     cache.put("1", "test1");
     String value = cache.get("1");
@@ -45,7 +45,7 @@ Cloud-base项目初衷是：
 ```
 
 #### 2. Redis缓存(Redis Cache)
-```
+```javascript
     ICache<String, String> cache = CacheManager.getRedisCache("test", redissonClient);
     cache.put("1", "test1");
     String value = cache.get("1");
@@ -59,7 +59,7 @@ Cloud-base项目初衷是：
 
 #### @Lock注解
 在需要锁保护的方法上面加@Lock注解
-```
+```javascript
     @Lock(key = "'sample.'+#input")
     public void lockProtected(String input) {
         log.info("lock protected method execute {}", input);
@@ -69,8 +69,8 @@ Cloud-base项目初衷是：
 
 ### 分布式可重试事件(Distributed Retryable Event)
 <li>在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
-<li>可重试的事件一定保证可以**幂等**执行
-<li>通常是**异步事件**，一般不会在同步事件中引入重试机制
+<li>可重试的事件一定保证可以幂等执行
+<li>通常是异步事件，一般不会在同步事件中引入重试机制
 <li>分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
 <li>分布式可重试事件基于Spring Event框架
 
@@ -79,7 +79,7 @@ Cloud-base项目初衷是：
 
 #### @Retryable注解
 在需要重试的事件处理方法上，加@Retryable注解
-```
+```javascript
     @Retryable(maxAttempts = 5)
     @EventListener
     @Async
@@ -124,7 +124,7 @@ com.xyz.exception.AccessException: Access token is required
 
 #### @Traceable注解
 被@Traceable注解标注的方法的请求/响应会被记录到logback日志中
-```
+```javascript
     @Traceable
     @PerformanceWatch
     public String echo(String input) throws Exception {
@@ -142,7 +142,7 @@ com.xyz.exception.AccessException: Access token is required
 ```
 
 #### 读取http header
-```
+```javascript
     @Resource
     private HttpHeadersHolder<DomainHeadersHolder.DomainHeader> httpHeadersHolder;
 
@@ -167,7 +167,7 @@ logback配置中加入TID/UID：
 
 #### TID/UID在异步线程中传播
 引入@EnableTraceable会注入名为"taskExecutor"的ThreadPoolExecutor
-```
+```javascript
     @Resource
     @Qualifier(("taskExecutor"))
     private Executor executor;
@@ -205,7 +205,7 @@ TID/UID将被传播到异步线程中去，logback日志：
 
 #### @JwtSecured注解
 @RestController中的方法或者类上使用@JwtSecured注解
-```
+```javascript
    @JwtSecured
    public ResultDto<String> foo() throws Exception {
         //do sth here
@@ -230,7 +230,7 @@ cloud:
 
 #### @OAuth1Secured注解
 @RestController中的方法或者类上使用@OAuth1Secured注解
-```
+```javascript
    @OAuth1Secured
    @GetMapping("/foo")
    public ResultDto<String> foo(@RequestParam String userName) throws Exception {
@@ -258,7 +258,7 @@ cloud:
 
 #### OAuth1Interceptor拦截器
 通过OAuth1Interceptor拦截器调用@OAuth1Secred保护的后端的后端服务(Backend for Backend)，例如：
-```
+```javascript
 @FeignClient(name = "sample-oauth", url = "${cloud.client.oauth.foo.url}"
         ,configuration = {OAuth1Interceptor.class}
 )
