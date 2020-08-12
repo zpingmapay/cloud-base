@@ -50,5 +50,16 @@
         <!-- oauth end -->
     </dependencies>
 
-
+    <distributionManagement>
+        <repository>
+            <id>public</id>
+            <name>zhaoyou nexus Repository RELEASES</name>
+            <url>http://maven.51zhaoyou.com/content/repositories/public/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>zhaoyou nexus Repository SNAPSHOTS</name>
+            <url>http://maven.51zhaoyou.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
