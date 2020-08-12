@@ -33,8 +33,8 @@ Cloud-base项目初衷是希望：
 ```
 
 ### 缓存(Cache)
-<li>优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
-<li>使用Cache的前提是：被缓存的对象要么是不可以变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
+- 优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
+- 使用Cache的前提是：被缓存的对象要么是不可以变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
 
 #### 1. 本地缓存(Local Cache)
 ```javascript
@@ -68,17 +68,23 @@ Cloud-base项目初衷是希望：
 ```
 
 ### 分布式可重试事件(Distributed Retryable Event)
-<li>在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
-<li>可重试的事件一定保证可以幂等执行
-<li>通常是异步事件，一般不会在同步事件中引入重试机制
-<li>分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
-<li>分布式可重试事件基于Spring Event框架
+- 在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
+- 可重试的事件一定保证可以幂等执行
+- 通常是异步事件，一般不会在同步事件中引入重试机制
+- 分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
+- 分布式可重试事件基于Spring Event框架
 
 #### @EnableRetryableEvent注解
 在项目中引入@EnableRetryableEvent注解，通常加在启动类上
 
+#### RetryableEvent
+可重试事件都需要继承自RetryableEvent
+```javascript
+public class SampleEvent extends RetryableEvent
+```
+
 #### @Retryable注解
-在需要重试的事件处理方法上，加@Retryable注解
+在需要重试的事件处理方法上加@Retryable注解，且方法的唯一参数是个RetryableEvent
 ```javascript
     @Retryable(maxAttempts = 5)
     @EventListener
@@ -218,7 +224,7 @@ TID/UID将被传播到异步线程中去，logback日志：
 ```
 
 #### TID/UID在远程调用中传播
-详见：声明式[Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)，[TraceHeaderPropagator拦截器](#traceheaderpropagator拦截器)
+详见：[声明式Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)，[TraceHeaderPropagator拦截器](#traceheaderpropagator拦截器)
 
 #### @PerformanceWatch注解
 被@PerformanceWatch注解标注的方法，如果响应时间较慢(默认500毫秒)，将被记录在logback日志中:
@@ -234,10 +240,10 @@ TID/UID将被传播到异步线程中去，logback日志：
 #### @CloudApplication注解
 @CloudApplication注解也可以用来快速开启cloud base功能,
 @CloudApplication注解等价于如下注解:
-<li>@EnableJwt
-<li>@EnableLock
-<li>@EnableRetryableEvent
-<li>@EnableTraceable
+- @EnableJwt
+- @EnableLock
+- @EnableRetryableEvent
+- @EnableTraceable
 
 #### @JwtSecured注解
 @RestController中的方法或者类上使用@JwtSecured注解
