@@ -1,5 +1,6 @@
 package com.xyz.cloud.trace.holder;
 
+import com.xyz.function.TryWithCatch;
 import com.xyz.utils.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -67,8 +68,12 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
 
     @Override
     public void removeHeaderObject() {
-        headerThreadLocal.remove();
-        HttpHeadersHolder.super.removeHeaderObject();
+        TryWithCatch.run(() -> {
+            HttpHeadersHolder.super.removeHeaderObject();
+            headerThreadLocal.remove();
+            MDC.remove(TID);
+            MDC.remove(UID);
+        });
     }
 
     private String normalize(String key) {

@@ -2,6 +2,7 @@ package com.xyz.cloud.trace.threadpool;
 
 import com.google.common.collect.Maps;
 import com.xyz.function.ThrowingFunction;
+import com.xyz.function.TryWithCatch;
 import com.xyz.function.VoidConsumer;
 import com.xyz.utils.Uuid;
 import org.slf4j.MDC;
@@ -34,11 +35,7 @@ public interface ContextAwareable {
         try {
             return function.applyThrows(null);
         } finally {
-            try {
-                MDC.clear();
-            } catch (Throwable e) {
-                //ignored
-            }
+            TryWithCatch.run(MDC::clear);
         }
     }
 
@@ -51,11 +48,7 @@ public interface ContextAwareable {
         try {
             consumer.accept();
         } finally {
-            try {
-                MDC.clear();
-            } catch (Throwable e) {
-                //ignored
-            }
+            TryWithCatch.run(MDC::clear);
         }
     }
 }
