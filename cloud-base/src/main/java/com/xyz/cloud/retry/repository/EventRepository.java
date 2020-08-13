@@ -1,6 +1,7 @@
 package com.xyz.cloud.retry.repository;
 
 import com.xyz.cloud.retry.RetryableEvent;
+import com.xyz.function.TryWithCatch;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.Data;
@@ -60,6 +61,10 @@ public interface EventRepository {
                 method.invoke(listener, event);
             } catch (Throwable e) {
                 log.warn("Failed to handle event {}", JsonUtils.beanToJson(event), e);
+            } finally {
+                TryWithCatch.run(() -> {
+                    MDC.remove(TID);
+                });
             }
         }
 
