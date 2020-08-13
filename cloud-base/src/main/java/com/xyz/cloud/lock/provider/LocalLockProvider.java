@@ -11,13 +11,8 @@ public class LocalLockProvider implements LockProvider {
     private final ICache<String, LocalLock> cache = CacheManager.getLocalCache(LockProvider.class.getName());
 
     @Override
-    public synchronized Lock getLock(String key) {
-        LocalLock lock = cache.get(key);
-        if(lock == null) {
-            lock = new LocalLock(new ReentrantLock());
-            cache.putIfAbsent(key, lock);
-        }
-        return lock;
+    public Lock getLock(String key) {
+        return cache.getOrCreate(key, (x) ->  new LocalLock(new ReentrantLock()));
     }
 
     public static class LocalLock implements Lock {
