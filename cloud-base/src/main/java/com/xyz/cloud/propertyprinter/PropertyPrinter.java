@@ -13,7 +13,7 @@ public class PropertyPrinter {
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
         final Environment env = event.getApplicationContext().getEnvironment();
-        log.info("====== Sprint properties ======");
+        log.info("============ Sprint properties ============");
         log.info("Active profiles: {}", Arrays.toString(env.getActiveProfiles()));
         final MutablePropertySources sources = ((AbstractEnvironment) env).getPropertySources();
 
