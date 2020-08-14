@@ -1,5 +1,6 @@
 package com.xyz.cloud;
 
+import com.xyz.cloud.propertyprinter.PrintSpringProperties;
 import com.xyz.cloud.exceptionhandler.DefaultGlobalExceptionHandler;
 import com.xyz.cloud.jwt.annotation.EnableJwt;
 import com.xyz.cloud.lock.annotation.EnableLock;
@@ -30,6 +31,7 @@ import java.lang.annotation.*;
 @EnableLock
 @EnableRetryableEvent
 @EnableTraceable
+@PrintSpringProperties
 @Import({DefaultGlobalExceptionHandler.class})
 public @interface CloudApplication {
 }
