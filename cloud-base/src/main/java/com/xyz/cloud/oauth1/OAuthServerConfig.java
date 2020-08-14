@@ -16,9 +16,14 @@ public class OAuthServerConfig {
         return oauth.values().stream().filter(x -> consumerKey.equals(x.key)).map(OAuthConfig::getSecret).findAny().orElse(null);
     }
 
+    public String findBaseUrlByKey(String consumerKey) {
+        return oauth.values().stream().filter(x -> consumerKey.equals(x.key)).map(OAuthConfig::getBaseUrl).findAny().orElse(null);
+    }
+
     @Data
     public static class OAuthConfig {
         private String appId;
+        private String baseUrl;
         private String key;
         private String secret;
     }

@@ -28,5 +28,6 @@ cloud:
     oauth:
       sample_service:
         app-id: 1008
+        base-url: http://localhost:1008
         key: oauth1_consumer_key_of_sample_service
         secret: oauth1_consumer_secret_of_sample_service

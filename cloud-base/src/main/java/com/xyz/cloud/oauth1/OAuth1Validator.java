@@ -4,6 +4,7 @@ import com.xyz.exception.AccessException;
 import com.xyz.utils.ValidationUtils;
 import net.oauth.*;
 import net.oauth.server.OAuthServlet;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +24,9 @@ public class OAuth1Validator {
     public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
         String consumerSecret = oAuthServerConfig.findConsumerSecretByKey(consumerKey);
         ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
-        OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
+        String baseUrl = oAuthServerConfig.findBaseUrlByKey(consumerKey);
+        String url = convertUrl(baseUrl, httpRequest.getRequestURL().toString(), httpRequest.getRequestURI());
+        OAuthMessage message = OAuthServlet.getMessage(httpRequest, url);
         OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, null);
         consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
         OAuthAccessor accessor = new OAuthAccessor(consumer);
@@ -40,5 +43,12 @@ public class OAuth1Validator {
                 });
             }
         }
+    }
+
+    private String convertUrl(String baseUrl, String requestUrl, String requestUri) {
+        if(StringUtils.isBlank(baseUrl)) {
+            return requestUrl;
+        }
+        return baseUrl + requestUri;
     }
 }
