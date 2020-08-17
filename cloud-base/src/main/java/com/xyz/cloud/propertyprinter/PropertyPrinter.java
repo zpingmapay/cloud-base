@@ -3,7 +3,10 @@ package com.xyz.cloud.propertyprinter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.env.*;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 
 import java.util.Arrays;
 import java.util.stream.StreamSupport;
@@ -22,8 +25,14 @@ public class PropertyPrinter {
                 .map(ps -> ((MapPropertySource) ps).getPropertyNames())
                 .flatMap(Arrays::stream)
                 .distinct()
-                .filter(prop -> !(prop.contains("credentials") || prop.contains("password") || prop.contains("secret")))
+                .filter(prop -> !isSensitive(prop))
                 .forEach(prop -> log.info("{}: {}", prop, env.getProperty(prop)));
         log.info("===========================================");
+    }
+
+    private static final Iterable<String> sensitiveKeys = Arrays.asList("secret", "credential", "password");
+
+    boolean isSensitive(String prop) {
+        return StreamSupport.stream(sensitiveKeys.spliterator(), false).anyMatch(prop::contains);
     }
 }
