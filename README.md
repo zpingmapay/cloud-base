@@ -34,7 +34,7 @@ Cloud-base项目初衷是希望：
 
 ### 缓存(Cache)
 <li>优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
-<li>使用Cache的前提是：被缓存的对象要么是不可以变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
+<li>使用Cache的前提是：被缓存的对象要么是不可变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
 
 #### 1. 本地缓存(Local Cache)
 ```javascript
