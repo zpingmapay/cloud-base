@@ -1,5 +1,6 @@
 package com.xyz.cloud.sample.retry;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,6 +8,7 @@ import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
+@Disabled
 public class RetryableEventTest {
     @Resource
     SampleEventPublisher eventPublisher;

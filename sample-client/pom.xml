@@ -5,21 +5,23 @@
     <parent>
         <artifactId>cloud-base-parent</artifactId>
         <groupId>com.xyz</groupId>
-        <version>1.2</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sample-client</artifactId>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>common-clients</artifactId>
-            <version>1.2</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>cloud-base</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!--pagehelper分页插件 start-->
         <dependency>

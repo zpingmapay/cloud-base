@@ -5,7 +5,7 @@
     <groupId>com.xyz</groupId>
     <artifactId>cloud-base-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2</version>
+    <version>1.0.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <fast.json>1.2.67</fast.json>
+        <fastjson.version>1.2.67</fastjson.version>
         <redisson.version>3.12.4</redisson.version>
         <commons-lang3.version>3.10</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>${fast.json}</version>
+                <version>${fastjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>

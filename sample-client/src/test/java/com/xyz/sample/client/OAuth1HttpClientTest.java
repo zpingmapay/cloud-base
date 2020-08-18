@@ -3,7 +3,9 @@ package com.xyz.sample.client;
 import com.xyz.client.OAuth1HttpClient;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.utils.JsonUtils;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
@@ -11,6 +13,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 
 @SpringBootTest
+@Disabled
 public class OAuth1HttpClientTest {
     @Resource
     private CloseableHttpClient httpClient;

@@ -3,6 +3,7 @@ package com.xyz.sample.client;
 import com.alibaba.fastjson.JSON;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.sample.client.dto.DiyPriceDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
  * @since 2020/5/13 16:42
  */
 @SpringBootTest
+@Disabled
 public class SampleSignerServiceSpiTest {
     @Resource
     private SampleSignerServiceSpi sampleSignerServiceSpi;
