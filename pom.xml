@@ -91,14 +91,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <!--git 远程仓库配置-->
-    <scm>
-        <connection>scm:git:https://github.com/dev-sxl/cloud-base.git</connection>
-        <url>https://github.com/dev-sxl/cloud-base</url>
-        <developerConnection>scm:git:https://github.com/dev-sxl/cloud-base.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
-
     <build>
         <plugins>
             <!-- Source -->
