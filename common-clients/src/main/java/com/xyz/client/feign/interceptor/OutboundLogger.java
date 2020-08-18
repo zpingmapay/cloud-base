@@ -52,7 +52,7 @@ public class OutboundLogger extends Logger {
 
     @Override
     protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {
-        log.info(ERROR_LOG_PATTEN, ioe.getMessage(), configKey, elapsedTime);
+        log.warn(ERROR_LOG_PATTEN, ioe.getMessage(), configKey, elapsedTime);
         return ioe;
     }
 }
