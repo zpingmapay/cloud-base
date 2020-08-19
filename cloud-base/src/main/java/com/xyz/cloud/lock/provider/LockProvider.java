@@ -4,7 +4,7 @@ public interface LockProvider {
     Lock getLock(String key);
 
     interface Lock {
-        boolean tryLock(long ttlInMills);
+        boolean tryLock(long waitInMillis, long lockInMills);
 
         boolean isLocked();
 

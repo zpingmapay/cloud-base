@@ -28,15 +28,17 @@ public class LockAspect {
         String lockKey = SpelUtils.parse(annotation.key(), pjp);
 
         LockProvider.Lock lock = lockProvider.getLock(lockKey);
+        boolean locked = false;
         try {
             ValidationUtils.notNull(lock, "Lock is not obtained");
-            ValidationUtils.isTrue(lock.tryLock(annotation.lockInMillis()), "Lock is not obtained");
+            locked = lock.tryLock(annotation.waitInMillis(), annotation.lockInMillis());
+            ValidationUtils.isTrue(locked, "Lock is not obtained");
 
             return pjp.proceed();
         } catch (ValidationException e) {
             throw new FailedToObtainLockException(e.getCode(), e.getMsg(), e);
         } finally {
-            if (lock.isLocked()) {
+            if (locked) {
                 lock.unlock();
             }
         }

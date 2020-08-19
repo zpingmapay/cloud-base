@@ -3,8 +3,7 @@ package com.xyz.cloud.lock.provider;
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LocalLockProvider implements LockProvider {
@@ -16,40 +15,29 @@ public class LocalLockProvider implements LockProvider {
     }
 
     public static class LocalLock implements Lock {
-        private final java.util.concurrent.locks.Lock lock;
-        private final AtomicLong expireAt = new AtomicLong(0);
-        private final AtomicBoolean locked = new AtomicBoolean(false);
+        private final java.util.concurrent.locks.ReentrantLock reentrantLock;
 
-        public LocalLock(java.util.concurrent.locks.Lock lock) {
-            this.lock = lock;
-        }
-
-        public boolean isExpired() {
-            return System.currentTimeMillis() > expireAt.get();
+        public LocalLock(java.util.concurrent.locks.ReentrantLock reentrantLock) {
+            this.reentrantLock = reentrantLock;
         }
 
         @Override
-        public synchronized boolean tryLock(long ttlInMills) {
-            if(this.isLocked()) {
+        public boolean tryLock(long waitInMills, long ttlInMills) {
+            try {
+                return this.reentrantLock.tryLock(waitInMills, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
                 return false;
             }
-            locked.compareAndSet(false, true);
-            expireAt.compareAndSet(0, System.currentTimeMillis() + ttlInMills);
-            return this.lock.tryLock();
         }
-
 
         @Override
         public boolean isLocked() {
-            return locked.get() && !isExpired();
+            return reentrantLock.isLocked();
         }
 
         @Override
         public void unlock() {
-            locked.set(false);
-            expireAt.set(0);
-            this.lock.unlock();
+            this.reentrantLock.unlock();
         }
-
     }
 }
