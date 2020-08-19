@@ -30,7 +30,6 @@ public class LocalLockProvider implements LockProvider {
             }
         }
 
-
         @Override
         public boolean isLocked() {
             return reentrantLock.isLocked();
@@ -40,6 +39,5 @@ public class LocalLockProvider implements LockProvider {
         public void unlock() {
             this.reentrantLock.unlock();
         }
-
     }
 }
