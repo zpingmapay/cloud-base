@@ -25,7 +25,7 @@ public class LockAspectTest {
         LockProvider lockProvider = new LocalLockProvider();
         LockAspectTest proxy = proxy(lockProvider);
 
-        CompletableFuture<String> future = testLock(name, lockProvider, (x) -> proxy.hello(x));
+        CompletableFuture<String> future = testLock(name, lockProvider, proxy::hello);
         try {
             future.get();
             fail();
@@ -39,7 +39,7 @@ public class LockAspectTest {
         LockProvider lockProvider = new LocalLockProvider();
         LockAspectTest proxy = proxy(lockProvider);
 
-        CompletableFuture<String> future = testLock(name, lockProvider, (x) -> proxy.helloAndWait(x));
+        CompletableFuture<String> future = testLock(name, lockProvider, proxy::helloAndWait);
         Assert.isTrue(name.equals(future.get()), "failed to get lock");
     }
 
@@ -49,8 +49,7 @@ public class LockAspectTest {
 
         LockAspect aspect = new LockAspect(lockProvider);
         factory.addAspect(aspect);
-        LockAspectTest proxy = factory.getProxy();
-        return proxy;
+        return factory.getProxy();
     }
 
     private CompletableFuture<String> testLock(String name, LockProvider lockProvider, Function<String, String> func) {
