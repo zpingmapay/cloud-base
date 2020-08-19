@@ -15,9 +15,9 @@ public class LocalLockProvider implements LockProvider {
     }
 
     public static class LocalLock implements Lock {
-        private final java.util.concurrent.locks.ReentrantLock reentrantLock;
+        private final ReentrantLock reentrantLock;
 
-        public LocalLock(java.util.concurrent.locks.ReentrantLock reentrantLock) {
+        public LocalLock(ReentrantLock reentrantLock) {
             this.reentrantLock = reentrantLock;
         }
 
