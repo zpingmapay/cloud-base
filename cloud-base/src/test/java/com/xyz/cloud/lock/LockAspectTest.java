@@ -39,7 +39,7 @@ public class LockAspectTest {
                 log.error("hello failed", e);
             }
         });
- //       LockSupport.parkNanos(300);
+//        LockSupport.parkNanos(300);
         lock.unlock();
         Assert.isTrue(name.equals(proxy.hello(name)), "hello is not properly executed");
     }
