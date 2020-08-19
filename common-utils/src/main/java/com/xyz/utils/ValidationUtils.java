@@ -46,12 +46,4 @@ public class ValidationUtils {
             throw new ValidationException(code, message);
         }
     }
-    public static <T> void assertException(Consumer<Void> consumer, Class<T> exceptionClass) {
-        try {
-            consumer.accept(null);
-            throw new RuntimeException("Expected exception to be thrown here");
-        } catch (Exception e) {
-            Assert.isTrue(e.getClass().equals(exceptionClass), "Exception expected here!");
-        }
-    }
 }
