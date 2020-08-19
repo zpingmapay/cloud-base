@@ -1,6 +1,7 @@
 package com.xyz.function;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class TryWithCatch {
     public static void run(VoidConsumer function) {
@@ -16,6 +17,14 @@ public class TryWithCatch {
             function.accept(t);
         } catch (Exception e) {
             // keep silence
+        }
+    }
+
+    public static <T> T apply(Supplier<T> function, T defaultValue) {
+        try {
+            return function.get();
+        } catch (Exception e) {
+            return defaultValue;
         }
     }
 }
