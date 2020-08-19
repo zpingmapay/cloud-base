@@ -61,7 +61,7 @@ public class LockAspectTest {
         ValidationUtils.isTrue(locked, "lock not obtained");
 
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            LockSupport.parkNanos(20);
+//            LockSupport.parkNanos(20);
             try {
                 return func.apply(name);
             } catch (Exception e) {
@@ -69,7 +69,7 @@ public class LockAspectTest {
                 throw e;
             }
         });
-        LockSupport.parkNanos(300);
+        LockSupport.parkNanos(500);
         lock.unlock();
         Assert.isTrue(name.equals(func.apply(name)), "hello is not properly executed");
 
