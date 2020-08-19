@@ -20,7 +20,7 @@ public class SpelUtils {
         Method method = methodSignature.getMethod();
         MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), new DefaultParameterNameDiscoverer());
 
-        return TryWithCatch.apply(() -> parser.parseExpression(exp).getValue(context, String.class), method.getName());
+        return parser.parseExpression(exp).getValue(context, String.class);
     }
 
     public static <C, R> R parse(String exp, C contextObject, Class<R> clazz, R defaultResult) {
