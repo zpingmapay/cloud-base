@@ -21,11 +21,12 @@ public class LocalLockProviderTest {
         LockProvider.Lock lock = lockProvider.getLock("test");
         boolean locked = lock.tryLock(0, 10000);
         Assert.isTrue(locked && lock.isLocked(), "not locked");
-
+        locked = lock.tryLock(0, 10000);
+        Assert.isTrue(locked && lock.isLocked(), "not locked");
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             boolean l = lock.tryLock(0, 10000);
             ValidationUtils.isTrue(!l, "locked");
-            log.info("locked is async: {} as expected", l);
+            log.info("async lock result is {} as expected", l);
         });
         LockSupport.parkNanos(100);
         lock.unlock();
