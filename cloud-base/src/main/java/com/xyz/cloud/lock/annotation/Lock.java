@@ -8,5 +8,7 @@ import java.lang.annotation.*;
 public @interface Lock {
     String key();
 
+    long waitInMillis() default 0;
+
     long lockInMillis() default 30 * 1000L;
 }

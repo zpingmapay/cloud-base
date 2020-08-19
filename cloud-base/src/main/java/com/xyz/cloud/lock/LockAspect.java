@@ -30,7 +30,7 @@ public class LockAspect {
         LockProvider.Lock lock = lockProvider.getLock(lockKey);
         try {
             ValidationUtils.notNull(lock, "Lock is not obtained");
-            ValidationUtils.isTrue(lock.tryLock(annotation.lockInMillis()), "Lock is not obtained");
+            ValidationUtils.isTrue(lock.tryLock(annotation.waitInMillis(), annotation.lockInMillis()), "Lock is not obtained");
 
             return pjp.proceed();
         } catch (ValidationException e) {
