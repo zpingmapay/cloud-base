@@ -1,7 +1,5 @@
 package com.xyz.sample.client.dto;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 
 public class SearchPage {
     /** 页码 从1开始 */
@@ -31,10 +29,6 @@ public class SearchPage {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public <E> Page<E> startPage() {
-        return PageHelper.startPage(this.getPageNo(), this.getPageSize());
     }
 
 }

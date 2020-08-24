@@ -1,6 +1,5 @@
 package com.xyz.sample.client.dto;
 
-import com.github.pagehelper.Page;
 import lombok.Data;
 
 import java.util.List;
@@ -31,18 +30,6 @@ public class PageVo<T> {
 
     public PageVo(Integer total, List<T> data, SearchPage page) {
         this(total, total % page.getPageSize() == 0 ? total / page.getPageSize() : total / page.getPageSize() + 1, page.getPageNo(), page.getPageSize(), data);
-    }
-
-    public PageVo(List<T> data, Page page) {
-        try {
-            this.data = data;
-            this.total = (int) page.getTotal();
-            this.totalPage = page.getPages();
-            this.pageNo = page.getPageNum();
-            this.pageSize = page.getPageSize();
-        } finally {
-            page.close();
-        }
     }
 
     public PageVo(PageVo pageVo, List<T> data) {

@@ -16,18 +16,10 @@
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>common-clients</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>cloud-base</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!--pagehelper分页插件 start-->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
