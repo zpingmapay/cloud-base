@@ -1,4 +1,4 @@
-[Quick start](#quick-start) | [Documentation]() | [Javadocs]() | [Changelog]() | [Code examples]() | [FAQs]() | [Report an issue]()
+[Quick start](#quick-start) | [Documentation]() | [Javadocs]() | [Changelog](CHANGELOG.md) | [Code examples]() | [FAQs]() | [Report an issue]()
 
 Cloud-base项目初衷是希望：
 <p>提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
@@ -20,7 +20,7 @@ Cloud-base项目初衷是希望：
     <dependency>
            <groupId>com.xyz</groupId>
            <artifactId>cloud-base</artifactId>
-           <version>1.1-SNAPSHOT</version>
+           <version>1.0.0</version>
     </dependency>  
 ```
 #### Common-clients的Maven依赖
@@ -28,7 +28,7 @@ Cloud-base项目初衷是希望：
     <dependency>
            <groupId>com.xyz</groupId>
            <artifactId>common-clients</artifactId>
-           <version>1.1-SNAPSHOT</version>
+           <version>1.0.0</version>
     </dependency>  
 ```
 
