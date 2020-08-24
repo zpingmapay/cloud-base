@@ -6,3 +6,9 @@ v1.0.0
 - 前端的后端(Backend for Front-end)JWT认证
 - 后端的后端(Backend for Backend)OAuth1认证
 - 声明式Feign客户端(Declarative Feign Client)
+
+mvn命令
+- mvn versions:set -DnewVersion=1.0.0 -DprocessAllModules
+- mvn test
+- mvn package
+- mvn deploy -Dmaven.test.skip=true 
