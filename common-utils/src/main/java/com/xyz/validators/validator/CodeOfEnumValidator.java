@@ -54,7 +54,7 @@ public class CodeOfEnumValidator implements ConstraintValidator<CodeOfEnum, Obje
         }
 
         try {
-            Field field = enumClass.getField(codeFieldName);
+            Field field = enumClass.getDeclaredField(codeFieldName);
             field.setAccessible(true);
             for (Enum<?> anEnum : enumClass.getEnumConstants()) {
                 if (Objects.equals(value, field.get(anEnum))) {
