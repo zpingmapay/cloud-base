@@ -1,4 +1,4 @@
-package com.xyz.utils;
+package com.xyz.cloud.utils;
 
 import com.xyz.function.TryWithCatch;
 import org.aspectj.lang.ProceedingJoinPoint;
