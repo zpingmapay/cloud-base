@@ -1,6 +1,5 @@
 package com.xyz.lombokplus;
 
-import com.xyz.utils.BeanUtilsTest;
 import lombok.Data;
 import lombok.JsonSerializable;
 import org.junit.jupiter.api.Test;
