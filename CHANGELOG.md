@@ -1,3 +1,7 @@
+v1.0.1
+- 枚举验证(Enum Validation)
+- Lombok-plus依赖
+
 v1.0.0
 - 缓存(Cache)
 - 声明式锁(Declarative Lock)
