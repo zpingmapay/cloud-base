@@ -1,6 +1,5 @@
 package com.xyz.validators.validator;
 
-import com.sun.xml.internal.txw2.IllegalAnnotationException;
 import com.xyz.validators.annotation.CodeOfEnum;
 
 import javax.validation.ConstraintValidator;
@@ -62,7 +61,7 @@ public class CodeOfEnumValidator implements ConstraintValidator<CodeOfEnum, Obje
                 }
             }
         } catch (Exception e) {
-            throw new IllegalAnnotationException(e);
+            throw new RuntimeException(e);
         }
 
         return false;
