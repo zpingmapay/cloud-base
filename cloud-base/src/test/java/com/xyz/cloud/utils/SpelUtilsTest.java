@@ -1,4 +1,4 @@
-package com.xyz.utils;
+package com.xyz.cloud.utils;
 
 import lombok.Data;
 import org.junit.jupiter.api.Test;

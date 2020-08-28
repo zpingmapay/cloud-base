@@ -4,14 +4,18 @@
     <parent>
         <groupId>com.xyz</groupId>
         <artifactId>cloud-base-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-utils</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <dependencies>
+        <dependency>
+            <groupId>com.xyz</groupId>
+            <artifactId>lombok-plus</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
@@ -37,25 +41,6 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
@@ -78,6 +63,17 @@
                 <exclusion>
                     <artifactId>validation-api</artifactId>
                     <groupId>javax.validation</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

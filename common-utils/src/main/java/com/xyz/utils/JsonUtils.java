@@ -57,11 +57,11 @@ public class JsonUtils {
         return jsonToBean(beanToJson(f), clazz);
     }
 
-    public static <F, T> List<T> convertList(F f, Class<T> clazz) {
+    public static <F, T> List<T> convertList(List<F> f, Class<T> clazz) {
         if (f == null) {
             return null;
         }
-        return jsonToList(beanToJson(f), clazz);
+        return jsonToBean(beanToJson(f), List.class, clazz);
     }
 
     private static <T> Type buildType(Class<T> baseType, Type... nestingTypes) {
