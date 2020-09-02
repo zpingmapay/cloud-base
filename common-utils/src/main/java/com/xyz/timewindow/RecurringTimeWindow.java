@@ -33,7 +33,7 @@ public interface RecurringTimeWindow {
     long getNextEndTime();
 
     default boolean conflictWith(RecurringTimeWindow timeWindow) {
-        if(!this.getClass().equals(timeWindow.getClass())) {
+        if (!this.getClass().equals(timeWindow.getClass())) {
             return false;
         }
         return conflictWith(this, timeWindow);
@@ -126,6 +126,21 @@ public interface RecurringTimeWindow {
         return weeklyTimeWindow;
     }
 
+    /**
+     * Create weekly recurring time window instance.
+     *
+     * @param startOfWeek: 1 ~ 7: 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday, 5 - Friday, 6 - Saturday, 7 - Sunday
+     * @param endOfWeek:   1 ~ 7: 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday, 5 - Friday, 6 - Saturday, 7 - Sunday
+     * @return a weekly time window from 00:00 of {@code startOfWeek} to 23:59 of {@code endOfWeek}
+     */
+    static RecurringTimeWindow createWeekly(int startOfWeek, int endOfWeek) {
+        WeeklyTimeWindow weeklyTimeWindow = new WeeklyTimeWindow(startOfWeek, endOfWeek);
+        if (!weeklyTimeWindow.isValid()) {
+            throw new IllegalArgumentException("Invalid time window - " + weeklyTimeWindow.toString());
+        }
+        return weeklyTimeWindow;
+    }
+
     static RecurringTimeWindow createMonthly(int[] days) {
         MonthlyTimeWindow monthlyTimeWindow = new MonthlyTimeWindow(days);
         if (!monthlyTimeWindow.isValid()) {
@@ -134,6 +149,7 @@ public interface RecurringTimeWindow {
         return monthlyTimeWindow;
     }
 
+    @Deprecated
     static boolean conflictWithList(List<RecurringTimeWindow> timeWindowList) {
         if (CollectionUtils.isEmpty(timeWindowList)) {
             return false;

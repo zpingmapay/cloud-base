@@ -6,8 +6,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
-import static com.xyz.timewindow.TimePoint.BEGIN_OF_WEEK;
-import static com.xyz.timewindow.TimePoint.END_OF_WEEK;
+import static com.xyz.timewindow.TimePoint.*;
 
 /**
  * e.g. 19:00 Friday ~ 7:00 Monday, every week
@@ -16,9 +15,27 @@ class WeeklyTimeWindow implements RecurringTimeWindow {
     private final TimePoint start;
     private final TimePoint end;
 
+    WeeklyTimeWindow(int startOfWeek, int endOfWeek) {
+        this.start = new TimePoint(startOfWeek, BEGIN_OF_DAY.hour, BEGIN_OF_DAY.minute);
+        this.end = new TimePoint(endOfWeek, END_OF_DAY.hour, END_OF_DAY.minute);
+    }
+
     WeeklyTimeWindow(int startOfWeek, int startHour, int startMinute, int endOfWeek, int endHour, int endMinute) {
         this.start = new TimePoint(startOfWeek, startHour, startMinute);
         this.end = new TimePoint(endOfWeek, endHour, endMinute);
+    }
+
+    @Override
+    public boolean isValid() {
+        if (!this.start.isValid() || !this.end.isValid()) {
+            return false;
+        }
+
+        if (this.start.dayOfWeek == 0 || this.end.dayOfWeek == 0) {
+            return false;
+        }
+
+        return this.start.compareTo(this.end) != 0;
     }
 
     @Override
@@ -80,19 +97,6 @@ class WeeklyTimeWindow implements RecurringTimeWindow {
     @Override
     public long getNextEndTime() {
         return this.getNextEndTime(System.currentTimeMillis());
-    }
-
-    @Override
-    public boolean isValid() {
-        if (!this.start.isValid() || !this.end.isValid()) {
-            return false;
-        }
-
-        if (this.start.dayOfWeek == 0 || this.end.dayOfWeek == 0) {
-            return false;
-        }
-
-        return this.start.compareTo(this.end) != 0;
     }
 
     @Override
