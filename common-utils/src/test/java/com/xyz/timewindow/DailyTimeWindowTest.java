@@ -1,7 +1,6 @@
-package com.xyz.time;
+package com.xyz.timewindow;
 
 
-import com.xyz.timewindow.RecurringTimeWindow;
 import com.xyz.utils.TimeUtils;
 import com.xyz.utils.ValidationUtilsTest;
 import org.junit.jupiter.api.Test;
