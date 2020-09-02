@@ -1,12 +1,13 @@
 package com.xyz.timewindow;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+
+import static com.xyz.timewindow.TimePoint.BEGIN_OF_WEEK;
+import static com.xyz.timewindow.TimePoint.END_OF_WEEK;
 
 /**
  * e.g. 19:00 Friday ~ 7:00 Monday, every week
@@ -14,7 +15,6 @@ import java.util.Date;
 class WeeklyTimeWindow implements RecurringTimeWindow {
     private final TimePoint start;
     private final TimePoint end;
-    private final static String[] dayOfWeekInChinese = {"一", "二", "三", "四", "五", "六", "日"};
 
     WeeklyTimeWindow(int startOfWeek, int startHour, int startMinute, int endOfWeek, int endHour, int endMinute) {
         this.start = new TimePoint(startOfWeek, startHour, startMinute);
@@ -32,8 +32,8 @@ class WeeklyTimeWindow implements RecurringTimeWindow {
         if (this.start.compareTo(this.end) < 0) {
             return timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(this.end) < 0;
         } else {
-            return (timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(this.endOfWeek()) <= 0)
-                    || (timePoint.compareTo(this.beginOfWeek()) >= 0 && timePoint.compareTo(this.end) < 0);
+            return (timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(END_OF_WEEK) <= 0)
+                    || (timePoint.compareTo(BEGIN_OF_WEEK) >= 0 && timePoint.compareTo(this.end) < 0);
         }
     }
 
@@ -101,13 +101,5 @@ class WeeklyTimeWindow implements RecurringTimeWindow {
                 "start=" + start +
                 ", end=" + end +
                 '}';
-    }
-
-    private TimePoint beginOfWeek() {
-        return new TimePoint(1, 0, 0);
-    }
-
-    private TimePoint endOfWeek() {
-        return new TimePoint(7, 23, 59);
     }
 }

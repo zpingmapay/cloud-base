@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class TimePoint implements Comparable<TimePoint> {
+    public static final TimePoint BEGIN_OF_DAY = new TimePoint(0, 0, 0); //00:00
+    public static final TimePoint END_OF_DAY = new TimePoint(0, 23, 59); //23:59
+    public static final TimePoint BEGIN_OF_WEEK = new TimePoint(1, 0, 0); //00:00 Monday
+    public static final TimePoint END_OF_WEEK = new TimePoint(7, 23, 59); //23:59 Sunday
+
     int dayOfWeek; // 0: everyday in the week, 1: Monday, 2: Tuesday: , 3, Wednesday, 4, Thursday, 5, Friday, 6, Saturday, 7, Sunday
     int hour; // 0 ~ 23
     int minute; // 0 ~ 59

@@ -5,6 +5,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
+import static com.xyz.timewindow.TimePoint.BEGIN_OF_DAY;
+import static com.xyz.timewindow.TimePoint.END_OF_DAY;
+
 /**
  * e.g. 7:00 ~ 19:00, everyday
  */
@@ -28,8 +31,8 @@ class DailyTimeWindow implements RecurringTimeWindow {
         if (this.start.compareTo(this.end) < 0) {
             return timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(this.end) < 0;
         } else {
-            return (timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(this.endOfDay()) <= 0)
-                    || (timePoint.compareTo(this.beginOfDay()) >= 0 && timePoint.compareTo(this.end) < 0);
+            return (timePoint.compareTo(this.start) >= 0 && timePoint.compareTo(END_OF_DAY) <= 0)
+                    || (timePoint.compareTo(BEGIN_OF_DAY) >= 0 && timePoint.compareTo(this.end) < 0);
         }
     }
 
@@ -93,13 +96,5 @@ class DailyTimeWindow implements RecurringTimeWindow {
         }
 
         return this.start.compareTo(this.end) != 0;
-    }
-
-    private TimePoint beginOfDay() {
-        return new TimePoint(0, 0);
-    }
-
-    private TimePoint endOfDay() {
-        return new TimePoint(23, 59);
     }
 }
