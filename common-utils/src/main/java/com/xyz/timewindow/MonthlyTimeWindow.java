@@ -29,6 +29,9 @@ public class MonthlyTimeWindow implements RecurringTimeWindow {
                 return false;
             }
         }
+        if(days[days.length -1] > 31) {
+            return false;
+        }
         return true;
     }
 
@@ -38,7 +41,7 @@ public class MonthlyTimeWindow implements RecurringTimeWindow {
             throw new IllegalArgumentException("Invalid time window - " + this.toString());
         }
         int day = TimeUtils.dayOfMonth(timestamp);
-        return Arrays.stream(days).filter(x -> x == day).findAny().isPresent();
+        return Arrays.stream(days).anyMatch(x -> x == day);
     }
 
     @Override
