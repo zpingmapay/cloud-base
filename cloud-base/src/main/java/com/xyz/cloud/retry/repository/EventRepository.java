@@ -62,9 +62,7 @@ public interface EventRepository {
             } catch (Throwable e) {
                 log.warn("Failed to handle event {}", JsonUtils.beanToJson(event), e);
             } finally {
-                TryWithCatch.run(() -> {
-                    MDC.remove(TID);
-                });
+                TryWithCatch.run(() -> MDC.remove(TID));
             }
         }
 

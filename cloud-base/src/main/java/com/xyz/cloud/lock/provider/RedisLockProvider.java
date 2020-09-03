@@ -26,9 +26,9 @@ public class RedisLockProvider implements LockProvider {
         }
 
         @Override
-        public boolean tryLock(long waitInMillis, long ttlInMills) {
+        public boolean tryLock(long waitInMillis, long lockInMills) {
             try {
-                return this.lock.tryLock(waitInMillis, ttlInMills, TimeUnit.MILLISECONDS);
+                return this.lock.tryLock(waitInMillis, lockInMills, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 return false;
             }

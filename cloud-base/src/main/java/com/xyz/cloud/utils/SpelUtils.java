@@ -1,4 +1,4 @@
-package com.xyz.utils;
+package com.xyz.cloud.utils;
 
 import com.xyz.function.TryWithCatch;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,7 +20,7 @@ public class SpelUtils {
         Method method = methodSignature.getMethod();
         MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(pjp.getTarget(), method, pjp.getArgs(), new DefaultParameterNameDiscoverer());
 
-        return parser.parseExpression(exp).getValue(context, String.class);
+        return TryWithCatch.apply(() -> parser.parseExpression(exp).getValue(context, String.class), method.getName());
     }
 
     public static <C, R> R parse(String exp, C contextObject, Class<R> clazz, R defaultResult) {

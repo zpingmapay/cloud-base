@@ -25,11 +25,11 @@ public class ResultDto<T> {
     }
 
     public static <T> ResultDto<T> ok() {
-        return ok(null);
+        return new ResultDto<>(HttpStatus.OK.value(), "OK", null);
     }
 
     public static <T> ResultDto<T> ok(T data) {
-        return ok("OK", data);
+        return new ResultDto<>(HttpStatus.OK.value(), "OK", data);
     }
 
     public static <T> ResultDto<T> ok(String msg, T data) {
@@ -37,11 +37,11 @@ public class ResultDto<T> {
     }
 
     public static <T> ResultDto<T> error(String msg) {
-        return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null);
+        return new ResultDto<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null);
     }
 
     public static <T> ResultDto<T> error(int code, String msg) {
-        return error(code, msg, null);
+        return new ResultDto<>(code, msg, null);
     }
 
     public static <T> ResultDto<T> error(int code, String msg, T data) {

@@ -3,7 +3,7 @@ package com.xyz.cloud.lock;
 import com.xyz.cloud.lock.annotation.Lock;
 import com.xyz.cloud.lock.provider.LockProvider;
 import com.xyz.exception.ValidationException;
-import com.xyz.utils.SpelUtils;
+import com.xyz.cloud.utils.SpelUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

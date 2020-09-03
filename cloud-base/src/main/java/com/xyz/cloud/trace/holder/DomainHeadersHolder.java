@@ -1,6 +1,6 @@
 package com.xyz.cloud.trace.holder;
 
- import com.xyz.function.TryWithCatch;
+import com.xyz.function.TryWithCatch;
 import com.xyz.utils.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
