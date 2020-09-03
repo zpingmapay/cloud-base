@@ -1,5 +1,7 @@
 package com.xyz.utils;
 
+import com.xyz.exception.CommonException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -16,14 +18,14 @@ public class TimeUtils {
     public static final String DATE_FULL_STR_BIG_ALL = "yyyyMMddHHmmssSSS";
     public static final String DATE_FULL_STR_MIN_YEAR = "yyMMddHHmmss";
     public static final String DATE_TIME_MIN_STR = "HH:mm:ss";
+    public static final String TIME_HOUR_MINUTE_STR = "HH:mm";
 
     public static Date parse(String strDate, String pattern) {
         SimpleDateFormat df = new SimpleDateFormat(pattern);
         try {
             return df.parse(strDate);
         } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+            throw new CommonException(null, e.getMessage(), e);
         }
     }
 
@@ -87,6 +89,10 @@ public class TimeUtils {
      */
     public static long currentSecondTimestamp() {
         return Instant.now().getEpochSecond();
+    }
+
+    public static int dayOfMonth(long timestamp) {
+        return toLocalDateTime(new Date(timestamp)).getDayOfMonth();
     }
 
 }

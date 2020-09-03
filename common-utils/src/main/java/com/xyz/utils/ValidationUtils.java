@@ -1,10 +1,8 @@
 package com.xyz.utils;
 
 import com.xyz.exception.ValidationException;
-import org.springframework.util.Assert;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 
 public class ValidationUtils {
     public static void notBlank(String string, String message) {

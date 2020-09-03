@@ -17,12 +17,13 @@ public class ValidationUtilsTest {
         assertException(x -> ValidationUtils.notEmpty(null, "Not empty failed"), ValidationException.class);
     }
 
-    public static <T> void assertException(Consumer<Void> consumer, Class<T> exceptionClass) {
+
+    public static <T> void assertException(Consumer<Void> consumer, Class<T> clazz) {
         try {
             consumer.accept(null);
             fail("Expected exception to be thrown here");
         } catch (Exception e) {
-            Assert.isTrue(e.getClass().equals(exceptionClass), "Exception expected here!");
+            Assert.isTrue(e.getClass().equals(clazz), "Exception expected here!");
         }
     }
 }

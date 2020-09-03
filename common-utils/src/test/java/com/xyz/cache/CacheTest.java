@@ -25,7 +25,7 @@ public class CacheTest {
         ICache<String, String> cache = CacheManager.getLocalCache("test");
         String value = cache.getOrCreate("1", (k) -> "test1");
         Assert.isTrue("test1".equals(value), "not test1");
-        Assert.isTrue("test1".equals(cache.get("1")), "not null");
+        Assert.isTrue("test1".equals(cache.get("1")), "not found");
         Assert.isTrue(!cache.putIfAbsent("1", "test2"), "key 1 already exist");
         Assert.isTrue("test1".equals(cache.getOrCreate("1", (k) -> "test2")), "key 1 already exist");
         Assert.isTrue("test2".equals(cache.getOrCreate("2", (k) -> "test2")), "key 2 should put success");

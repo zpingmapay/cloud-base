@@ -1,7 +1,6 @@
 package com.xyz.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.alibaba.fastjson.util.ParameterizedTypeImpl;
@@ -10,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 public class JsonUtils {
     public static <T> T jsonToBean(@NonNull String json, @NonNull Class<T> cls) {
@@ -50,11 +47,7 @@ public class JsonUtils {
 
     public static <T> List<T> extraListByPath(String contentJson, String path, Class<T> tClass) {
         Object data = JSONPath.read(contentJson, path);
-        if (data instanceof JSONObject) {
-            return singletonList(((JSONObject) data).toJavaObject(tClass));
-        } else {
-            return ((JSONArray) data).toJavaList(tClass);
-        }
+        return JSONObject.parseArray(JsonUtils.beanToJson(data), tClass);
     }
 
     public static <F, T> T convert(F f, Class<T> clazz) {
@@ -64,11 +57,11 @@ public class JsonUtils {
         return jsonToBean(beanToJson(f), clazz);
     }
 
-    public static <F, T> List<T> convertList(F f, Class<T> clazz) {
+    public static <F, T> List<T> convertList(List<F> f, Class<T> clazz) {
         if (f == null) {
             return null;
         }
-        return jsonToList(beanToJson(f), clazz);
+        return jsonToBean(beanToJson(f), List.class, clazz);
     }
 
     private static <T> Type buildType(Class<T> baseType, Type... nestingTypes) {
