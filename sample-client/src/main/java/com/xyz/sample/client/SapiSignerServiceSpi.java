@@ -3,6 +3,7 @@ package com.xyz.sample.client;
 import com.xyz.client.feign.interceptor.SapiRequestSigner;
 import com.xyz.cloud.dto.ResultDto;
 import com.xyz.sample.client.dto.AuthCardDto;
+import com.xyz.sample.client.dto.QPaiOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -16,4 +17,8 @@ public interface SapiSignerServiceSpi {
 
     @PostMapping(value = "/auth/card", headers = "method=auth.card")
     ResultDto<AuthCardDto.Response> authCard(AuthCardDto.Request request);
+
+    @PostMapping(value = "/third/xinqiaopai/purchase", headers = "method=xinqiaopai.purchase")
+    ResultDto<QPaiOrderDto.Response> purchase(QPaiOrderDto.Request request);
+
 }
