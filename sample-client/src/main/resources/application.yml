@@ -20,6 +20,10 @@ cloud:
         url: cloud.client.sample-signer.url
         app-id: cloud.client.sample-signer.app-id
         app-key: cloud.client.sample-signer.app-key
+      sapi-signer:
+        url: https://sapi.51zhaoyou.com/test
+        app-id: 4801
+        app-key: DC0B3BC2BEDDB3F49618AFC04A4BED79
 
     sample:
       url: http://localhost:1008
