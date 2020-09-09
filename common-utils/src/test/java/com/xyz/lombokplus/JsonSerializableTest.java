@@ -14,7 +14,6 @@ public class JsonSerializableTest {
     public void should_all_success() {
         Sample sample = initSample();
         String json = sample.toJson();
-
         Sample converted = Sample.fromJson(json);
         Assert.isTrue(converted.getParam1().equals(sample.getParam1()), "convert failed");
     }
