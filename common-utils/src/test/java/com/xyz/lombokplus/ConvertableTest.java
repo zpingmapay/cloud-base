@@ -23,7 +23,7 @@ public class ConvertableTest {
         converted = sample1.toBean(Pojo.class);
         Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
         sample1 = Sample1.fromBean(converted);
-        Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
+        Assert.isTrue(sample1.getParam1().equals(converted.getParam1()), "convert failed");
     }
 
     public static Sample initSample() {
