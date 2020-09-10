@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author sxl
  * @since 2020/8/24 15:40
  */
-@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+@Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = CodeOfEnumValidator.class)
