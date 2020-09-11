@@ -1,3 +1,6 @@
+v1.0.2
+- 重复时间窗口(recurring time window)
+
 v1.0.1
 - 枚举验证(Enum Validation)
 - Lombok-plus依赖
