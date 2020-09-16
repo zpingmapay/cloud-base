@@ -9,9 +9,9 @@
 
 ##### 快速使用
 
-- ###### springboot项目中对http接口返回结果进行脱敏
+###### springboot项目中对http接口返回结果进行脱敏
 
-1. 引入jar包
+- 引入jar包
 
    ```xml
    <dependency>
@@ -21,7 +21,7 @@
    </dependency>
    ```
 
-2. 启动类开启脱敏总开关 (@EnableDesensitize注解)
+- 启动类开启脱敏总开关 (@EnableDesensitize注解)
 
    ```java
    @EnableDesensitize
@@ -33,7 +33,7 @@
    }
    ```
    
-3. HTTP接口注明返回结果需要脱敏 (@Desensitize注解)
+- HTTP接口注明返回结果需要脱敏 (@Desensitize注解)
 
    ```java
    /**
@@ -65,7 +65,7 @@
 
    
 
-4. 给实体字段中添加指定注解标明脱敏方式
+- 给实体字段中添加指定注解标明脱敏方式
 
    ```java
    /**
@@ -104,7 +104,7 @@
    ```
 
 
-5. 效果展示
+- 效果展示
 
    ```json
    {
@@ -126,7 +126,7 @@
 
 
 
-- ###### 使用DesensitizeUtil工具类进行手动脱敏
+###### 使用DesensitizeUtil工具类进行手动脱敏
 
 ```java
 // 返回脱敏后对象
