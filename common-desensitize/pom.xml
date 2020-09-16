@@ -27,6 +27,16 @@
         </dependency>
         <dependency>
             <groupId>com.github.houbb</groupId>
+            <artifactId>sensitive-annotation</artifactId>
+            <version>0.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>sensitive-api</artifactId>
+            <version>0.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
             <artifactId>sensitive-core</artifactId>
             <version>0.0.11</version>
         </dependency>
