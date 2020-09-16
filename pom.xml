@@ -19,6 +19,7 @@
         <module>common-clients</module>
         <module>sample-app</module>
         <module>sample-client</module>
+        <module>common-desensitize</module>
     </modules>
 
     <properties>
