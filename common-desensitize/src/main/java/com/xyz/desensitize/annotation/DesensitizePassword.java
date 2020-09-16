@@ -1,7 +1,7 @@
 package com.xyz.desensitize.annotation;
 
 import com.github.houbb.sensitive.annotation.metadata.SensitiveStrategy;
-import com.github.houbb.sensitive.core.api.strategory.StrategyPassword;
+import com.xyz.desensitize.strategy.CustomPasswordStrategy;
 
 import java.lang.annotation.*;
 
@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@SensitiveStrategy(StrategyPassword.class)
+@SensitiveStrategy(CustomPasswordStrategy.class)
 public @interface DesensitizePassword {
 }
