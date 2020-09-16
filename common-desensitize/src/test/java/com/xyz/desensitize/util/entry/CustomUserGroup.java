@@ -1,6 +1,7 @@
 package com.xyz.desensitize.util.entry;
 
-import com.xyz.desensitize.annotation.DesensitizePassword;
+import com.github.houbb.sensitive.annotation.Sensitive;
+import com.github.houbb.sensitive.core.api.strategory.StrategyPassword;
 import com.xyz.desensitize.util.data.User;
 
 import java.util.Collection;
@@ -32,8 +33,7 @@ public class CustomUserGroup {
      * SensitiveEntry 注解不会生效
      * Sensitive 注解正常执行
      */
-    //@Sensitive(strategy = StrategyPassword.class)
-    @DesensitizePassword
+    @Sensitive(strategy = StrategyPassword.class)
     private String password;
 
     /**
