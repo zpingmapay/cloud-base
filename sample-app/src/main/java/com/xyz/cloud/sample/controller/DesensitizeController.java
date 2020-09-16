@@ -53,11 +53,12 @@ public class DesensitizeController {
 
     private UserDto buildBaseUser() {
         UserDto userDto = new UserDto();
-        userDto.setName("石秀来");
+        userDto.setName("张小明");
         userDto.setPassword("11111111111111");
         userDto.setIdCard("61252567384384473847384");
-        userDto.setEmail("shixiulai@51zy.com");
+        userDto.setEmail("zhangxiaoming@51zy.com");
         userDto.setPhone("13000000000");
+        userDto.setPhones(Lists.newArrayList("13000000000", "18600000000"));
         return userDto;
     }
 
