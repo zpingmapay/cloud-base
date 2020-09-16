@@ -11,6 +11,7 @@ Cloud-base项目初衷是希望：
 * [前端的后端(Backend for Front-end)JWT认证](#前端的后端backend-for-front-endjwt认证)
 * [后端的后端(Backend for Backend)OAuth1认证](#后端的后端backend-for-backendoauth1认证)
 * [声明式Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)
+* [信息脱敏模块](common-desensitize/desensitize.md) 
 
 ## Quick start
 
