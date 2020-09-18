@@ -68,7 +68,7 @@ public class LockAspectTest {
                 throw e;
             }
         });
-        LockSupport.parkNanos(500);
+        LockSupport.parkNanos(1000);
         lock.unlock();
         Assert.isTrue(name.equals(func.apply(name)), "hello is not properly executed");
 
