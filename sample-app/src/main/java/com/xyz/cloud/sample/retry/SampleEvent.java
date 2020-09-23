@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
-public class SampleEvent extends RetryableEvent {
+public class SampleEvent extends RetryableEvent<String> {
     public SampleEvent(@NotNull String data, @NotNull String traceId) {
         super(data, traceId);
     }
