@@ -35,7 +35,6 @@
         <commons-io.version>2.4</commons-io.version>
         <lombok-plus.version>1.0</lombok-plus.version>
         <guava.version>27.0.1-jre</guava.version>
-        <tk.mybatis.version>2.1.2</tk.mybatis.version>
     </properties>
 
     <dependencyManagement>
@@ -96,11 +95,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>tk.mybatis</groupId>
-                <artifactId>mapper-spring-boot-starter</artifactId>
-                <version>${tk.mybatis.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
