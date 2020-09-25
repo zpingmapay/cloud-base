@@ -3,12 +3,12 @@
     <parent>
         <groupId>com.xyz</groupId>
         <artifactId>cloud-base-parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cloud-base</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <dependencies>
         <dependency>
@@ -49,6 +49,20 @@
             <groupId>net.oauth.core</groupId>
             <artifactId>oauth-provider</artifactId>
             <version>20100527</version>
+        </dependency>
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

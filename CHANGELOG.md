@@ -1,3 +1,6 @@
+v1.0.3
+- 添加实体类的基类BasePo
+
 v1.0.2
 - 重复时间窗口(recurring time window)
 - 添加对象信息脱敏模块(desensitize)

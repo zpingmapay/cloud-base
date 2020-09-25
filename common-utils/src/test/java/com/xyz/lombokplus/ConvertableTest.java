@@ -1,6 +1,5 @@
 package com.xyz.lombokplus;
 
-import com.xyz.utils.JsonUtils;
 import lombok.Convertable;
 import lombok.Data;
 import lombok.JsonSerializable;
@@ -19,6 +18,8 @@ public class ConvertableTest {
         sample = Sample.fromBean(converted);
         Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
 
+        Sample1 sample1 = Sample1.fromBean(sample);
+        sample = sample1.toBean(Sample.class);
         Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
     }
 
@@ -47,6 +48,17 @@ public class ConvertableTest {
     @JsonSerializable
     @Convertable(bean = Pojo.class)
     public static class Sample {
+        private String param1;
+        private Date param2;
+        private long param3;
+        private boolean param4;
+        private BigDecimal param5;
+    }
+
+    @Data
+    @JsonSerializable
+    @Convertable()
+    public static class Sample1 {
         private String param1;
         private Date param2;
         private long param3;

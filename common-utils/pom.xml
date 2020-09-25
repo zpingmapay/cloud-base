@@ -4,12 +4,12 @@
     <parent>
         <groupId>com.xyz</groupId>
         <artifactId>cloud-base-parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-utils</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <dependencies>
         <dependency>
