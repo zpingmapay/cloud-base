@@ -45,7 +45,7 @@ public class OAuth1HttpClient {
 
     public static OAuth1HttpClient getOrCreate(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
         return CacheManager.getFromLocalOrCreate(OAuth1HttpClient.class.getName(), consumerKey,
-                (x) -> new OAuth1HttpClient(httpClient,consumerKey, consumerSecret));
+                (x) -> new OAuth1HttpClient(httpClient, consumerKey, consumerSecret));
     }
 
     public <T> T doGet(String url, Object parameters, Function<CloseableHttpResponse, T> responseHandler) throws Exception {

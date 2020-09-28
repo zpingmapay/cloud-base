@@ -12,13 +12,13 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @NoArgsConstructor
-public class RetryableEvent {
-    private Object data;
+public class RetryableEvent<D> {
+    private D data;
     private long timestamp = System.currentTimeMillis();
     private String traceId; //uuid
     private int attempts;
 
-    public RetryableEvent(@NotNull Object data, @NotBlank String traceId) {
+    public RetryableEvent(@NotNull D data, @NotBlank String traceId) {
         this.data = data;
         this.traceId = traceId;
     }

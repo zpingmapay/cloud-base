@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xyz</groupId>
     <artifactId>cloud-base-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -31,7 +32,7 @@
         <commons-lang3.version>3.10</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.4</commons-io.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok-plus.version>1.0</lombok-plus.version>
         <guava.version>27.0.1-jre</guava.version>
     </properties>
 
@@ -70,11 +71,15 @@
                 <version>${redisson.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
+                <groupId>com.xyz</groupId>
+                <artifactId>lombok-plus</artifactId>
+                <version>${lombok-plus.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
@@ -131,13 +136,16 @@
             </plugin>
         </plugins>
     </build>
-    <!--
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub OWNER Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/OWNER/REPOSITORY</url>
+            <id>releases</id>
+            <name>zhaoyou-releases</name>
+            <url>http://maven.51zhaoyou.com/content/repositories/releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>zhaoyou-snapshots</name>
+            <url>http://maven.51zhaoyou.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
-    -->
 </project>

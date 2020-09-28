@@ -1,4 +1,4 @@
-[Quick start](#quick-start) | [Documentation]() | [Javadocs]() | [Changelog]() | [Code examples]() | [FAQs]() | [Report an issue]()
+[Quick start](#quick-start) | [Documentation]() | [Javadocs]() | [Changelog](CHANGELOG.md) | [Code examples]() | [FAQs]() | [Report an issue]()
 
 Cloud-base项目初衷是希望：
 <p>提供一些"脚手架"式的工具或框架，让大家更容易地新建一个Spring boot/cloud项目
@@ -11,6 +11,7 @@ Cloud-base项目初衷是希望：
 * [前端的后端(Backend for Front-end)JWT认证](#前端的后端backend-for-front-endjwt认证)
 * [后端的后端(Backend for Backend)OAuth1认证](#后端的后端backend-for-backendoauth1认证)
 * [声明式Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)
+* [信息脱敏模块](common-desensitize/desensitize.md) 
 
 ## Quick start
 
@@ -20,7 +21,7 @@ Cloud-base项目初衷是希望：
     <dependency>
            <groupId>com.xyz</groupId>
            <artifactId>cloud-base</artifactId>
-           <version>1.1-SNAPSHOT</version>
+           <version>1.0.0</version>
     </dependency>  
 ```
 #### Common-clients的Maven依赖
@@ -28,13 +29,13 @@ Cloud-base项目初衷是希望：
     <dependency>
            <groupId>com.xyz</groupId>
            <artifactId>common-clients</artifactId>
-           <version>1.1-SNAPSHOT</version>
+           <version>1.0.0</version>
     </dependency>  
 ```
 
 ### 缓存(Cache)
-<li>优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
-<li>使用Cache的前提是：被缓存的对象要么是不可变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
+- 优先推荐使用Spring的@Cacheable注解，仅在那些不方便使用注解的场合下使用ICache接口
+- 使用Cache的前提是：被缓存的对象要么是不可变的(Immutable)，要么对象的全生命周期都在该应用中管理，否则会产生一致性(Consistency)问题
 
 #### 1. 本地缓存(Local Cache)
 ```javascript
@@ -68,11 +69,11 @@ Cloud-base项目初衷是希望：
 ```
 
 ### 分布式可重试事件(Distributed Retryable Event)
-<li>在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
-<li>可重试的事件一定保证可以幂等执行
-<li>通常是异步事件，一般不会在同步事件中引入重试机制
-<li>分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
-<li>分布式可重试事件基于Spring Event框架
+- 在需要保证最终一致性(Eventually Consistent)的处理中引入可重试事件，通常是更新远程资源
+- 可重试的事件一定保证可以幂等执行
+- 通常是异步事件，一般不会在同步事件中引入重试机制
+- 分布式可重试事件依赖于一种分布式存储机制(默认是Redis)
+- 分布式可重试事件基于Spring Event框架
 
 #### @EnableRetryableEvent注解
 在项目中引入@EnableRetryableEvent注解，通常加在启动类上
@@ -84,7 +85,7 @@ public class SampleEvent extends RetryableEvent
 ```
 
 #### @Retryable注解
-在需要重试的事件处理方法上，加@Retryable注解，且方法的唯一参数是个RetryableEvent
+在需要重试的事件处理方法上加@Retryable注解，且方法的唯一参数是个RetryableEvent
 ```javascript
     @Retryable(maxAttempts = 5)
     @EventListener
@@ -115,6 +116,24 @@ public class SampleEvent extends RetryableEvent
     public DeadEventHandler infiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
         return new InfiniteRetryDeadEventHandler(eventRepositoryTemplate, eventRepositoryFactory);
     }
+```
+InfiniteRetryDeadEventHandler的实现：
+```javascript
+public class InfiniteRetryDeadEventHandler implements DeadEventHandler {
+    private final EventRepository eventRepositoryTemplate;
+    private final EventRepositoryFactory eventRepositoryFactory;
+
+    public InfiniteRetryDeadEventHandler(EventRepository eventRepositoryTemplate, EventRepositoryFactory eventRepositoryFactory) {
+        this.eventRepositoryTemplate = eventRepositoryTemplate;
+        this.eventRepositoryFactory = eventRepositoryFactory;
+    }
+
+    @Override
+    public <T extends RetryableEvent> void handleDeadEvent(String listenerClassName, String actionMethodName, T event) {
+        EventRepository eventRepository = eventRepositoryFactory.findOrCreate(event.getClass(), eventRepositoryTemplate.getClass());
+        eventRepository.add(EventRepository.EventItem.create(listenerClassName, actionMethodName, event, Integer.MAX_VALUE));
+    }
+}
 ```
 
 ### 可跟踪日志(Traceable Log)
@@ -206,7 +225,7 @@ TID/UID将被传播到异步线程中去，logback日志：
 ```
 
 #### TID/UID在远程调用中传播
-详见：声明式[Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)，[TraceHeaderPropagator拦截器](#traceheaderpropagator拦截器)
+详见：[声明式Feign客户端(Declarative Feign Client)](#声明式feign客户端declarative-feign-client)，[TraceHeaderPropagator拦截器](#traceheaderpropagator拦截器)
 
 #### @PerformanceWatch注解
 被@PerformanceWatch注解标注的方法，如果响应时间较慢(默认500毫秒)，将被记录在logback日志中:
@@ -222,10 +241,10 @@ TID/UID将被传播到异步线程中去，logback日志：
 #### @CloudApplication注解
 @CloudApplication注解也可以用来快速开启cloud base功能,
 @CloudApplication注解等价于如下注解:
-<li>@EnableJwt
-<li>@EnableLock
-<li>@EnableRetryableEvent
-<li>@EnableTraceable
+- @EnableJwt
+- @EnableLock
+- @EnableRetryableEvent
+- @EnableTraceable
 
 #### @JwtSecured注解
 @RestController中的方法或者类上使用@JwtSecured注解
