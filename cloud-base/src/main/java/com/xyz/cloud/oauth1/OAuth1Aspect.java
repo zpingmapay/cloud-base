@@ -4,8 +4,6 @@ import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
 import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
-import com.xyz.exception.ValidationException;
-import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,12 +35,8 @@ public class OAuth1Aspect {
 
     @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
     public Object authWithOAuth1(ProceedingJoinPoint pjp, OAuth1Secured annotation) throws Throwable {
-        try {
-            validateOAuth1Token();
-            return pjp.proceed();
-        } catch (ValidationException e) {
-            throw new AccessException(e.getCode(), e.getMsg());
-        }
+        validateOAuth1Token();
+        return pjp.proceed();
     }
 
     private void validateOAuth1Token() {
@@ -53,7 +47,7 @@ public class OAuth1Aspect {
         httpHeadersHolder.extract(request);
 
         String token = httpHeadersHolder.getString(HEADER_AUTH_TOKEN);
-        ValidationUtils.isTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");
+        assertTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");
 
         String[] keyPairs = token.substring(OAUTH_PREFIX.length()).split(",");
         String consumerKey = Arrays
@@ -66,8 +60,14 @@ public class OAuth1Aspect {
                 .map(Pair::getValue).findAny()
                 .orElse(null);
 
-        ValidationUtils.notBlank(consumerKey, "Invalid consumer key");
+        assertTrue(StringUtils.isNotBlank(consumerKey), "Invalid consumer key");
 
         oAuth1Validator.validateRequest(consumerKey, request);
+    }
+
+    private void assertTrue(boolean condition, String msg) {
+        if (!condition) {
+            throw new AccessException(msg);
+        }
     }
 }
