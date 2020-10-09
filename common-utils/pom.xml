@@ -12,10 +12,20 @@
     <version>1.0.2</version>
 
     <dependencies>
+
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>lombok-plus</artifactId>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>com.xyz</groupId>
+            <artifactId>lombok-plus</artifactId>
+            <scope>system</scope>
+            <version>1.0.0</version>
+            <systemPath>E:\Workspace\lombok\dist\lombok-1.0.0.jar</systemPath>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
