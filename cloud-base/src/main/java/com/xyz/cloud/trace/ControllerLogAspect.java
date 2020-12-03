@@ -4,6 +4,7 @@ import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 
+import static com.xyz.cloud.trace.TraceableAspect.MAX_LOG_LENGTH;
 import static org.springframework.web.context.request.RequestContextHolder.getRequestAttributes;
 
 @Slf4j
@@ -78,18 +80,18 @@ public class ControllerLogAspect {
 
     private void logRequest(String headersStr, String requestUri, Object[] args) {
         if (logWithHeader) {
-            log.info(REQUEST_PATTEN_WITH_HEARERS, headersStr, requestUri, JsonUtils.beanToJson(args));
+            log.info(REQUEST_PATTEN_WITH_HEARERS, headersStr, requestUri, StringUtils.truncate(JsonUtils.beanToJson(args), MAX_LOG_LENGTH));
         } else {
-            log.info(REQUEST_PATTEN_WITHOUT_HEARERS, requestUri, JsonUtils.beanToJson(args));
+            log.info(REQUEST_PATTEN_WITHOUT_HEARERS, requestUri, StringUtils.truncate(JsonUtils.beanToJson(args), MAX_LOG_LENGTH));
         }
     }
 
     private void logResponse(String headersStr, String requestUri, Object result, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
         if (logWithHeader) {
-            log.info(RESPONSE_PATTEN_WITH_HEARERS, headersStr, requestUri, JsonUtils.beanToJson(result), timeElapsed);
+            log.info(RESPONSE_PATTEN_WITH_HEARERS, headersStr, requestUri, StringUtils.truncate(JsonUtils.beanToJson(result), MAX_LOG_LENGTH), timeElapsed);
         } else {
-            log.info(RESPONSE_PATTEN_WITHOUT_HEARERS, requestUri, JsonUtils.beanToJson(result), timeElapsed);
+            log.info(RESPONSE_PATTEN_WITHOUT_HEARERS, requestUri, StringUtils.truncate(JsonUtils.beanToJson(result), MAX_LOG_LENGTH), timeElapsed);
         }
     }
 

@@ -4,6 +4,7 @@ import com.xyz.cloud.trace.annotation.Traceable;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,6 +18,7 @@ public class TraceableAspect {
     private static final String REQUEST_PATTEN = "{},param:{}";
     private static final String RESULT_PATTEN = "{},res:{},took:{}ms";
     private static final String ERROR_PATTEN = "{},err:{},took:{}ms";
+    public static final int MAX_LOG_LENGTH = 1024;
 
     @Around(value = "@annotation(annotation)", argNames = "pjp,annotation")
     public Object trace(ProceedingJoinPoint pjp, Traceable annotation) throws Throwable {
@@ -37,11 +39,11 @@ public class TraceableAspect {
     }
 
     private void logRequest(String method, Object[] args) {
-        log.info(REQUEST_PATTEN, method, JsonUtils.beanToJson(args));
+        log.info(REQUEST_PATTEN, method, StringUtils.truncate(JsonUtils.beanToJson(args), MAX_LOG_LENGTH));
     }
 
     private void logResult(String method, Object result, Instant start) {
-        log.info(RESULT_PATTEN, method, JsonUtils.beanToJson(result), TimeUtils.millisElapsed(start));
+        log.info(RESULT_PATTEN, method, StringUtils.truncate(JsonUtils.beanToJson(result), MAX_LOG_LENGTH), TimeUtils.millisElapsed(start));
     }
 
     private void logError(String method, Throwable t, Instant start) {
