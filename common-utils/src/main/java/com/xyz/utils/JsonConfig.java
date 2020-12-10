@@ -1,6 +1,7 @@
 package com.xyz.utils;
 
 
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -18,7 +19,12 @@ public class JsonConfig {
     }
 
     public static <T> List<T> config2List(String configFolder, String configName, Class<T> clazz) {
-        return JsonUtils.jsonToList(readContent(configFolder, configName), clazz);
+        try {
+            String content = readContent(configFolder, configName);
+            return JsonUtils.jsonToList(content, clazz);
+        } catch (Exception e) {
+            return Lists.newArrayList();
+        }
     }
 
     private static String readContent(String configFolder, String configName) {

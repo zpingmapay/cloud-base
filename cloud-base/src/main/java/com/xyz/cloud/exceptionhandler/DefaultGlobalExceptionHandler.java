@@ -40,7 +40,7 @@ public class DefaultGlobalExceptionHandler {
             message = o.getDefaultMessage();
             break;
         }
-        return ResultDto.error(HttpStatus.BAD_REQUEST.value(), message);
+        return ResultDto.error(HttpStatus.BAD_REQUEST.value(), "Bad request");
     }
 
     @ExceptionHandler(CommonException.class)
@@ -53,14 +53,14 @@ public class DefaultGlobalExceptionHandler {
     @ExceptionHandler(FailedToObtainLockException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(FailedToObtainLockException e) {
-        return ResultDto.error("Please wait a while");
+        return ResultDto.error(HttpStatus.NOT_ACCEPTABLE.value(), "Please wait a while");
     }
 
     @ExceptionHandler(AccessException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(AccessException e) {
         log.error("Access exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
-        return ResultDto.error(HttpStatus.UNAUTHORIZED.value(), e.getMsg());
+        return ResultDto.error(HttpStatus.UNAUTHORIZED.value(), "Invalid access token");
     }
 
     @ExceptionHandler(ValidationException.class)

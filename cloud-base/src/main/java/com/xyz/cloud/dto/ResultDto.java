@@ -1,13 +1,16 @@
 package com.xyz.cloud.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
-@Data
+import static com.xyz.cloud.dto.ErrorMapping.getErrorMsg;
+import static com.xyz.cloud.dto.ErrorMapping.mapErrorCode;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
+
+@Getter
 @NoArgsConstructor
 public class ResultDto<T> {
-
     private int code;
 
     private String msg;
@@ -21,31 +24,44 @@ public class ResultDto<T> {
     }
 
     public boolean resultOk() {
-        return HttpStatus.OK.value() == this.code;
+        int mappedCode = mapErrorCode(OK.value());
+        return mappedCode == this.code;
     }
 
     public static <T> ResultDto<T> ok() {
-        return new ResultDto<>(HttpStatus.OK.value(), "OK", null);
+        int errorCode = mapErrorCode(OK.value());
+        String errorMsg = getErrorMsg(OK.value(), "请求成功");
+        return new ResultDto<>(errorCode, errorMsg, null);
     }
 
     public static <T> ResultDto<T> ok(T data) {
-        return new ResultDto<>(HttpStatus.OK.value(), "OK", data);
+        int errorCode = mapErrorCode(OK.value());
+        String errorMsg = getErrorMsg(OK.value(), "请求成功");
+        return new ResultDto<>(errorCode, errorMsg, data);
     }
 
     public static <T> ResultDto<T> ok(String msg, T data) {
-        return new ResultDto<>(HttpStatus.OK.value(), msg, data);
+        int errorCode = mapErrorCode(OK.value());
+        String errorMsg = getErrorMsg(OK.value(), msg);
+        return new ResultDto<>(errorCode, errorMsg, data);
     }
 
     public static <T> ResultDto<T> error(String msg) {
-        return new ResultDto<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null);
+        int errorCode = mapErrorCode(INTERNAL_SERVER_ERROR.value());
+        String errorMsg = getErrorMsg(INTERNAL_SERVER_ERROR.value(), msg);
+        return new ResultDto<>(errorCode, errorMsg, null);
     }
 
     public static <T> ResultDto<T> error(int code, String msg) {
-        return new ResultDto<>(code, msg, null);
+        int errorCode = mapErrorCode(code);
+        String errorMsg = getErrorMsg(code, msg);
+        return new ResultDto<>(errorCode, errorMsg, null);
     }
 
     public static <T> ResultDto<T> error(int code, String msg, T data) {
-        return new ResultDto<>(code, msg, data);
+        int errorCode = mapErrorCode(code);
+        String errorMsg = getErrorMsg(code, msg);
+        return new ResultDto<>(errorCode, errorMsg, data);
     }
 
 }
