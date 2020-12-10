@@ -27,10 +27,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@EnableTraceable
 @EnableJwt
 @EnableLock
 @EnableRetryableEvent
-@EnableTraceable
 @PrintSpringProperties
 @Import({DefaultGlobalExceptionHandler.class})
 public @interface CloudApplication {
