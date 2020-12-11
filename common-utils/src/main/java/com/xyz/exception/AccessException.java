@@ -16,7 +16,4 @@ public class AccessException extends CommonException {
         super(code, msg, t);
     }
 
-    public AccessException(String msg, Throwable t) {
-        this(null, msg, t);
-    }
 }
