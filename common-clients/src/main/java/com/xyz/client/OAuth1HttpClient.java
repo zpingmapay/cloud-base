@@ -98,10 +98,11 @@ public class OAuth1HttpClient {
 
         String url = request.getURI().toString();
         ClientCredentialConfig.OAuthConfig oauthKey = clientCredentialConfig.findOAuthConfigByUrl(url);
-        if (oauthKey == null) {
-            throw new RuntimeException("lack OAuthConfig , url: " + url);
+        if (oauthKey != null) {
+            Oauth1Signer.getOrCreate(oauthKey.getKey(), oauthKey.getSecret()).sign(request);
+        } else {
+            log.warn("lack of OAuth key and secret Config, url: {}", url);
         }
-        Oauth1Signer.getOrCreate(oauthKey.getKey(), oauthKey.getSecret()).sign(request);
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             return responseHandler.apply(response);
         }
