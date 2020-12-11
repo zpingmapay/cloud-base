@@ -33,7 +33,7 @@ public class OAuth1Validator {
         try {
             validator.validateMessage(message, accessor);
         } catch (Exception e) {
-            throw new AccessException("Invalid OAuth1 token", e);
+            throw new AccessException("Invalid OAuth1 token");
         } finally {
             //Workaround to avoid OutOfMemoryError
             if (System.currentTimeMillis() - lastReleaseTime.get() > releasePeriod) {
