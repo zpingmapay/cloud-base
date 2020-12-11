@@ -16,14 +16,15 @@ import javax.annotation.Resource;
 public class OAuth1HttpClientTest {
     @Resource
     private CloseableHttpClient httpClient;
+    @Resource
+    private OAuth1HttpClient oAuth1HttpClient;
 
     @Test
     public void testDoGet() throws Exception {
         String url = "http://localhost:1008/me?userName=test";
         String consumerKey = "oauth1_consumer_key_of_sample_service";
         String consumerSecret = "oauth1_consumer_secret_of_sample_service";
-
-        OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
+        //OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
         ResultDto<String> result = oAuth1HttpClient.doGet(url, null, null, (x) -> {
             String response = oAuth1HttpClient.responseToString(x);
             return JsonUtils.jsonToBean(response, ResultDto.class, String.class);

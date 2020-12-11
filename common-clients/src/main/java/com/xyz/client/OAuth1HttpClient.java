@@ -1,18 +1,12 @@
 package com.xyz.client;
 
-import com.xyz.cache.CacheManager;
+import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.exception.CommonException;
 import com.xyz.utils.BeanUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.http.HttpRequest;
-import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import org.apache.commons.codec.Charsets;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -20,7 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -32,24 +25,16 @@ import java.util.function.Function;
 
 @Slf4j
 public class OAuth1HttpClient {
-    public static final String HEADER_AUTH_TOKEN = "Authorization";
 
     private final CloseableHttpClient httpClient;
-    private final String consumerKey;
-    private final String consumerSecret;
+    private final ClientCredentialConfig clientCredentialConfig;
 
-    private OAuth1HttpClient(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
+    public OAuth1HttpClient(CloseableHttpClient httpClient, ClientCredentialConfig clientCredentialConfig) {
+        this.clientCredentialConfig = clientCredentialConfig;
         this.httpClient = httpClient;
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
     }
 
-    public static OAuth1HttpClient getOrCreate(CloseableHttpClient httpClient, String consumerKey, String consumerSecret) {
-        return CacheManager.getFromLocalOrCreate(OAuth1HttpClient.class.getName(), consumerKey,
-                (x) -> new OAuth1HttpClient(httpClient, consumerKey, consumerSecret));
-    }
-
-    public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
         String getUrl = UriComponentsBuilder.fromHttpUrl(url).queryParams(initQueryParams(parameters)).toUriString();
         HttpGet httpGet = new HttpGet(getUrl);
         HttpClientUtils.logRequest(getUrl, parameters, httpGet.getMethod());
@@ -61,15 +46,15 @@ public class OAuth1HttpClient {
             return res;
         } catch (Exception e) {
             HttpClientUtils.logError(e, start);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
-    public String doGet(String url, Object parameters, Map<String, String> headers) throws Exception {
+    public String doGet(String url, Object parameters, Map<String, String> headers) {
         return doGet(url, parameters, headers, this::responseToString);
     }
 
-    public <T> T doPost(String url, String body, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    public <T> T doPost(String url, String body, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
         HttpPost httpPost = new HttpPost(url);
         StringEntity httpEntity = new StringEntity(body, Charsets.UTF_8);
         httpPost.setEntity(httpEntity);
@@ -82,34 +67,31 @@ public class OAuth1HttpClient {
             return res;
         } catch (Exception e) {
             HttpClientUtils.logError(e, start);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
-    public String doPost(String url, String body, Map<String, String> headers) throws Exception {
+    public String doPost(String url, String body, Map<String, String> headers) {
         return this.doPost(url, body, headers, this::responseToString);
     }
 
 
-    public <T> T execute(HttpUriRequest request, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    private <T> T execute(HttpUriRequest request, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         HttpClientUtils.addTraceableHeaders(request);
         HttpClientUtils.addContentType(request);
-        if(!CollectionUtils.isEmpty(headers)) {
-            headers.forEach((k, v) -> request.addHeader(k, v));
+        if (MapUtils.isNotEmpty(headers)) {
+            headers.forEach(request::addHeader);
         }
-        sign(request);
+
+        String url = request.getURI().toString();
+        ClientCredentialConfig.OAuthConfig oauthKey = clientCredentialConfig.findOAuthConfigByUrl(url);
+        if (oauthKey == null) {
+            throw new RuntimeException("lack OAuthConfig , url: " + url);
+        }
+        Oauth1Signer.getOrCreate(oauthKey.getKey(), oauthKey.getSecret()).sign(request);
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             return responseHandler.apply(response);
         }
-    }
-
-    public String sign(HttpUriRequest request) throws OAuthCommunicationException, OAuthExpectationFailedException,
-            OAuthMessageSignerException {
-        OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-        oauthConsumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-
-        HttpRequest signedRequest = oauthConsumer.sign(request);
-        return signedRequest.getHeader(HEADER_AUTH_TOKEN);
     }
 
     public String responseToString(CloseableHttpResponse response) {
