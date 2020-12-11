@@ -33,7 +33,7 @@ public class OAuth1Validator {
         try {
             validator.validateMessage(message, accessor);
         } catch (Exception e) {
-            throw new AccessException("Invalid OAuth1 token");
+            throw new AccessException("Invalid OAuth1 token", e);
         } finally {
             //Workaround to avoid OutOfMemoryError
             if (System.currentTimeMillis() - lastReleaseTime.get() > releasePeriod) {
@@ -46,7 +46,7 @@ public class OAuth1Validator {
     }
 
     private String convertUrl(String baseUrl, String requestUrl, String requestUri) {
-        if(StringUtils.isBlank(baseUrl)) {
+        if (StringUtils.isBlank(baseUrl)) {
             return requestUrl;
         }
         return baseUrl + requestUri;
