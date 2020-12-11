@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -48,14 +49,14 @@ public class OAuth1HttpClient {
                 (x) -> new OAuth1HttpClient(httpClient, consumerKey, consumerSecret));
     }
 
-    public <T> T doGet(String url, Object parameters, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         String getUrl = UriComponentsBuilder.fromHttpUrl(url).queryParams(initQueryParams(parameters)).toUriString();
         HttpGet httpGet = new HttpGet(getUrl);
         HttpClientUtils.logRequest(getUrl, parameters, httpGet.getMethod());
         Instant start = Instant.now();
 
         try {
-            T res = execute(httpGet, responseHandler);
+            T res = execute(httpGet, headers, responseHandler);
             HttpClientUtils.logResponse(getUrl, res, start);
             return res;
         } catch (Exception e) {
@@ -64,11 +65,11 @@ public class OAuth1HttpClient {
         }
     }
 
-    public String doGet(String url, Object parameters) throws Exception {
-        return doGet(url, parameters, this::responseToString);
+    public String doGet(String url, Object parameters, Map<String, String> headers) throws Exception {
+        return doGet(url, parameters, headers, this::responseToString);
     }
 
-    public <T> T doPost(String url, String body, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    public <T> T doPost(String url, String body, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         HttpPost httpPost = new HttpPost(url);
         StringEntity httpEntity = new StringEntity(body, Charsets.UTF_8);
         httpPost.setEntity(httpEntity);
@@ -76,7 +77,7 @@ public class OAuth1HttpClient {
         Instant start = Instant.now();
 
         try {
-            T res = execute(httpPost, responseHandler);
+            T res = execute(httpPost, headers, responseHandler);
             HttpClientUtils.logResponse(url, res, start);
             return res;
         } catch (Exception e) {
@@ -85,14 +86,17 @@ public class OAuth1HttpClient {
         }
     }
 
-    public String doPost(String url, String body) throws Exception {
-        return this.doPost(url, body, this::responseToString);
+    public String doPost(String url, String body, Map<String, String> headers) throws Exception {
+        return this.doPost(url, body, headers, this::responseToString);
     }
 
 
-    public <T> T execute(HttpUriRequest request, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
+    public <T> T execute(HttpUriRequest request, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         HttpClientUtils.addTraceableHeaders(request);
         HttpClientUtils.addContentType(request);
+        if(!CollectionUtils.isEmpty(headers)) {
+            headers.forEach((k, v) -> request.addHeader(k, v));
+        }
         sign(request);
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             return responseHandler.apply(response);

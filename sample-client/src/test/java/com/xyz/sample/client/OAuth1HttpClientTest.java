@@ -24,7 +24,7 @@ public class OAuth1HttpClientTest {
         String consumerSecret = "oauth1_consumer_secret_of_sample_service";
 
         OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, consumerKey, consumerSecret);
-        ResultDto<String> result = oAuth1HttpClient.doGet(url, null, (x) -> {
+        ResultDto<String> result = oAuth1HttpClient.doGet(url, null, null, (x) -> {
             String response = oAuth1HttpClient.responseToString(x);
             return JsonUtils.jsonToBean(response, ResultDto.class, String.class);
         });
