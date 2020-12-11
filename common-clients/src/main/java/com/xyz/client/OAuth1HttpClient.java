@@ -3,6 +3,7 @@ package com.xyz.client;
 import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.exception.CommonException;
 import com.xyz.utils.BeanUtils;
+import com.xyz.utils.JsonUtils;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
@@ -20,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -32,6 +34,18 @@ public class OAuth1HttpClient {
     public OAuth1HttpClient(CloseableHttpClient httpClient, ClientCredentialConfig clientCredentialConfig) {
         this.clientCredentialConfig = clientCredentialConfig;
         this.httpClient = httpClient;
+    }
+
+    public String doGet(String url, Object parameters, Map<String, String> headers) {
+        return doGet(url, parameters, headers, this::responseToString);
+    }
+
+    public String doGet(String url, Object parameters) {
+        return doGet(url, parameters, Collections.emptyMap());
+    }
+
+    public String doPost(String url, String body, Map<String, String> headers) {
+        return this.doPost(url, body, headers, this::responseToString);
     }
 
     public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
@@ -50,8 +64,12 @@ public class OAuth1HttpClient {
         }
     }
 
-    public String doGet(String url, Object parameters, Map<String, String> headers) {
-        return doGet(url, parameters, headers, this::responseToString);
+    public String doPost(String url, String body) {
+        return this.doPost(url, body, Collections.emptyMap());
+    }
+
+    public String doPost(String url, Object beanParam) {
+        return this.doPost(url, JsonUtils.beanToJson(beanParam), Collections.emptyMap());
     }
 
     public <T> T doPost(String url, String body, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
@@ -70,11 +88,6 @@ public class OAuth1HttpClient {
             throw new RuntimeException(e);
         }
     }
-
-    public String doPost(String url, String body, Map<String, String> headers) {
-        return this.doPost(url, body, headers, this::responseToString);
-    }
-
 
     private <T> T execute(HttpUriRequest request, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) throws Exception {
         HttpClientUtils.addTraceableHeaders(request);
