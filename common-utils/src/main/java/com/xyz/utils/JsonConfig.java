@@ -31,7 +31,7 @@ public class JsonConfig {
         String content = null;
         try (InputStream is = new FileInputStream(configFolder.concat(configName))) {
             content = IOUtils.toString(is);
-        } catch (IOException e) {
+        } catch (Exception e) {
             try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(configName)) {
                 content = IOUtils.toString(is);
             } catch (Exception e1) {
