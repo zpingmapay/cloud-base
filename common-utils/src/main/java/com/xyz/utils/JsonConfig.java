@@ -4,9 +4,9 @@ package com.xyz.utils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -33,11 +33,16 @@ public class JsonConfig {
             content = IOUtils.toString(is);
         } catch (Exception e) {
             try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(configName)) {
-                content = IOUtils.toString(is);
+                if (is != null) {
+                    content = IOUtils.toString(is);
+                }
             } catch (Exception e1) {
                 log.warn("no config file found for " + configName);
                 return "";
             }
+        }
+        if (StringUtils.isBlank(content)) {
+            return content;
         }
         return content.replaceAll("\r\n", "");
     }
