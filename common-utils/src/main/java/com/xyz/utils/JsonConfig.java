@@ -34,8 +34,9 @@ public class JsonConfig {
         } catch (IOException e) {
             try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(configName)) {
                 content = IOUtils.toString(is);
-            } catch (IOException e1) {
-                log.error("no config file found for " + configName, e1);
+            } catch (Exception e1) {
+                log.warn("no config file found for " + configName);
+                return "";
             }
         }
         return content.replaceAll("\r\n", "");
