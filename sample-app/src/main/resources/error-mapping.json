@@ -12,7 +12,7 @@
   {
     "httpCode": 401,
     "sysCode": 10,
-    "msg": "无效的token"
+    "msg": "无效的token，请重新登录"
   },
   {
     "httpCode": 403,
@@ -22,7 +22,7 @@
   {
     "httpCode": 406,
     "sysCode": 11,
-    "msg": "请稍等"
+    "msg": "系统繁忙，请稍等"
   },
   {
     "httpCode": 500,
