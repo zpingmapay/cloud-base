@@ -36,16 +36,12 @@ public class OAuth1HttpClient {
         this.httpClient = httpClient;
     }
 
-    public String doGet(String url, Object parameters, Map<String, String> headers) {
-        return doGet(url, parameters, headers, this::responseToString);
-    }
-
     public String doGet(String url, Object parameters) {
         return doGet(url, parameters, Collections.emptyMap());
     }
 
-    public String doPost(String url, String body, Map<String, String> headers) {
-        return this.doPost(url, body, headers, this::responseToString);
+    public String doGet(String url, Object parameters, Map<String, String> headers) {
+        return doGet(url, parameters, headers, this::responseToString);
     }
 
     public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
@@ -64,12 +60,24 @@ public class OAuth1HttpClient {
         }
     }
 
+    public String doPost(String url, Object bodyDto) {
+        return this.doPost(url, bodyDto, this::responseToString);
+    }
+
+    public <T> T doPost(String url, Object bodyDto, Function<CloseableHttpResponse, T> responseHandler) {
+        return this.doPost(url, bodyDto, Collections.emptyMap(), responseHandler);
+    }
+
+    public <T> T doPost(String url, Object bodyDto, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
+        return this.doPost(url, JsonUtils.beanToJson(bodyDto), headers, responseHandler);
+    }
+
     public String doPost(String url, String body) {
         return this.doPost(url, body, Collections.emptyMap());
     }
 
-    public String doPost(String url, Object beanParam) {
-        return this.doPost(url, JsonUtils.beanToJson(beanParam), Collections.emptyMap());
+    public String doPost(String url, String body, Map<String, String> headers) {
+        return this.doPost(url, body, headers, this::responseToString);
     }
 
     public <T> T doPost(String url, String body, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
