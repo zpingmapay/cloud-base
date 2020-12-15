@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
@@ -44,6 +45,17 @@ public class OAuth1HttpClient {
         return doGet(url, parameters, headers, this::responseToString);
     }
 
+    public <T> T doGet(String url, Object parameters, Class<T> baseType, Type... nestingTypes) {
+        return doGet(url, parameters, Collections.emptyMap(), baseType, nestingTypes);
+    }
+
+    public <T> T doGet(String url, Object parameters, Map<String, String> headers, Class<T> baseType, Type... nestingTypes) {
+        return doGet(url, parameters, headers, (x) -> {
+            String response = this.responseToString(x);
+            return JsonUtils.jsonToBean(response, baseType, nestingTypes);
+        });
+    }
+
     public <T> T doGet(String url, Object parameters, Map<String, String> headers, Function<CloseableHttpResponse, T> responseHandler) {
         String getUrl = UriComponentsBuilder.fromHttpUrl(url).queryParams(initQueryParams(parameters)).toUriString();
         HttpGet httpGet = new HttpGet(getUrl);
@@ -62,6 +74,17 @@ public class OAuth1HttpClient {
 
     public String doPost(String url, Object bodyDto) {
         return this.doPost(url, bodyDto, this::responseToString);
+    }
+
+    public <T> T doPost(String url, Object bodyDto, Class<T> baseType, Type... nestingTypes) {
+        return doPost(url, bodyDto, Collections.emptyMap(), baseType, nestingTypes);
+    }
+
+    public <T> T doPost(String url, Object bodyDto, Map<String, String> headers, Class<T> baseType, Type... nestingTypes) {
+        return doPost(url, bodyDto, headers, (x) -> {
+            String response = this.responseToString(x);
+            return JsonUtils.jsonToBean(response, baseType, nestingTypes);
+        });
     }
 
     public <T> T doPost(String url, Object bodyDto, Function<CloseableHttpResponse, T> responseHandler) {
