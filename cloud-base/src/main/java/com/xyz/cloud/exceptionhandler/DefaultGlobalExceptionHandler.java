@@ -40,7 +40,7 @@ public class DefaultGlobalExceptionHandler {
             message = o.getDefaultMessage();
             break;
         }
-        return ResultDto.error(HttpStatus.BAD_REQUEST.value(), "Bad request");
+        return ResultDto.error(HttpStatus.BAD_REQUEST.value(), message);
     }
 
     @ExceptionHandler(CommonException.class)
