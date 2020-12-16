@@ -34,6 +34,7 @@ public class RetryableConfiguration {
     @Bean("RamEventRepository")
     @ConditionalOnMissingBean(RedissonClient.class)
     public EventRepository ramEventRepository() {
+        log.info("Initializing 'ram' retryable event repository");
         ICache<String, String> cache = CacheManager.getLocalCache(EventRepository.class.getName());
         return new DefaultRepository(null, cache);
     }
@@ -42,6 +43,7 @@ public class RetryableConfiguration {
     @ConditionalOnBean(RedissonClient.class)
     @ConditionalOnMissingBean(EventRepository.class)
     public EventRepository redisEventRepository(RedissonClient redissonClient) {
+        log.info("Initializing 'redis' retryable event repository");
         ICache<String, String> cache = CacheManager.getRedisCache(EventRepository.class.getName(), redissonClient);
         return new DefaultRepository(null, cache);
     }
@@ -71,7 +73,6 @@ public class RetryableConfiguration {
     public RetryableAspect retryableAspect(EventRepositoryFactory eventRepositoryFactory, EventRepository eventRepositoryTemplate, DeadEventHandler deadEventHandler) {
         return new RetryableAspect(eventRepositoryFactory, eventRepositoryTemplate, deadEventHandler);
     }
-
 
     @Bean
     public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
