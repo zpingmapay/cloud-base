@@ -45,12 +45,17 @@ public class ControllerLogAspect {
         HttpServletRequest request = requestAttributes.getRequest();
         Object headers = httpHeadersHolder.extract(request);
 
-        String contentType = request.getContentType();
-        if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE) || !isRestController(pjp)) {
-            return proceedWithoutLog(pjp);
-        }
+        try {
+            String contentType = request.getContentType();
+            if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE) || !isRestController(pjp)) {
+                return proceedWithoutLog(pjp);
+            }
 
-        return proceedWithLog(pjp, request, headers);
+            return proceedWithLog(pjp, request, headers);
+        } catch (Throwable e) {
+            httpHeadersHolder.removeHeaderObject();
+            throw e;
+        }
     }
 
     private boolean isRestController(ProceedingJoinPoint pjp) {
@@ -73,8 +78,6 @@ public class ControllerLogAspect {
         } catch (Exception e) {
             logError(headersStr, requestUri, e, start);
             throw e;
-        } finally {
-            httpHeadersHolder.removeHeaderObject();
         }
     }
 
