@@ -1,8 +1,6 @@
 package com.xyz.cloud.jwt;
 
 import com.xyz.cloud.jwt.annotation.JwtSecured;
-import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
-import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.xyz.cloud.jwt.JwtTokenProvider.HEADER_ACCESS_TOKEN;
@@ -41,10 +38,7 @@ public class JwtAspect {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
 
-        HttpHeadersHolder<Map<String, String>> httpHeadersHolder = new DefaultHeadersHolder();
-        httpHeadersHolder.extract(request);
-
-        String token = httpHeadersHolder.getString(HEADER_ACCESS_TOKEN);
+        String token = request.getHeader(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
         }

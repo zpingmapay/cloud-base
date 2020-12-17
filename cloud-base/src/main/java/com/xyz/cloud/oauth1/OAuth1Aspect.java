@@ -1,8 +1,6 @@
 package com.xyz.cloud.oauth1;
 
 import com.xyz.cloud.oauth1.annotation.OAuth1Secured;
-import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
-import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,10 +41,7 @@ public class OAuth1Aspect {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
 
-        HttpHeadersHolder httpHeadersHolder = new DefaultHeadersHolder();
-        httpHeadersHolder.extract(request);
-
-        String token = httpHeadersHolder.getString(HEADER_AUTH_TOKEN);
+        String token = request.getHeader(HEADER_AUTH_TOKEN);
         assertTrue(StringUtils.isNotBlank(token) && token.startsWith(OAUTH_PREFIX), "Invalid oauth token");
 
         String[] keyPairs = token.substring(OAUTH_PREFIX.length()).split(",");
