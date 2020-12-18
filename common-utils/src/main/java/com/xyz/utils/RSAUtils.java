@@ -155,8 +155,7 @@ public class RSAUtils {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey));
-            RSAPublicKey key = (RSAPublicKey) keyFactory.generatePublic(x509KeySpec);
-            return key;
+            return (RSAPublicKey) keyFactory.generatePublic(x509KeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
@@ -173,8 +172,7 @@ public class RSAUtils {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
-            RSAPrivateKey key = (RSAPrivateKey) keyFactory.generatePrivate(pkcs8KeySpec);
-            return key;
+            return (RSAPrivateKey) keyFactory.generatePrivate(pkcs8KeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

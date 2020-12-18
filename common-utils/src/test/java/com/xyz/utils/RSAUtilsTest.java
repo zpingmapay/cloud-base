@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class RSAUtilsTest {
@@ -25,7 +24,7 @@ public class RSAUtilsTest {
     }
 
     @Test
-    public void testEncryptAndDecrypt() throws NoSuchAlgorithmException {
+    public void testEncryptAndDecrypt() {
         String plainTxt = "这是一段没有加密的信息";
 
         Map<String, String> keys = RSAUtils.createRSAKeys(RSAUtils.KEY_SIZE);
@@ -34,6 +33,20 @@ public class RSAUtilsTest {
 
         String encrypted = RSAUtils.encrypt(plainTxt, publicKey);
         String decrypted = RSAUtils.decrypt(encrypted, privateKey);
+        Assert.isTrue(decrypted.equals(plainTxt), "Encrypt and decrypt failed");
+    }
+
+    @Test
+    public void testEncryptAndDecryptWithKeyInFile() throws Exception {
+        String plainTxt = "这是一段没有加密的信息";
+        KeyPair keyPair = RSAUtils.generateRSAKeyPair(RSAUtils.KEY_SIZE);
+        String path = "/test.rsa";
+        RSAUtils.saveKeyPair(keyPair, path);
+
+        keyPair = RSAUtils.loadKeyPair(path);
+
+        String encrypted = RSAUtils.encrypt(plainTxt, RSAUtils.getPublicKey(keyPair));
+        String decrypted = RSAUtils.decrypt(encrypted, RSAUtils.getPrivateKey(keyPair));
         Assert.isTrue(decrypted.equals(plainTxt), "Encrypt and decrypt failed");
     }
 }
