@@ -106,7 +106,7 @@ public class RSAUtils {
     /**
      * 公钥加密
      *
-     * @param plaintext 待加密的字符串
+     * @param plaintext    待加密的字符串
      * @param publicKeyTxt Base64编码的公钥字符串
      * @return String
      */
@@ -125,7 +125,7 @@ public class RSAUtils {
     /**
      * 私钥解密
      *
-     * @param plaintext  待加密的字符串
+     * @param plaintext     待加密的字符串
      * @param privateKeyTxt Base64编码的私钥字符串
      * @return String
      */
@@ -153,9 +153,8 @@ public class RSAUtils {
             X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey));
             return (RSAPublicKey) keyFactory.generatePublic(x509KeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Invalid public key " + publicKey, e);
         }
-        return null;
     }
 
     /**
@@ -170,14 +169,13 @@ public class RSAUtils {
             PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
             return (RSAPrivateKey) keyFactory.generatePrivate(pkcs8KeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Invalid private key " + privateKey, e);
         }
-        return null;
     }
 
-    private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize) {
+    private static byte[] rsaSplitCodec(Cipher cipher, int mode, byte[] data, int keySize) {
         int maxBlock;
-        if (opmode == Cipher.DECRYPT_MODE) {
+        if (mode == Cipher.DECRYPT_MODE) {
             maxBlock = keySize / 8;
         } else {
             maxBlock = keySize / 8 - 11;
@@ -185,12 +183,12 @@ public class RSAUtils {
         int offSet = 0;
         byte[] buff;
         int i = 0;
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
-            while (datas.length > offSet) {
-                if (datas.length - offSet > maxBlock) {
-                    buff = cipher.doFinal(datas, offSet, maxBlock);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            while (data.length > offSet) {
+                if (data.length - offSet > maxBlock) {
+                    buff = cipher.doFinal(data, offSet, maxBlock);
                 } else {
-                    buff = cipher.doFinal(datas, offSet, datas.length - offSet);
+                    buff = cipher.doFinal(data, offSet, data.length - offSet);
                 }
                 out.write(buff, 0, buff.length);
                 i++;
@@ -200,6 +198,5 @@ public class RSAUtils {
         } catch (Exception e) {
             throw new RuntimeException("An exception occurred when the encryption and decryption threshold was [" + maxBlock + "]", e);
         }
-
     }
 }
