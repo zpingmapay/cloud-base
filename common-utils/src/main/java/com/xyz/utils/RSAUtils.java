@@ -45,13 +45,9 @@ public class RSAUtils {
     public static Map<String, String> createRSAKeys(int keySize) {
         try {
             KeyPair keyPair = generateRSAKeyPair(keySize);
-            Key publicKey = keyPair.getPublic();
-            String publicKeyStr = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-            Key privateKey = keyPair.getPrivate();
-            String privateKeyStr = Base64.getEncoder().encodeToString(privateKey.getEncoded());
             Map<String, String> keyPairMap = new HashMap<>();
-            keyPairMap.put(PUBLIC_KEY, publicKeyStr);
-            keyPairMap.put(PRIVATE_KEY, privateKeyStr);
+            keyPairMap.put(PUBLIC_KEY, getPublicKey(keyPair));
+            keyPairMap.put(PRIVATE_KEY, getPrivateKey(keyPair));
             return keyPairMap;
         } catch (Exception e) {
             throw new RuntimeException("Create ras keys failed", e);
