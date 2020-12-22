@@ -13,10 +13,16 @@ public class ClientCredentialConfig {
     private Map<String, SignerConfig> signer;
 
     public OAuthConfig findOAuthConfigByUrl(String url) {
+        if (oauth == null) {
+            return null;
+        }
         return oauth.values().stream().filter(x -> url.startsWith(x.url)).max(Comparator.comparingInt(x -> x.url.length())).orElse(null);
     }
 
     public SignerConfig findSignerConfigByUrl(String url) {
+        if (signer == null) {
+            return null;
+        }
         return signer.values().stream().filter(x -> url.startsWith(x.url)).max(Comparator.comparingInt(x -> x.url.length())).orElse(null);
     }
 
