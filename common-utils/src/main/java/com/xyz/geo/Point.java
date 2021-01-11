@@ -20,7 +20,7 @@ public class Point {
      * @return distance in meters
      */
     public double distance(Point that) {
-        return GeoUtils.distance(this.lat, this.lon, that.lat, that.lon);
+        return GeoUtils.distance(this, that);
     }
 
     /**
@@ -36,7 +36,7 @@ public class Point {
      * @return geo hash value
      */
     public String geoHash(int precision) {
-        return GeoUtils.geoHash(this.lat, this.lon, precision);
+        return GeoUtils.geoHash(this, precision);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Point {
      * @return neighbors's geo hash
      */
     public List<String> neighborsGeoHash(int precision) {
-       return GeoUtils.neighborsGeoHash(this.lat, this.lon, precision);
+       return GeoUtils.neighborsGeoHash(this, precision);
     }
 
     @Override
