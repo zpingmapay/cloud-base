@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -60,4 +61,17 @@ public class Point {
         return String.format("%s,%s", this.lat, this.lon);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Double.compare(point.lat, lat) == 0 &&
+                Double.compare(point.lon, lon) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat, lon);
+    }
 }
