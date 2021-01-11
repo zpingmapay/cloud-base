@@ -42,6 +42,11 @@ public class GeoUtils {
         return distance(p1.getLat(), p1.getLon(), p2.getLat(), p2.getLon());
     }
 
+    public  static boolean isClockwise(Point p0, Point p1, Point p2) {
+        double vector = p1.getLat() * p2.getLon() - p2.getLat() * p1.getLon() - (p2.getLon() - p1.getLon()) * p0.getLat() + (p2.getLat() - p1.getLat()) * p0.getLon();
+        return vector < 0;
+    }
+
     public static boolean isClockwise(List<Point> points) {
         if (CollectionUtils.isEmpty(points) || points.size() < 3) {
             throw new IllegalArgumentException("At least three points are required");
@@ -49,8 +54,7 @@ public class GeoUtils {
         Point p0 = points.get(0);
         Point p1 = points.get(1);
         Point p2 = points.get(2);
-        double vector = p1.getLat() * p2.getLon() - p2.getLat() * p1.getLon() - (p2.getLon() - p1.getLon()) * p0.getLat() + (p2.getLat() - p1.getLat()) * p0.getLon();
-        return vector < 0;
+        return isClockwise(p0, p1, p2);
     }
 
     public static int degree(double vertexPointX, double vertexPointY, double point1X, double point1Y, double point2X, double point2Y) {
