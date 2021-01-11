@@ -1,9 +1,11 @@
 package com.xyz.geo;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -19,6 +21,10 @@ public class Segment {
 
     public Segment reverse() {
         return new Segment(this.end, this.start);
+    }
+
+    public List<Point> toPoints() {
+        return Lists.newArrayList(start, end);
     }
 
     @Override
