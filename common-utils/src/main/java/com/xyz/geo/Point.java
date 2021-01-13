@@ -13,6 +13,12 @@ import java.util.Objects;
 public class Point {
     private double lat;
     private double lon;
+    private String name;
+
+    public Point(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
 
     /**
      * Calculate distance between two points
@@ -58,7 +64,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return String.format("%s,%s", this.lat, this.lon);
+        return String.format("%s(%s,%s)", this.name, this.lat, this.lon);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.xyz.geo;
 
+import com.google.common.collect.Lists;
 import com.xyz.utils.ValidationUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -12,11 +12,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Line {
     private LinkedList<Point> points;
+
+    public Line() {
+        this.points = Lists.newLinkedList();
+    }
 
     public double length() {
         ValidationUtils.isTrue(CollectionUtils.size(points) > 1, "Line is empty");
@@ -42,20 +45,27 @@ public class Line {
     }
 
     public void link(Segment segment) {
-        ValidationUtils.isTrue(adjacentTo(segment), "Can not link segment which is not adjacent to this line");
-
-        if (segment.getStart().equals(this.head())) {
-            this.points.addFirst(segment.getEnd());
-        } else if (segment.getEnd().equals(this.head())) {
+        if(CollectionUtils.isEmpty(this.points)) {
             this.points.addFirst(segment.getStart());
-        } else if (segment.getStart().equals(this.tail())) {
             this.points.addLast(segment.getEnd());
-        } else if (segment.getEnd().equals(this.tail())) {
-            this.points.addLast(segment.getStart());
+        } else {
+            ValidationUtils.isTrue(adjacentTo(segment), "Can not link segment which is not adjacent to this line");
+            if (segment.getStart().equals(this.head())) {
+                this.points.addFirst(segment.getEnd());
+            } else if (segment.getEnd().equals(this.head())) {
+                this.points.addFirst(segment.getStart());
+            } else if (segment.getStart().equals(this.tail())) {
+                this.points.addLast(segment.getEnd());
+            } else if (segment.getEnd().equals(this.tail())) {
+                this.points.addLast(segment.getStart());
+            }
         }
     }
 
     public boolean adjacentTo(Segment segment) {
+        if (CollectionUtils.isEmpty(this.points)) {
+            return true;
+        }
         boolean adjacentTo = this.head().equals(segment.getStart())
                 || this.head().equals(segment.getEnd())
                 || this.tail().equals(segment.getStart())
@@ -77,5 +87,20 @@ public class Line {
             segments.add(new Segment(start, end));
         }
         return segments;
+    }
+
+    public void reverse() {
+        LinkedList<Point> points = Lists.newLinkedList();
+        for (Point pt : this.points) {
+            points.addFirst(pt);
+        }
+        this.points = points;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "points=" + points +
+                '}';
     }
 }

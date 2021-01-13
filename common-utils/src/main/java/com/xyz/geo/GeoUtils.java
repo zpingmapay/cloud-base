@@ -11,7 +11,7 @@ public class GeoUtils {
     private static final double EARTH_RADIUS = 6370.996;//赤道半径
 
     public static String geoHash(double lat, double lon, int precision) {
-        return GeoHash.withCharacterPrecision(lat,lon, precision).toBase32();
+        return GeoHash.withCharacterPrecision(lat, lon, precision).toBase32();
     }
 
     public static String geoHash(Point p, int precision) {
@@ -42,7 +42,7 @@ public class GeoUtils {
         return distance(p1.getLat(), p1.getLon(), p2.getLat(), p2.getLon());
     }
 
-    public  static boolean isClockwise(Point p0, Point p1, Point p2) {
+    public static boolean isClockwise(Point p0, Point p1, Point p2) {
         double vector = p1.getLat() * p2.getLon() - p2.getLat() * p1.getLon() - (p2.getLon() - p1.getLon()) * p0.getLat() + (p2.getLat() - p1.getLat()) * p0.getLon();
         return vector < 0;
     }
@@ -73,13 +73,26 @@ public class GeoUtils {
 
     /**
      * 计算点p1，p2相对顶点vertex的角度
+     *
      * @param vertex 顶点
-     * @param p1 点p1
-     * @param p2 点p2
+     * @param p1     点p1
+     * @param p2     点p2
      * @return 点p1，p2相对顶点vertex的角度
      */
     public static int degree(Point vertex, Point p1, Point p2) {
         return degree(vertex.getLat(), vertex.getLon(), p1.getLat(), p1.getLon(), p2.getLat(), p2.getLon());
+    }
+
+    /**
+     * 用一条线连接一组点，使得最终连成的线的长度最短。
+     *
+     * @param points              待连接的一组点
+     * @param maxAdjacentDistance 最大连接距离，超过该距离的点认为不相邻
+     * @return 一条连接所有点的线
+     */
+    public static Line link(List<Point> points, long maxAdjacentDistance) {
+        LineLink lineLink = new LineLink(points, maxAdjacentDistance);
+        return lineLink.link();
     }
 
     private static double rad(double d) {
