@@ -2,9 +2,10 @@ package com.xyz.geo;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Comparator;
 import java.util.List;
@@ -278,7 +279,7 @@ public class LineLink {
                 .stream()
                 .min(Comparator.comparing(Segment::length))
                 .orElse(segments.keySet().iterator().next());
-        return new Pair<>(segment, segments.get(segment));
+        return new ImmutablePair<>(segment, segments.get(segment));
     }
 
     @AllArgsConstructor
