@@ -14,10 +14,18 @@ public class Point {
     private double lat;
     private double lon;
     private String name;
+    private Double distance;
+    private Point near;
 
     public Point(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public Point(double lat, double lon, String name) {
+        this.lat = lat;
+        this.lon = lon;
+        this.name = name;
     }
 
     /**
@@ -59,7 +67,7 @@ public class Point {
      * @return neighbors's geo hash
      */
     public List<String> neighborsGeoHash(int precision) {
-       return GeoUtils.neighborsGeoHash(this, precision);
+        return GeoUtils.neighborsGeoHash(this, precision);
     }
 
     @Override
@@ -74,6 +82,10 @@ public class Point {
         Point point = (Point) o;
         return Double.compare(point.lat, lat) == 0 &&
                 Double.compare(point.lon, lon) == 0;
+    }
+
+    public String format() {
+        return "[" + this.getLon() + "," + getLat() + "]";
     }
 
     @Override

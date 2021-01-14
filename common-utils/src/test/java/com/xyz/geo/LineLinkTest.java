@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LineLinkTest {
     @Test
@@ -44,10 +45,10 @@ public class LineLinkTest {
     @Test
     public void test_link_one_breakable_ring_case() {
         List<Point> points = preparePointList();
-        points.add(new Point(31.198637, 121.498007,"p11"));
+        points.add(new Point(31.198637, 121.498007, "p11"));
         LineLink lineLink = new LineLink(points, 1500);
         Line line = lineLink.link();
-        Assert.isTrue(line.getPoints().size() ==11, "Not all points linked");
+        Assert.isTrue(line.getPoints().size() == 11, "Not all points linked");
         Assert.isTrue(line.head().equals(points.get(0)), "head not p1");
         Assert.isTrue(line.tail().equals(points.get(9)), "tail not p10");
     }
@@ -64,6 +65,11 @@ public class LineLinkTest {
         Point p9 = new Point(31.186082, 121.454062, "p9");
         Point p10 = new Point(31.178849, 121.44256, "p10");
         return Lists.newArrayList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
+    }
+
+    @Test
+    public void direction() {
+        System.out.println(GeoUtils.direction(getG15()).stream().map(Point::format).collect(Collectors.toList()));
     }
 
     @Test
