@@ -28,46 +28,7 @@ public class LineLink {
                 node = backTracking(nodes, node, breakPoint);
             }
         }
-        Node head = null;
-        while (node.prev != null) {
-            head = node.prev;
-            node = head;
-        }
-        List<Point> list = Lists.newArrayList();
-        while (head.next != null) {
-            list.add(head.point);
-            head = head.next;
-        }
-        list.add(head.point);
-        return list;
-    }
-
-    private Node backTracking(List<Node> nodes, Node node, Node breakPoint) {
-        if(breakPoint != null) {
-            //back tracking to break point
-            while (!node.point.equals(breakPoint.point)) {
-                node.linked = false;
-                nodes.add(node);
-                node = node.prev;
-                node.next = null;
-            }
-        }
-        //back tracking
-        node.linked = false;
-        nodes.add(node);
-        node = node.prev;
-        node.next = null;
-        node.index++;
-        return node;
-    }
-
-    private Node linkNeighbor(List<Node> nodes, Node node, Node unlinkedNeighbor) {
-        unlinkedNeighbor.linked = true;
-        nodes.remove(unlinkedNeighbor);
-        node.next = unlinkedNeighbor;
-        unlinkedNeighbor.prev = node;
-        node = unlinkedNeighbor;
-        return node;
+        return toPoints(node);
     }
 
     private List<Node> setupNodes(List<Point> points) {
@@ -124,6 +85,49 @@ public class LineLink {
                 .map(ImmutablePair::getLeft)
                 .findAny()
                 .orElse(null);
+    }
+
+    private Node linkNeighbor(List<Node> nodes, Node node, Node unlinkedNeighbor) {
+        unlinkedNeighbor.linked = true;
+        nodes.remove(unlinkedNeighbor);
+        node.next = unlinkedNeighbor;
+        unlinkedNeighbor.prev = node;
+        node = unlinkedNeighbor;
+        return node;
+    }
+
+    private Node backTracking(List<Node> nodes, Node node, Node breakPoint) {
+        if(breakPoint != null) {
+            //back tracking to break point
+            while (!node.point.equals(breakPoint.point)) {
+                node.linked = false;
+                nodes.add(node);
+                node = node.prev;
+                node.next = null;
+            }
+        }
+        //back tracking
+        node.linked = false;
+        nodes.add(node);
+        node = node.prev;
+        node.next = null;
+        node.index++;
+        return node;
+    }
+
+    private List<Point> toPoints(Node node) {
+        Node head = null;
+        while (node.prev != null) {
+            head = node.prev;
+            node = head;
+        }
+        List<Point> list = Lists.newArrayList();
+        while (head.next != null) {
+            list.add(head.point);
+            head = head.next;
+        }
+        list.add(head.point);
+        return list;
     }
 
     public static class Node {
