@@ -92,8 +92,7 @@ public class LineLink {
         unlinkedNeighbor.linked = true;
         node.next = unlinkedNeighbor;
         unlinkedNeighbor.prev = node;
-        node = unlinkedNeighbor;
-        return node;
+        return unlinkedNeighbor;
     }
 
     private Node backTracking(List<Node> nodes, Node node, Node breakPoint) {
