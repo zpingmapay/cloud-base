@@ -19,7 +19,8 @@ public class LineLink {
         while (CollectionUtils.isNotEmpty(nodes)) {
             Node unlinkedNeighbor = node.findUnlinkedNeighbor();
             if (unlinkedNeighbor != null) {
-                node = linkNeighbor(nodes, node, unlinkedNeighbor);
+                nodes.remove(unlinkedNeighbor);
+                node = linkNeighbor(node, unlinkedNeighbor);
             } else {
                 Node breakPoint = findNewNeighbor(node, nodes);
                 if (breakPoint != null && breakPoint.point.equals(node.point)) {
@@ -87,9 +88,8 @@ public class LineLink {
                 .orElse(null);
     }
 
-    private Node linkNeighbor(List<Node> nodes, Node node, Node unlinkedNeighbor) {
+    private Node linkNeighbor(Node node, Node unlinkedNeighbor) {
         unlinkedNeighbor.linked = true;
-        nodes.remove(unlinkedNeighbor);
         node.next = unlinkedNeighbor;
         unlinkedNeighbor.prev = node;
         node = unlinkedNeighbor;
