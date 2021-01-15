@@ -68,7 +68,7 @@ public class LineLink {
             }
             node = node.prev;
         }
-        if (newNeighbor != null && breakPoint != null) {
+        if (newNeighbor != null) {
             breakPoint.neighbors.add(newNeighbor);
             return breakPoint;
         }
@@ -79,7 +79,7 @@ public class LineLink {
         Comparator<ImmutablePair<Node, Node>> comparator = Comparator.comparing(x -> GeoUtils.distance(x.left.point, x.right.point));
         return points.stream()
                 .filter(x -> !x.point.equals(node.point) && !x.linked)
-                .map(x -> new ImmutablePair<Node, Node>(x, node))
+                .map(x -> new ImmutablePair<>(x, node))
                 .sorted(comparator)
                 .limit(1)
                 .map(ImmutablePair::getLeft)
@@ -122,6 +122,9 @@ public class LineLink {
             node = head;
         }
         List<Point> list = Lists.newArrayList();
+        if(head == null) {
+            return list;
+        }
         while (head.next != null) {
             list.add(head.point);
             head = head.next;
@@ -131,7 +134,7 @@ public class LineLink {
     }
 
     public static class Node {
-        private Point point;
+        private final Point point;
         private Node prev;
         private Node next;
         private List<Node> neighbors;
@@ -146,7 +149,7 @@ public class LineLink {
             Comparator<ImmutablePair<Node, Node>> comparator = Comparator.comparing(x -> GeoUtils.distance(x.left.point, x.right.point));
             this.neighbors = points.stream()
                     .filter(x -> !x.point.equals(this.point))
-                    .map(x -> new ImmutablePair<Node, Node>(x, this))
+                    .map(x -> new ImmutablePair<>(x, this))
                     .sorted(comparator)
                     .limit(number)
                     .map(ImmutablePair::getLeft)
