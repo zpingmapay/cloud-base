@@ -82,16 +82,9 @@ public class GeoUtils {
         return degree(vertex.getLat(), vertex.getLon(), p1.getLat(), p1.getLon(), p2.getLat(), p2.getLon());
     }
 
-    /**
-     * 用一条线连接一组点，使得最终连成的线的长度最短。
-     *
-     * @param points              待连接的一组点
-     * @param maxAdjacentDistance 最大连接距离，超过该距离的点认为不相邻
-     * @return 一条连接所有点的线
-     */
-    public static Line link(List<Point> points, long maxAdjacentDistance) {
-        LineLink lineLink = new LineLink(points, maxAdjacentDistance);
-        return lineLink.link();
+    public static List<Point> link(List<Point> points) {
+        LineLink lineLink = new LineLink();
+        return lineLink.link(points);
     }
 
     private static double rad(double d) {

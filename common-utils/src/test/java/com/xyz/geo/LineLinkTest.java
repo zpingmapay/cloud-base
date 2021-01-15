@@ -12,45 +12,22 @@ public class LineLinkTest {
     @Test
     public void test_link_happy_case() {
         List<Point> points = preparePointList();
-        LineLink lineLink = new LineLink(points, 1500);
-        Line line = lineLink.link();
-        Assert.isTrue(line.getPoints().size() == 10, "Not all points linked");
-        Assert.isTrue(line.head().equals(points.get(0)), "head not p1");
-        Assert.isTrue(line.tail().equals(points.get(9)), "tail not p10");
-    }
-
-    @Test
-    public void test_link_two_line_case() {
-        List<Point> points = preparePointList();
-        points.remove(5);
-        LineLink lineLink = new LineLink(points, 1500);
-        Line line = lineLink.link();
-        Assert.isTrue(line.getPoints().size() == 9, "Not all points linked");
-        Assert.isTrue(line.head().equals(points.get(0)), "head not p1");
-        Assert.isTrue(line.tail().equals(points.get(8)), "tail not p10");
-    }
-
-    @Test
-    public void test_link_three_line_case() {
-        List<Point> points = preparePointList();
-        points.remove(3);
-        points.remove(6);
-        LineLink lineLink = new LineLink(points, 1500);
-        Line line = lineLink.link();
-        Assert.isTrue(line.getPoints().size() == 8, "Not all points linked");
-        Assert.isTrue(line.head().equals(points.get(0)), "head not p1");
-        Assert.isTrue(line.tail().equals(points.get(7)), "tail not p10");
+        LineLink lineLink = new LineLink();
+        List<Point> line = lineLink.link(points);
+        Assert.isTrue(line.size() == 10, "Not all points linked");
+        Assert.isTrue(line.get(0).equals(points.get(9)), "head not p1");
+        Assert.isTrue(line.get(line.size() -1).equals(points.get(0)), "tail not p10");
     }
 
     @Test
     public void test_link_one_breakable_ring_case() {
         List<Point> points = preparePointList();
         points.add(new Point(31.198637, 121.498007, "p11"));
-        LineLink lineLink = new LineLink(points, 1500);
-        Line line = lineLink.link();
-        Assert.isTrue(line.getPoints().size() == 11, "Not all points linked");
-        Assert.isTrue(line.head().equals(points.get(0)), "head not p1");
-        Assert.isTrue(line.tail().equals(points.get(9)), "tail not p10");
+        LineLink lineLink = new LineLink();
+        List<Point> line = lineLink.link(points);
+        Assert.isTrue(line.size() == 11, "Not all points linked");
+        Assert.isTrue(line.get(0).equals(points.get(9)), "head not p1");
+        Assert.isTrue(line.get(line.size() -1).equals(points.get(0)), "tail not p10");
     }
 
     private List<Point> preparePointList() {
@@ -74,9 +51,9 @@ public class LineLinkTest {
 
     @Test
     public void testG15() {
-        LineLink lineLink = new LineLink(getG15(), 120000);
-        Line line = lineLink.link();
-        System.out.println(JsonUtils.beanToJson(line));
+        LineLink lineLink = new LineLink();
+        List<Point> line = lineLink.link(getG15());
+        line.forEach(x -> System.out.println("["+x.getLon()+","+x.getLat()+"],"));
     }
 
     private List<Point> getG15() {
