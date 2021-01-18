@@ -46,10 +46,10 @@ public class LineLink {
         for (Node node : nodes) {
             node.setNeighbors(nodes, 3);
         }
-
+        Comparator<Node> geoHashComparator = Comparator.comparing(x -> x.point.geoHash(5));
         Comparator<Node> latComparator = Comparator.comparing(x -> x.point.getLat());
         Comparator<Node> lonComparator = Comparator.comparing(x -> x.point.getLon());
-        nodes.sort(latComparator.thenComparing(lonComparator));
+        nodes.sort(geoHashComparator.thenComparing(latComparator).thenComparing(lonComparator));
 
         return nodes;
     }
