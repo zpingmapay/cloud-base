@@ -7,15 +7,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Objects;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class Point {
     private double lat;
     private double lon;
     private String name;
-    private Double distance;
-    private Point near;
 
     public Point(double lat, double lon) {
         this.lat = lat;

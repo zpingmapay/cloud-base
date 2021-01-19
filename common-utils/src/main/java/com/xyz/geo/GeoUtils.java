@@ -82,110 +82,12 @@ public class GeoUtils {
         return degree(vertex.getLat(), vertex.getLon(), p1.getLat(), p1.getLon(), p2.getLat(), p2.getLon());
     }
 
-    public static List<Point> link(List<Point> points) {
+    public static Line link(List<Point> points) {
         LineLink lineLink = new LineLink();
         return lineLink.link(points);
     }
 
     private static double rad(double d) {
         return d * Math.PI / 180.0;
-    }
-
-    /**
-     * 根据散列点绘制最佳路线
-     * 原理:
-     * 1. 一个点扩散寻找最近点形成线段, 寻找下一个点根据首尾判断, 延伸线段最终形成路线
-     * 2. 计算3次(随机点开始, 头部开始, 尾部开始)得出最近距离返回路线
-     *
-     * @param points 散列点
-     * @return 路线
-     */
-    public static List<Point> direction(List<Point> points) {
-        TreeMap<Double, List<Point>> resultMap = new TreeMap<>();
-        List<Point> sortList = new ArrayList<>(points.size());
-        calc(sortList, points);
-        System.out.println(sortList.stream().map(Point::format).collect(Collectors.toList()));
-        resultMap.put(getSumDistance(sortList), new ArrayList<>(sortList));
-        points = new ArrayList<>(sortList);
-        sortList.clear();
-        calc(sortList, points);
-        System.out.println(sortList.stream().map(Point::format).collect(Collectors.toList()));
-        points = new ArrayList<>(sortList);
-        resultMap.put(getSumDistance(sortList), new ArrayList<>(sortList));
-        Collections.reverse(points);
-        sortList.clear();
-        calc(sortList, points);
-        System.out.println(sortList.stream().map(Point::format).collect(Collectors.toList()));
-        resultMap.put(getSumDistance(sortList), new ArrayList<>(sortList));
-        return resultMap.firstEntry().getValue();
-    }
-
-    /**
-     * 获取路线最大距离
-     *
-     * @param sortList 线段
-     * @return 距离
-     */
-    private static Double getSumDistance(List<Point> sortList) {
-        for (int i = 0; i < sortList.size() - 1; i++) {
-            sortList.get(i).setDistance(GeoUtils.distance(sortList.get(i), sortList.get(i + 1)));
-        }
-        return sortList.stream().mapToDouble(m -> m.getDistance() != null ? m.getDistance() : 0D).sum();
-    }
-
-    /**
-     * 递归延伸
-     */
-    private static void calc(List<Point> sortList, List<Point> allPoints) {
-        if (CollectionUtils.isEmpty(sortList)) {
-            int index = 0;
-            sortList.add(allPoints.get(index));
-            allPoints.remove(allPoints.get(index));
-        }
-        calcNear(sortList, allPoints);
-        if (CollectionUtils.isNotEmpty(allPoints)) {
-            calc(sortList, allPoints);
-        }
-    }
-
-    /**
-     * 计算最近点并延伸
-     */
-    private static void calcNear(List<Point> sortList, List<Point> allPoints) {
-        Point first = sortList.get(0);
-        Point last = sortList.get(sortList.size() - 1);
-        allPoints.forEach(next -> {
-            setNear(first, next);
-            if (last != first) {
-                setNear(last, next);
-            }
-        });
-        Point near;
-        if (first.getDistance() < last.getDistance()) {
-            sortList.add(0, first.getNear());
-            near = first.getNear();
-        } else {
-            sortList.add(last.getNear());
-            near = last.getNear();
-        }
-        allPoints.remove(near);
-        clear(first);
-        clear(last);
-    }
-
-    private static void clear(Point point) {
-        point.setDistance(null);
-        point.setNear(null);
-    }
-
-    /**
-     * 寻找最近点
-     */
-    private static void setNear(Point first, Point next) {
-        double distance = GeoUtils.distance(first, next);
-        if (first.getNear() == null || distance < first.getDistance()) {
-            first.setNear(next);
-            first.setDistance(distance);
-        }
     }
 }

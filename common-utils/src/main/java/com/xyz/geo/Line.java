@@ -21,6 +21,13 @@ public class Line {
         this.points = Lists.newLinkedList();
     }
 
+    public Line(List<Point> pts) {
+        this.points = Lists.newLinkedList();
+        for(Point pt : pts) {
+            points.addLast(pt);
+        }
+    }
+
     public double length() {
         ValidationUtils.isTrue(CollectionUtils.size(points) > 1, "Line is empty");
 

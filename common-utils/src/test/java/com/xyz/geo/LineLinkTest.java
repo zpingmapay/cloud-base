@@ -6,17 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LineLinkTest {
     @Test
     public void test_link_happy_case() {
         List<Point> points = preparePointList();
         LineLink lineLink = new LineLink();
-        List<Point> line = lineLink.link(points);
-        Assert.isTrue(line.size() == 10, "Not all points linked");
-        Assert.isTrue(line.get(0).equals(points.get(9)), "head not p1");
-        Assert.isTrue(line.get(line.size() -1).equals(points.get(0)), "tail not p10");
+        Line line = lineLink.link(points);
+        Assert.isTrue(line.getPoints().size() == 10, "Not all points linked");
+        Assert.isTrue(line.head().equals(points.get(9)), "head not p1");
+        Assert.isTrue(line.tail().equals(points.get(0)), "tail not p10");
     }
 
     @Test
@@ -24,10 +23,10 @@ public class LineLinkTest {
         List<Point> points = preparePointList();
         points.add(new Point(31.198637, 121.498007, "p11"));
         LineLink lineLink = new LineLink();
-        List<Point> line = lineLink.link(points);
-        Assert.isTrue(line.size() == 11, "Not all points linked");
-        Assert.isTrue(line.get(0).equals(points.get(9)), "head not p1");
-        Assert.isTrue(line.get(line.size() -1).equals(points.get(0)), "tail not p10");
+        Line line = lineLink.link(points);
+        Assert.isTrue(line.getPoints().size() == 11, "Not all points linked");
+        Assert.isTrue(line.head().equals(points.get(9)), "head not p1");
+        Assert.isTrue(line.tail().equals(points.get(0)), "tail not p10");
     }
 
     private List<Point> preparePointList() {
@@ -45,15 +44,11 @@ public class LineLinkTest {
     }
 
     @Test
-    public void direction() {
-        System.out.println(GeoUtils.direction(getG15()).stream().map(Point::format).collect(Collectors.toList()));
-    }
-
-    @Test
-    public void testG15() {
+    public void testLinkPointOfG15() {
         LineLink lineLink = new LineLink();
-        List<Point> line = lineLink.link(getG15());
-        line.forEach(x -> System.out.println("["+x.getLon()+","+x.getLat()+"],"));
+        Line line = lineLink.link(getG15());
+        line.getPoints().forEach(x -> System.out.println("["+x.getLon()+","+x.getLat()+"],"));
+        Assert.isTrue(line.getPoints().size() == 70, "not 69 points");
     }
 
     private List<Point> getG15() {

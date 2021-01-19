@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class LineLink {
-    public List<Point> link(List<Point> points) {
+    public Line link(List<Point> points) {
         List<Node> nodes = setupNodes(points);
 
         Node node = nodes.remove(0);
@@ -29,7 +29,7 @@ public class LineLink {
                 node = backTracking(nodes, node, breakPoint);
             }
         }
-        return toPoints(node);
+        return new Line(toPoints(node));
     }
 
     private List<Node> setupNodes(List<Point> points) {
