@@ -3,12 +3,12 @@
     <parent>
         <groupId>com.xyz</groupId>
         <artifactId>cloud-base-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sample-app</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <dependencies>
         <dependency>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>common-desensitize</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
