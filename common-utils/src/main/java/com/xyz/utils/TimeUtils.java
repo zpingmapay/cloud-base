@@ -4,11 +4,10 @@ import com.xyz.exception.CommonException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+import java.util.Objects;
 
 public class TimeUtils {
     public static final String DATE_MIN_STR = "yyyyMMdd";
@@ -95,4 +94,19 @@ public class TimeUtils {
         return toLocalDateTime(new Date(timestamp)).getDayOfMonth();
     }
 
+    public static LocalDate toLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public static Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date startTimeOfMonth(Date date) {
+        return Objects.isNull(date) ? null : toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfMonth()));
+    }
+
+    public static Date startTimeOfYear(Date date) {
+        return Objects.isNull(date) ? null : toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfYear()));
+    }
 }
