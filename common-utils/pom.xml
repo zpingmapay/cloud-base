@@ -39,12 +39,6 @@
             <artifactId>fastjson</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.xyz</groupId>
-            <artifactId>lombok-plus</artifactId>
-            <version>1.0</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>

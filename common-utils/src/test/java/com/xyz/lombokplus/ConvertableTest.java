@@ -13,7 +13,7 @@ public class ConvertableTest {
     @Test
     public void should_all_success() {
         Sample sample = initSample();
-        Pojo converted = sample.toBean(Pojo.class);
+        Pojo converted = sample.toBean();
         Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
         sample = Sample.fromBean(converted);
         Assert.isTrue(sample.getParam1().equals(converted.getParam1()), "convert failed");
@@ -46,7 +46,7 @@ public class ConvertableTest {
 
     @Data
     @JsonSerializable
-    @Convertable()
+    @Convertable(bean = Pojo.class)
     public static class Sample {
         private String param1;
         private Date param2;
