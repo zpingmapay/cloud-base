@@ -4,11 +4,10 @@ import com.xyz.exception.CommonException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+import java.util.Objects;
 
 public class TimeUtils {
     public static final String DATE_MIN_STR = "yyyyMMdd";
@@ -72,9 +71,15 @@ public class TimeUtils {
     public static Date toDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
+    public static Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
 
     public static LocalDateTime toLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+    public static LocalDate toLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     /**
@@ -93,6 +98,26 @@ public class TimeUtils {
 
     public static int dayOfMonth(long timestamp) {
         return toLocalDateTime(new Date(timestamp)).getDayOfMonth();
+    }
+
+    /**
+     * 获取指定时间所在月的开始时间
+     */
+    public static Date startTimeOfMonth(Date date) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfMonth()));
+    }
+
+    /**
+     * 获取指定时间所在年的开始时间
+     */
+    public static Date startTimeOfYear(Date date) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfYear()));
     }
 
 }

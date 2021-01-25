@@ -18,5 +18,5 @@ v1.0.0
 mvn命令
 - mvn versions:set -DnewVersion=1.0.0 -DprocessAllModules
 - mvn test
-- mvn package
+- mvn package -Dmaven.test.skip=true
 - mvn deploy -Dmaven.test.skip=true 
