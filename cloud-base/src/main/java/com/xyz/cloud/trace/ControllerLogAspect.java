@@ -50,11 +50,11 @@ public class ControllerLogAspect {
             if (contentType == null || !contentType.toLowerCase().startsWith(JSON_CONTENT_TYPE) || !isRestController(pjp)) {
                 return proceedWithoutLog(pjp);
             }
-
             return proceedWithLog(pjp, request, headers);
         } catch (Throwable e) {
-            httpHeadersHolder.removeHeaderObject();
             throw e;
+        } finally {
+            httpHeadersHolder.removeHeaderObject();
         }
     }
 

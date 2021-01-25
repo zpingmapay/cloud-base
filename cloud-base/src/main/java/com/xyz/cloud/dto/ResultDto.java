@@ -48,8 +48,7 @@ public class ResultDto<T> {
 
     public static <T> ResultDto<T> error(String msg) {
         int errorCode = mapErrorCode(INTERNAL_SERVER_ERROR.value());
-        String errorMsg = getErrorMsg(INTERNAL_SERVER_ERROR.value(), msg);
-        return new ResultDto<>(errorCode, errorMsg, null);
+        return new ResultDto<>(errorCode, msg, null);
     }
 
     public static <T> ResultDto<T> error(int code, String msg) {
