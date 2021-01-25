@@ -71,15 +71,9 @@ public class TimeUtils {
     public static Date toDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
-    public static Date toDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
 
     public static LocalDateTime toLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-    }
-    public static LocalDate toLocalDate(Date date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     /**
@@ -128,11 +122,4 @@ public class TimeUtils {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
-    public static Date startTimeOfMonth(Date date) {
-        return Objects.isNull(date) ? null : toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfMonth()));
-    }
-
-    public static Date startTimeOfYear(Date date) {
-        return Objects.isNull(date) ? null : toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfYear()));
-    }
 }
