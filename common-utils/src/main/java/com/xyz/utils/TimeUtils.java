@@ -114,6 +114,86 @@ public class TimeUtils {
         return toDate(toLocalDate(date).with(TemporalAdjusters.firstDayOfYear()));
     }
 
+    /**
+     * 获取指定时间所在年的开始时间
+     */
+    public static Date startTimeOfDay(Date date) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDate(date));
+    }
+
+    /**
+     * +years
+     */
+    public static Date addYears(Date date, long years) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusYears(years));
+    }
+
+    /**
+     * +month
+     */
+    public static Date addMonths(Date date, long months) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusMonths(months));
+    }
+
+    /**
+     * +day
+     */
+    public static Date addDays(Date date, long days) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusDays(days));
+    }
+
+    /**
+     * +hour
+     */
+    public static Date addHours(Date date, long hours) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusHours(hours));
+    }
+
+    /**
+     * +minute
+     */
+    public static Date addMinutes(Date date, long minutes) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusMinutes(minutes));
+    }
+
+    /**
+     * +second
+     */
+    public static Date addSeconds(Date date, long seconds) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusSeconds(seconds));
+    }
+
+    /**
+     * +week
+     */
+    public static Date addWeeks(Date date, long weeks) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
+        return toDate(toLocalDateTime(date).plusWeeks(weeks));
+    }
+
     public static LocalDate toLocalDate(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
