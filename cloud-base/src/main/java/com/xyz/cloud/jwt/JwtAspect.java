@@ -30,7 +30,11 @@ public class JwtAspect {
 
     @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
     public Object authWithJwt(ProceedingJoinPoint pjp, JwtSecured annotation) throws Throwable {
-        validJwt();
+        try {
+            validJwt();
+        } catch (Exception e) {
+            throw new AccessException(e.getMessage());
+        }
         return pjp.proceed();
     }
 
@@ -42,7 +46,7 @@ public class JwtAspect {
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
         }
-        assertTrue(token!=null, "Access token is required");
+        assertTrue(token != null, "Access token is required");
         String userId = jwtTokenProvider.getUserIdFromToken(token);
         assertTrue(StringUtils.isNotBlank(userId), "Invalid access token");
 
