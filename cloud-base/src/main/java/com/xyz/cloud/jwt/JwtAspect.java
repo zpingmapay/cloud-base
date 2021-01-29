@@ -2,6 +2,8 @@ package com.xyz.cloud.jwt;
 
 import com.xyz.cloud.jwt.annotation.JwtSecured;
 import com.xyz.exception.AccessException;
+import com.xyz.exception.ValidationException;
+import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,7 +34,7 @@ public class JwtAspect {
     public Object authWithJwt(ProceedingJoinPoint pjp, JwtSecured annotation) throws Throwable {
         try {
             validJwt();
-        } catch (Exception e) {
+        } catch (ValidationException e) {
             throw new AccessException(e.getMessage());
         }
         return pjp.proceed();
@@ -46,17 +48,11 @@ public class JwtAspect {
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
         }
-        assertTrue(token != null, "Access token is required");
+        ValidationUtils.isTrue(token != null, "Access token is required");
         String userId = jwtTokenProvider.getUserIdFromToken(token);
-        assertTrue(StringUtils.isNotBlank(userId), "Invalid access token");
+        ValidationUtils.isTrue(StringUtils.isNotBlank(userId), "Invalid access token");
 
         RequestContextHolder.getRequestAttributes().setAttribute(JwtTokenProvider.USER_ID, userId, RequestAttributes.SCOPE_REQUEST);
-    }
-
-    private void assertTrue(boolean condition, String msg) {
-        if (!condition) {
-            throw new AccessException(msg);
-        }
     }
 
 }
