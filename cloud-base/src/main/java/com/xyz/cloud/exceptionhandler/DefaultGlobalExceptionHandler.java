@@ -6,6 +6,7 @@ import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.CommonException;
 import com.xyz.exception.ValidationException;
+import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,18 +24,20 @@ import javax.annotation.Resource;
 public class DefaultGlobalExceptionHandler {
     @Resource
     private HttpHeadersHolder httpHeadersHolder;
+    @Resource
+    private SimpleLog logger;
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(Exception e) {
-        log.error("System exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
+        logger.error(log, "System exception, herders: {}", e, JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()));
         return ResultDto.error(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(MethodArgumentNotValidException e) {
-        log.error("Validation exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
+        logger.error(log, "Validation exception, herders: {}", e, JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()));
         String message = "Invalid Parameters";
         for (ObjectError o : e.getBindingResult().getAllErrors()) {
             message = o.getDefaultMessage();
@@ -46,7 +49,7 @@ public class DefaultGlobalExceptionHandler {
     @ExceptionHandler(CommonException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(CommonException e) {
-        log.error("System exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
+        logger.error(log, "System exception, herders: {}", e, JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()));
         return ResultDto.error(e.getMessage());
     }
 
@@ -59,14 +62,14 @@ public class DefaultGlobalExceptionHandler {
     @ExceptionHandler(AccessException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(AccessException e) {
-        log.error("Access exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
+        logger.error(log, "Access exception, herders: {}", e, JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()));
         return ResultDto.error(HttpStatus.UNAUTHORIZED.value(), "Invalid access token");
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseBody
     public ResultDto handleExceptionRequest(ValidationException e) {
-        log.error("Validation exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
+        logger.error(log, "Validation exception, herders: {}", e, JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()));
         return ResultDto.error(e.getMsg());
     }
 }

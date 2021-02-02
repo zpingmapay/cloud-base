@@ -1,8 +1,10 @@
 package com.xyz.cloud.trace;
 
 import com.xyz.cloud.trace.annotation.Traceable;
+import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,11 +16,14 @@ import java.time.Instant;
 
 @Slf4j
 @Aspect
+@RequiredArgsConstructor
 public class TraceableAspect {
     private static final String REQUEST_PATTEN = "{},param:{}";
     private static final String RESULT_PATTEN = "{},res:{},took:{}ms";
     private static final String ERROR_PATTEN = "{},err:{},took:{}ms";
     public static final int MAX_LOG_LENGTH = 1024;
+
+    private final SimpleLog logger;
 
     @Around(value = "@annotation(annotation)", argNames = "pjp,annotation")
     public Object trace(ProceedingJoinPoint pjp, Traceable annotation) throws Throwable {
@@ -47,6 +52,6 @@ public class TraceableAspect {
     }
 
     private void logError(String method, Throwable t, Instant start) {
-        log.error(ERROR_PATTEN, method, t.getMessage(), TimeUtils.millisElapsed(start));
+        logger.error(log, ERROR_PATTEN, t, method, t.getMessage(), TimeUtils.millisElapsed(start));
     }
 }
