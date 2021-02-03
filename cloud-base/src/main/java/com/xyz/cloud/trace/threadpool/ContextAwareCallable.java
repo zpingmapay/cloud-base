@@ -28,6 +28,6 @@ public class ContextAwareCallable<T> implements Callable<T>, ContextAwareable {
 
     @Override
     public void handleException(Exception e) {
-        log.error("Failed to handle task {}", task.getClass().getSimpleName(), e);
+        log.warn("Failed to handle task {}: {}", task.getClass().getSimpleName(), e.getMessage());
     }
 }
