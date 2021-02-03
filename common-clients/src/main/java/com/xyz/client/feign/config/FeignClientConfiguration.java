@@ -5,7 +5,6 @@ import com.xyz.client.OAuth1HttpClient;
 import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.client.feign.interceptor.OutboundLogger;
 import com.xyz.client.feign.interceptor.TraceHeaderPropagator;
-import com.xyz.log.SimpleLog;
 import feign.Logger;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;

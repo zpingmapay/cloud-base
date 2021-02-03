@@ -1,7 +1,6 @@
 package com.xyz.cloud.trace;
 
 import com.xyz.cloud.trace.annotation.Traceable;
-import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;

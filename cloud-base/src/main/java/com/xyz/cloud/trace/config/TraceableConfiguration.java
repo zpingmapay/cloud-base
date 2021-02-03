@@ -5,7 +5,6 @@ import com.xyz.cloud.trace.PerformanceWatchAspect;
 import com.xyz.cloud.trace.TraceableAspect;
 import com.xyz.cloud.trace.holder.DomainHeadersHolder;
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
-import com.xyz.log.SimpleLog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
