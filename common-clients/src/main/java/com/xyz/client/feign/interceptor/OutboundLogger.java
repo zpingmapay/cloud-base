@@ -1,9 +1,11 @@
 package com.xyz.client.feign.interceptor;
 
+import com.xyz.log.SimpleLog;
 import feign.Logger;
 import feign.Request;
 import feign.Response;
 import feign.Util;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,10 +17,13 @@ import java.io.IOException;
  * @author sxl
  */
 @Slf4j
+@RequiredArgsConstructor
 public class OutboundLogger extends Logger {
     private static final String REQUEST_LOG_PATTEN = "请求第三方开始: url: {}, 参数: {}, 请求方式: {}, method: {}";
     private static final String RESPONSE_LOG_PATTEN = "请求第三方完成: url: {}, 响应: {}, method: {}, 耗时: {}ms";
     private static final String ERROR_LOG_PATTEN = "请求第三方失败: 错误: {}, method: {}, 耗时: {}ms";
+
+    private final SimpleLog logger;
 
     @Override
     protected void log(String s, String s1, Object... objects) {
@@ -52,7 +57,7 @@ public class OutboundLogger extends Logger {
 
     @Override
     protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {
-        log.warn(ERROR_LOG_PATTEN, ioe.getMessage(), configKey, elapsedTime);
+        logger.warn(log, ERROR_LOG_PATTEN, ioe, ioe.getMessage(), configKey, elapsedTime);
         return ioe;
     }
 }
