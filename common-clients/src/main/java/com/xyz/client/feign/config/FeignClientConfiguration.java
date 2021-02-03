@@ -5,7 +5,6 @@ import com.xyz.client.OAuth1HttpClient;
 import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.client.feign.interceptor.OutboundLogger;
 import com.xyz.client.feign.interceptor.TraceHeaderPropagator;
-import com.xyz.log.SimpleLog;
 import feign.Logger;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -26,16 +25,10 @@ public class FeignClientConfiguration {
         return new TraceHeaderPropagator();
     }
 
-    @Bean()
-    @ConditionalOnMissingBean
-    public SimpleLog log(@Value("${cloud.trace.packages:com.zhaoyou}") String filterPackages) {
-        return new SimpleLog(filterPackages.split(","));
-    }
-
     @Bean
     @ConditionalOnMissingBean(Logger.class)
-    public Logger outboundLogger(SimpleLog logger) {
-        return new OutboundLogger(logger);
+    public Logger outboundLogger() {
+        return new OutboundLogger();
     }
 
     @Bean

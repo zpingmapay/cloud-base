@@ -1,7 +1,6 @@
 package com.xyz.cloud.trace;
 
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
-import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ public class ControllerLogAspect {
 
     private final boolean logWithHeader;
     private final HttpHeadersHolder httpHeadersHolder;
-    private final SimpleLog logger;
 
 
     @Around("@annotation(org.springframework.web.bind.annotation.PostMapping)||@annotation(org.springframework.web.bind.annotation.GetMapping)")
@@ -101,9 +99,9 @@ public class ControllerLogAspect {
     private void logError(String headersStr, String requestUri, Throwable t, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
         if (logWithHeader) {
-            logger.error(log, ERROR_PATTEN_WITH_HEARERS, t, headersStr, requestUri, t.getMessage(), timeElapsed);
+            log.error(ERROR_PATTEN_WITH_HEARERS, headersStr, requestUri, t.getMessage(), timeElapsed);
         } else {
-            logger.error(log, ERROR_PATTEN_WITHOUT_HEARERS, t, requestUri, t.getMessage(), timeElapsed);
+            log.error(ERROR_PATTEN_WITHOUT_HEARERS, requestUri, t.getMessage(), timeElapsed);
         }
     }
 }
