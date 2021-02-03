@@ -42,6 +42,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
         ThreadPoolTaskScheduler scheduler = builder.build();
         scheduler.setThreadNamePrefix("scheduler-pool-");
+        scheduler.setPoolSize(poolSize);
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         scheduler.setErrorHandler(throwable -> {
             if(throwable instanceof FailedToObtainLockException) {
