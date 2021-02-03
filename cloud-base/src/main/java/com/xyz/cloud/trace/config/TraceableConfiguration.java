@@ -18,8 +18,8 @@ public class TraceableConfiguration {
         return new DomainHeadersHolder();
     }
 
-    @ConditionalOnMissingBean
     @Bean()
+    @ConditionalOnMissingBean
     public SimpleLog log(@Value("${cloud.trace.packages:com.zhaoyou}") String filterPackages) {
         return new SimpleLog(filterPackages.split(","));
     }

@@ -26,8 +26,8 @@ public class FeignClientConfiguration {
         return new TraceHeaderPropagator();
     }
 
-    @ConditionalOnMissingBean
     @Bean()
+    @ConditionalOnMissingBean
     public SimpleLog log(@Value("${cloud.trace.packages:com.zhaoyou}") String filterPackages) {
         return new SimpleLog(filterPackages.split(","));
     }
