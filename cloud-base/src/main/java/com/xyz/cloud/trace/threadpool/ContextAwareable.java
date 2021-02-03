@@ -15,8 +15,6 @@ public interface ContextAwareable {
 
     Map<String, String> getThreadContextMap();
 
-    void handleException(Exception e);
-
     default Map<String, String> copyOrInitMdcCtx() {
         Map<String, String> mdcCtx = MDC.getCopyOfContextMap();
         if (mdcCtx == null) {
@@ -36,9 +34,6 @@ public interface ContextAwareable {
 
         try {
             return function.applyThrows(null);
-        } catch (Exception e) {
-            handleException(e);
-            throw e;
         } finally {
             TryWithCatch.run(MDC::clear);
         }
@@ -52,8 +47,6 @@ public interface ContextAwareable {
 
         try {
             consumer.accept();
-        } catch (Exception e) {
-            handleException(e);
         } finally {
             TryWithCatch.run(MDC::clear);
         }

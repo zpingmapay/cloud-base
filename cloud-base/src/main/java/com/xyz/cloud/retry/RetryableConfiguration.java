@@ -73,19 +73,4 @@ public class RetryableConfiguration {
     public RetryableAspect retryableAspect(EventRepositoryFactory eventRepositoryFactory, EventRepository eventRepositoryTemplate, DeadEventHandler deadEventHandler) {
         return new RetryableAspect(eventRepositoryFactory, eventRepositoryTemplate, deadEventHandler);
     }
-
-    @Bean
-    public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
-        ThreadPoolTaskScheduler scheduler = builder.build();
-        scheduler.setThreadNamePrefix("scheduler-pool-");
-        scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-        scheduler.setErrorHandler(throwable -> {
-            if(throwable instanceof FailedToObtainLockException) {
-                log.info("Failed to obtain lock");
-            } else {
-                log.error(throwable.getMessage(), throwable);
-            }
-        });
-        return scheduler;
-    }
 }
