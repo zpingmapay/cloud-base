@@ -1,8 +1,10 @@
 package com.xyz.cloud.trace;
 
 import com.xyz.cloud.trace.holder.HttpHeadersHolder;
+import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import com.xyz.utils.TimeUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,6 +21,7 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 
 @Slf4j
 @Aspect
+@RequiredArgsConstructor
 public class ControllerLogAspect {
     private static final String JSON_CONTENT_TYPE = "application/json";
     private static final String REQUEST_PATTEN_WITHOUT_HEARERS = "URI:{}, param:{}";
@@ -30,11 +33,8 @@ public class ControllerLogAspect {
 
     private final boolean logWithHeader;
     private final HttpHeadersHolder httpHeadersHolder;
+    private final SimpleLog logger;
 
-    public ControllerLogAspect(boolean logWithHeader, HttpHeadersHolder holder) {
-        this.logWithHeader = logWithHeader;
-        this.httpHeadersHolder = holder;
-    }
 
     @Around("@annotation(org.springframework.web.bind.annotation.PostMapping)||@annotation(org.springframework.web.bind.annotation.GetMapping)")
     public Object logAround(ProceedingJoinPoint pjp) throws Throwable {
@@ -101,9 +101,9 @@ public class ControllerLogAspect {
     private void logError(String headersStr, String requestUri, Throwable t, Instant start) {
         long timeElapsed = TimeUtils.millisElapsed(start);
         if (logWithHeader) {
-            log.error(ERROR_PATTEN_WITH_HEARERS, headersStr, requestUri, t.getMessage(), timeElapsed);
+            logger.error(log, ERROR_PATTEN_WITH_HEARERS, t, headersStr, requestUri, t.getMessage(), timeElapsed);
         } else {
-            log.error(ERROR_PATTEN_WITHOUT_HEARERS, requestUri, t.getMessage(), timeElapsed);
+            logger.error(log, ERROR_PATTEN_WITHOUT_HEARERS, t, requestUri, t.getMessage(), timeElapsed);
         }
     }
 }
