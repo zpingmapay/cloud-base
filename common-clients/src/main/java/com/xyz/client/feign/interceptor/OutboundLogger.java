@@ -1,5 +1,6 @@
 package com.xyz.client.feign.interceptor;
 
+import com.xyz.log.SimpleLog;
 import feign.Logger;
 import feign.Request;
 import feign.Response;

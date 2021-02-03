@@ -6,6 +6,7 @@ import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
 import com.xyz.exception.CommonException;
 import com.xyz.exception.ValidationException;
+import com.xyz.log.SimpleLog;
 import com.xyz.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
