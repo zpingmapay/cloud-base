@@ -38,7 +38,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
         return executor;
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
         ThreadPoolTaskScheduler scheduler = builder.build();
         scheduler.setThreadNamePrefix("scheduler-pool-");
