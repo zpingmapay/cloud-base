@@ -11,7 +11,7 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
     @Override
     public void handleUncaughtException(Throwable throwable, Method method, Object... params) {
         if(throwable instanceof FailedToObtainLockException) {
-            log.info("Failed to obtain lock");
+            log.info("Failed to obtain lock {}.{}", method.getDeclaringClass().getSimpleName(), method.getName());
         } else {
             log.error(throwable.getMessage(), throwable);
         }
