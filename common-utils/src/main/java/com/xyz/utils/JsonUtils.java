@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
+import static com.alibaba.fastjson.serializer.SerializerFeature.DisableCircularReferenceDetect;
+
 public class JsonUtils {
     public static <T> T jsonToBean(String json, @NonNull Class<T> cls) {
         if (StringUtils.isBlank(json)) {
@@ -39,7 +41,7 @@ public class JsonUtils {
             return null;
         }
         try {
-            return JSON.toJSONString(obj);
+            return JSON.toJSONString(obj, DisableCircularReferenceDetect);
         } catch (Exception e) {
             return null;
         }
