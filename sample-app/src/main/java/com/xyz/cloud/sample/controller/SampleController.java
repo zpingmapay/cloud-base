@@ -48,7 +48,7 @@ public class SampleController {
         return ResultDto.ok("get ok");
     }
 
-    @JwtSecured(tokenFactory = "SampleJwtTokenFactory")
+    @JwtSecured
     @PostMapping("/")
     public ResultDto<String> doPost() throws Exception {
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
