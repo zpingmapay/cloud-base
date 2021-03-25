@@ -6,6 +6,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,13 +45,7 @@ public class JwtConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(JwtTokenFactory.class)
-    public JwtTokenFactory tokenFactory() {
-        return new JwtTokenFactory.DefaultJwtTokenFactory();
-    }
-
-    @Bean
-    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider, JwtTokenFactory jwtTokenFactory) {
-        return new JwtAspect(jwtTokenProvider, jwtTokenFactory);
+    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider, ApplicationContext ctx) {
+        return new JwtAspect(jwtTokenProvider, ctx);
     }
 }
