@@ -43,8 +43,13 @@ public class JwtConfiguration {
         return new JwtTokenProvider(jwtConfig, cache);
     }
 
+    @ConditionalOnMissingBean(JwtTokenFactory.class)
+    public JwtTokenFactory tokenFactory() {
+        return new JwtTokenFactory.DefaultJwtTokenFactory();
+    }
+
     @Bean
-    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider) {
-        return new JwtAspect(jwtTokenProvider);
+    public JwtAspect jwtAspect(JwtTokenProvider jwtTokenProvider, JwtTokenFactory jwtTokenFactory) {
+        return new JwtAspect(jwtTokenProvider, jwtTokenFactory);
     }
 }

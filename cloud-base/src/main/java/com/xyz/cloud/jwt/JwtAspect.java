@@ -25,9 +25,11 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Order(1000)
 public class JwtAspect {
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFactory jwtTokenFactory;
 
-    public JwtAspect(JwtTokenProvider jwtTokenProvider) {
+    public JwtAspect(JwtTokenProvider jwtTokenProvider, JwtTokenFactory jwtTokenFactory) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenFactory = jwtTokenFactory;
     }
 
     @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
@@ -47,8 +49,10 @@ public class JwtAspect {
         String token = request.getHeader(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
+
         }
         ValidationUtils.isTrue(token != null, "Access token is required");
+        token = jwtTokenFactory.findByKey(token);
         String userId = jwtTokenProvider.getUserIdFromToken(token);
         ValidationUtils.isTrue(StringUtils.isNotBlank(userId), "Invalid access token");
 
