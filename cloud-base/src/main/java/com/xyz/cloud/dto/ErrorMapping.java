@@ -18,7 +18,7 @@ public class ErrorMapping {
         return errorCodes.stream().filter(x -> x.getHttpCode() == code).map(
                 x -> {
                     String formattedMsg = x.getMsg();
-                    return StringUtils.isBlank(msg) ? formattedMsg : formattedMsg.concat(": ").concat(msg);
+                    return StringUtils.isBlank(msg) || formattedMsg.contains(msg) ? formattedMsg : formattedMsg.concat(": ").concat(msg);
                 }
         ).findAny().orElse(msg);
     }
