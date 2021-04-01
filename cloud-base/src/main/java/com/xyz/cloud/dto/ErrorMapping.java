@@ -2,6 +2,7 @@ package com.xyz.cloud.dto;
 
 import com.xyz.utils.JsonConfig;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -14,7 +15,12 @@ public class ErrorMapping {
     }
 
     public static String getErrorMsg(int code, String msg) {
-        return errorCodes.stream().filter(x -> x.getHttpCode() == code).map(ErrorCode::getMsg).findAny().orElse(msg);
+        return errorCodes.stream().filter(x -> x.getHttpCode() == code).map(
+                x -> {
+                    String formattedMsg = x.getMsg();
+                    return StringUtils.isBlank(msg) || formattedMsg.contains(msg) ? formattedMsg : formattedMsg.concat(": ").concat(msg);
+                }
+        ).findAny().orElse(msg);
     }
 
     @Data
