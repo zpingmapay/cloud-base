@@ -17,6 +17,11 @@
         </dependency>
         <dependency>
             <groupId>com.xyz</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xyz</groupId>
             <artifactId>common-desensitize</artifactId>
             <version>1.1.0</version>
         </dependency>
