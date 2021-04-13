@@ -1,6 +1,5 @@
-package com.xyz.cloud.utils;
+package com.xyz.cloud.spel;
 
-import com.xyz.cloud.utils.spel.SpelCondition;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.util.Lists;
@@ -10,7 +9,8 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.xyz.cloud.utils.spel.SpelRelation.*;
+import static com.xyz.cloud.spel.SpelRelation.*;
+
 
 public class SpelUtilsTest {
     @Test
@@ -47,12 +47,10 @@ public class SpelUtilsTest {
         rule.setSkuCode("GAS");
         rule.setPayMethods(Lists.newArrayList("wechat_pay", "ali_pay"));
 
-        String spelRule = SpelUtils.beanToSpel(rule);
-        Assert.notNull(spelRule, "rule is null");
-
-        Order order = buildOrder("1", BigDecimal.valueOf(1.0), BigDecimal.TEN, BigDecimal.TEN, "上海市", 1, "GAS", true);
+        Order order = buildOrder("1", BigDecimal.valueOf(1.0), BigDecimal.TEN, BigDecimal.TEN, "天津市", 1, "GAS", true);
         Pair<Boolean, List<String>> evaluateResult = SpelUtils.evaluate(rule, order);
         Assert.isTrue(!evaluateResult.getLeft(), "result is true");
+        Assert.isTrue(4 == evaluateResult.getRight().size(), "not 4 error msg");
     }
 
     @Test
@@ -63,9 +61,6 @@ public class SpelUtilsTest {
         rule.setOrderAmount(new BigDecimal(10));
         rule.setStationIds(new int[]{1,2,3});
         rule.setSkuCode("GAS");
-
-        String spelRule = SpelUtils.beanToSpel(rule);
-        Assert.notNull(spelRule, "rule is null");
 
         Order order = buildOrder("1", BigDecimal.valueOf(1.0), BigDecimal.TEN, BigDecimal.TEN, "上海市", 1, "GAS", true);
         Pair<Boolean, List<String>> evaluateResult = SpelUtils.evaluate(rule, order);
@@ -99,9 +94,9 @@ public class SpelUtilsTest {
 
     @Data
     public class PromoRule {
-        @SpelCondition(name = "city", relation = IN, msg = "下单城市不参加活动")
+        @SpelCondition(name = "city", relation = IN, msg = "下单城市不参加活动,仅限%s地区用户")
         private String[] cities;
-        @SpelCondition(name = "city", relation = NIN, msg = "下单城市不参加活动")
+        @SpelCondition(name = "city", relation = NIN, msg = "%s地区用户不参加活动")
         private String[] exclusiveCities;
         @SpelCondition(name = "station", relation = IN, msg = "下单站点不参加活动")
         private int[] stationIds;

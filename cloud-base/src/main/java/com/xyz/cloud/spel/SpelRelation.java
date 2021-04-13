@@ -1,4 +1,4 @@
-package com.xyz.cloud.utils.spel;
+package com.xyz.cloud.spel;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,5 @@
-package com.xyz.cloud.utils;
+package com.xyz.cloud.spel;
 
-import com.xyz.cloud.utils.spel.SpelCondition;
-import com.xyz.cloud.utils.spel.SpelRelation;
 import com.xyz.function.TryWithCatch;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,6 +20,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.xyz.cloud.spel.SpelRelation.*;
+
 
 public class SpelUtils {
     private final static ExpressionParser parser = new SpelExpressionParser();
@@ -52,7 +53,7 @@ public class SpelUtils {
         List<Pair<String, String>> spels = beanToSpelList(spelBean);
         List<String> result = spels.stream()
                 .filter(x -> !parse(x.getLeft(), contextObject, Boolean.class, false))
-                .map(x -> x.getRight())
+                .map(Pair::getRight)
                 .distinct()
                 .collect(Collectors.toList());
         if(!CollectionUtils.isEmpty(result)) {
@@ -62,7 +63,7 @@ public class SpelUtils {
     }
 
     public static <Bean> String beanToSpel(Bean bean) {
-        List<String> spelParts = beanToSpelList(bean).stream().map(x -> x.getLeft()).collect(Collectors.toList());
+        List<String> spelParts = beanToSpelList(bean).stream().map(Pair::getLeft).collect(Collectors.toList());
         return StringUtils.join(spelParts, " and ");
     }
 
@@ -70,7 +71,7 @@ public class SpelUtils {
         return Arrays.stream(bean.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SpelCondition.class))
                 .map(f -> convertFieldToSpel(bean, f))
-                .filter(x -> x != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -88,9 +89,9 @@ public class SpelUtils {
         }
 
         SpelRelation spelRelation = annotation.relation();
-        if (spelRelation == SpelRelation.IN || spelRelation == SpelRelation.NIN) {
-            String logicRelation = spelRelation == SpelRelation.IN ? " or ": " and ";
-            spelRelation = spelRelation == SpelRelation.IN ? SpelRelation.EQ : SpelRelation.NE;
+        if (spelRelation == IN || spelRelation == NIN) {
+            String logicRelation = spelRelation == IN ? " or ": " and ";
+            spelRelation = spelRelation == IN ? EQ : NE;
             if (fieldValue instanceof Collection) {
                 return collectionToSpel(name, logicRelation, spelRelation, fieldValue, msg);
             } else {
@@ -103,19 +104,23 @@ public class SpelUtils {
 
     private static Pair<String, String> collectionToSpel(String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg) {
         Collection<?> coll = (Collection<?>) fieldValue;
+        String errorMsg = String.format(msg, StringUtils.join(coll, ","));
         List<String> list = coll.stream().map(x -> fieldToSpel(name, spelRelation, x, msg).getLeft()).collect(Collectors.toList());
-        return  new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", msg);
+        return  new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
     }
 
     private static Pair<String, String> arrayToSpel(String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg) {
         int length = Array.getLength(fieldValue);
-        List<String> list = new ArrayList<>();
+        List<Object> itemList = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             Object itemValue = Array.get(fieldValue, i);
-            list.add(fieldToSpel(name, spelRelation, itemValue, msg).getLeft());
+            itemList.add(itemValue);
         }
-        return new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", msg);
+        String errorMsg = String.format(msg, StringUtils.join(itemList, ","));
+        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x, msg).getLeft()).collect(Collectors.toList());
+        return new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
     }
+
 
 
     private static Pair<String, String> fieldToSpel(String name, SpelRelation spelRelation, Object fieldValue, String msg) {
@@ -127,7 +132,7 @@ public class SpelUtils {
         } else {
             sb.append(fieldValue);
         }
-        return new ImmutablePair<>(sb.toString(), msg);
+        return new ImmutablePair<>(sb.toString(), String.format(msg, fieldValue));
     }
 
 }
