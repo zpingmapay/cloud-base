@@ -83,12 +83,12 @@ public class SpelUtils {
         }
         SpelCondition annotation = field.getAnnotation(SpelCondition.class);
         String name = annotation.name();
-        String msg = annotation.msg();
         if (StringUtils.isBlank(name)) {
             name = field.getName();
         }
-
+        String msg = annotation.msg();
         SpelRelation spelRelation = annotation.relation();
+
         if (spelRelation == IN || spelRelation == NIN) {
             String logicRelation = spelRelation == IN ? " or " : " and ";
             spelRelation = spelRelation == IN ? EQ : NE;
