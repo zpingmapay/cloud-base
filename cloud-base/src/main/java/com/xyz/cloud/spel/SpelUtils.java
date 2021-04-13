@@ -103,10 +103,8 @@ public class SpelUtils {
     }
 
     private static Pair<String, String> collectionToSpel(String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg) {
-        Collection<?> coll = (Collection<?>) fieldValue;
-        String errorMsg = String.format(msg, StringUtils.join(coll, ","));
-        List<String> list = coll.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
-        return  new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
+        Collection<?> itemList = (Collection<?>) fieldValue;
+        return itemToSpel(name, logicRelation, spelRelation, itemList, msg);
     }
 
     private static Pair<String, String> arrayToSpel(String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg) {
@@ -116,12 +114,15 @@ public class SpelUtils {
             Object itemValue = Array.get(fieldValue, i);
             itemList.add(itemValue);
         }
-        String errorMsg = String.format(msg, StringUtils.join(itemList, ","));
-        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
-        return new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
+        return itemToSpel(name, logicRelation, spelRelation, itemList, msg);
     }
 
-
+    private static Pair<String, String> itemToSpel(String name, String logicRelation, SpelRelation spelRelation, Collection<?> itemList, String msg) {
+        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
+        String spel = "(" + StringUtils.join(list, logicRelation) + ")";
+        String errorMsg = String.format(msg, StringUtils.join(itemList, ","));
+        return new ImmutablePair<>(spel, errorMsg);
+    }
 
     private static String fieldToSpel(String name, SpelRelation spelRelation, Object fieldValue) {
         StringBuilder sb = new StringBuilder();
