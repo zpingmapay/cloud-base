@@ -45,10 +45,13 @@ public class SpelUtils {
 
     /**
      * Evaluate a context object against a spel bean.
-     * @param spelBean POJO with fields annotated by @SpelCondition
+     *
+     * @param spelBean      POJO with fields annotated by @SpelCondition
      * @param contextObject context object
      * @return boolean result and the violation messages
      */
+    private static final Pair<Boolean, List<String>> TRUE = new ImmutablePair<>(true, Collections.emptyList());
+
     public static <B, C> Pair<Boolean, List<String>> evaluate(B spelBean, C contextObject) {
         List<Pair<String, String>> spels = beanToSpelList(spelBean);
         List<String> result = spels.stream()
@@ -56,10 +59,7 @@ public class SpelUtils {
                 .map(Pair::getRight)
                 .distinct()
                 .collect(Collectors.toList());
-        if(!CollectionUtils.isEmpty(result)) {
-            return new ImmutablePair<>(false, result);
-        }
-        return new ImmutablePair<>(true, Collections.emptyList());
+        return CollectionUtils.isEmpty(result) ? TRUE : new ImmutablePair<>(false, result);
     }
 
     public static <Bean> String beanToSpel(Bean bean) {
@@ -84,13 +84,13 @@ public class SpelUtils {
         SpelCondition annotation = field.getAnnotation(SpelCondition.class);
         String name = annotation.name();
         String msg = annotation.msg();
-        if(StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             name = field.getName();
         }
 
         SpelRelation spelRelation = annotation.relation();
         if (spelRelation == IN || spelRelation == NIN) {
-            String logicRelation = spelRelation == IN ? " or ": " and ";
+            String logicRelation = spelRelation == IN ? " or " : " and ";
             spelRelation = spelRelation == IN ? EQ : NE;
             if (fieldValue instanceof Collection) {
                 return collectionToSpel(name, logicRelation, spelRelation, fieldValue, msg);
