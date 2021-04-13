@@ -98,14 +98,14 @@ public class SpelUtils {
                 return arrayToSpel(name, logicRelation, spelRelation, fieldValue, msg);
             }
         }
-
-        return fieldToSpel(name, spelRelation, fieldValue, msg);
+        String errorMsg = String.format(msg, fieldValue);
+        return new ImmutablePair<>(fieldToSpel(name, spelRelation, fieldValue), errorMsg);
     }
 
     private static Pair<String, String> collectionToSpel(String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg) {
         Collection<?> coll = (Collection<?>) fieldValue;
         String errorMsg = String.format(msg, StringUtils.join(coll, ","));
-        List<String> list = coll.stream().map(x -> fieldToSpel(name, spelRelation, x, msg).getLeft()).collect(Collectors.toList());
+        List<String> list = coll.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
         return  new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
     }
 
@@ -117,13 +117,13 @@ public class SpelUtils {
             itemList.add(itemValue);
         }
         String errorMsg = String.format(msg, StringUtils.join(itemList, ","));
-        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x, msg).getLeft()).collect(Collectors.toList());
+        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
         return new ImmutablePair<>("(" + StringUtils.join(list, logicRelation) + ")", errorMsg);
     }
 
 
 
-    private static Pair<String, String> fieldToSpel(String name, SpelRelation spelRelation, Object fieldValue, String msg) {
+    private static String fieldToSpel(String name, SpelRelation spelRelation, Object fieldValue) {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(" ").append(spelRelation.getValue()).append(" ");
 
@@ -132,7 +132,7 @@ public class SpelUtils {
         } else {
             sb.append(fieldValue);
         }
-        return new ImmutablePair<>(sb.toString(), String.format(msg, fieldValue));
+        return sb.toString();
     }
 
 }

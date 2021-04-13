@@ -100,7 +100,7 @@ public class SpelUtilsTest {
         private String[] exclusiveCities;
         @SpelCondition(name = "station", relation = IN, msg = "下单站点不参加活动")
         private int[] stationIds;
-        @SpelCondition(relation = GE, msg = "订单金额不满足活动要求")
+        @SpelCondition(relation = GE, msg = "订单金额不低于%s元")
         private BigDecimal orderAmount;
         @SpelCondition
         private String skuCode;
