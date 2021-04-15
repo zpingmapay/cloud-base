@@ -3,6 +3,7 @@ package com.xyz.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 import lombok.NonNull;
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,11 +38,15 @@ public class JsonUtils {
     }
 
     public static String beanToJson(Object obj) {
+        return beanToJson(obj, DisableCircularReferenceDetect);
+    }
+
+    public static String beanToJson(Object obj, SerializerFeature... features) {
         if (obj == null) {
             return null;
         }
         try {
-            return JSON.toJSONString(obj, DisableCircularReferenceDetect);
+            return JSON.toJSONString(obj, features);
         } catch (Exception e) {
             return null;
         }
