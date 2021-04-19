@@ -76,7 +76,7 @@ public class SpelUtils {
         return StringUtils.join(spelParts, " and ");
     }
 
-    private static <Bean> List<Pair<String, String>> beanToSpelList(Bean bean, Map<String, List<String>> messageMapping) {
+    public static <Bean> List<Pair<String, String>> beanToSpelList(Bean bean, Map<String, List<String>> messageMapping) {
         return Arrays.stream(bean.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SpelCondition.class))
                 .map(f -> convertFieldToSpel(bean, f, messageMapping))
