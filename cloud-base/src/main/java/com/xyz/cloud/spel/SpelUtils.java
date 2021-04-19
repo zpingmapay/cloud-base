@@ -71,20 +71,15 @@ public class SpelUtils {
         return StringUtils.join(spelParts, " and ");
     }
 
-    public static <Bean> String beanToSpel(Bean bean, Map<String, List<String>> messageMapping) {
-        List<String> spelParts = beanToSpelList(bean, messageMapping).stream().map(Pair::getLeft).collect(Collectors.toList());
-        return StringUtils.join(spelParts, " and ");
-    }
-
-    public static <Bean> List<Pair<String, String>> beanToSpelList(Bean bean, Map<String, List<String>> messageMapping) {
+    public static <Bean> List<Pair<String, String>> beanToSpelList(Bean bean, Map<String, List<String>> fieldValueMapping) {
         return Arrays.stream(bean.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SpelCondition.class))
-                .map(f -> convertFieldToSpel(bean, f, messageMapping))
+                .map(f -> convertFieldToSpel(bean, f, fieldValueMapping))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    private static <Bean> Pair<String, String> convertFieldToSpel(Bean bean, Field field, Map<String, List<String>> messageMapping) {
+    private static <Bean> Pair<String, String> convertFieldToSpel(Bean bean, Field field, Map<String, List<String>> fieldValueMapping) {
         field.setAccessible(true);
         Object fieldValue = ReflectionUtils.getField(field, bean);
         if (fieldValue == null) {
@@ -102,16 +97,16 @@ public class SpelUtils {
             String logicRelation = spelRelation == IN ? " or " : " and ";
             spelRelation = spelRelation == IN ? EQ : NE;
             if (fieldValue instanceof Collection) {
-                return collectionToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, messageMapping);
+                return collectionToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, fieldValueMapping);
             } else {
-                return arrayToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, messageMapping);
+                return arrayToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, fieldValueMapping);
             }
         }
         String errorMsg;
-        if (CollectionUtils.isEmpty(messageMapping) || !messageMapping.containsKey(field.getName())) {
+        if (CollectionUtils.isEmpty(fieldValueMapping) || !fieldValueMapping.containsKey(field.getName())) {
             errorMsg = String.format(msg, fieldValue);
         } else {
-            errorMsg = String.format(msg, StringUtils.join(messageMapping.get(field.getName()), ","));
+            errorMsg = String.format(msg, StringUtils.join(fieldValueMapping.get(field.getName()), ","));
         }
         return new ImmutablePair<>(fieldToSpel(name, spelRelation, fieldValue), errorMsg);
     }
