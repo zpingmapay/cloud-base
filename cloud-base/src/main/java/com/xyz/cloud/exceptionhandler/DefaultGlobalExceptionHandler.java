@@ -8,6 +8,7 @@ import com.xyz.exception.CommonException;
 import com.xyz.exception.ValidationException;
 import com.xyz.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,7 +48,7 @@ public class DefaultGlobalExceptionHandler {
     @ResponseBody
     public ResultDto handleExceptionRequest(CommonException e) {
         log.error("System exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
-        return ResultDto.error(e.getMessage());
+        return ResultDto.error(e.getMsg());
     }
 
     @ExceptionHandler(FailedToObtainLockException.class)
@@ -67,7 +68,11 @@ public class DefaultGlobalExceptionHandler {
     @ResponseBody
     public ResultDto handleExceptionRequest(ValidationException e) {
         log.error("Validation exception, herders: {}", JsonUtils.beanToJson(httpHeadersHolder.getHeaderObject()), e);
-        return ResultDto.error(e.getMsg());
+        if (e.getCode() == null || !StringUtils.isNumeric(e.getCode())) {
+            return ResultDto.error(e.getMsg());
+        } else {
+            return ResultDto.error(Integer.parseInt(e.getCode()), e.getMsg());
+        }
     }
 }
 
