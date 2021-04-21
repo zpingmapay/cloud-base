@@ -1,6 +1,6 @@
 package com.xyz.cloud.dto;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static com.xyz.cloud.dto.ErrorMapping.getErrorMsg;
@@ -8,16 +8,16 @@ import static com.xyz.cloud.dto.ErrorMapping.mapErrorCode;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class ResultDto<T> {
-    private int code;
+    private Integer code;
 
     private String msg;
 
     private T data;
 
-    public ResultDto(int code, String msg, T data) {
+    public ResultDto(Integer code, String msg, T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -51,13 +51,13 @@ public class ResultDto<T> {
         return new ResultDto<>(errorCode, msg, null);
     }
 
-    public static <T> ResultDto<T> error(int code, String msg) {
+    public static <T> ResultDto<T> error(Integer code, String msg) {
         int errorCode = mapErrorCode(code);
         String errorMsg = getErrorMsg(code, msg);
         return new ResultDto<>(errorCode, errorMsg, null);
     }
 
-    public static <T> ResultDto<T> error(int code, String msg, T data) {
+    public static <T> ResultDto<T> error(Integer code, String msg, T data) {
         int errorCode = mapErrorCode(code);
         String errorMsg = getErrorMsg(code, msg);
         return new ResultDto<>(errorCode, errorMsg, data);
