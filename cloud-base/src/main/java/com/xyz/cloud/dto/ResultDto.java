@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Getter
 @NoArgsConstructor
 public class ResultDto<T> {
-    private int code;
+    private Integer code;
 
     private String msg;
 
