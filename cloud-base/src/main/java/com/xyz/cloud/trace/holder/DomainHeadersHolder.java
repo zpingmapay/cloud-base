@@ -32,7 +32,7 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
         String defaultAppId = String.valueOf(Integer.MIN_VALUE);
         String appId = this.getHeader(request, HEADER_APP_ID, defaultAppId);
         if (defaultAppId.equals(appId)) {
-            domainHeader.setAppId(this.getHeader(request, HEADER_CASE_APP_ID, String.valueOf(Integer.MIN_VALUE)));
+            domainHeader.setAppId(this.getHeader(request, HEADER_CASE_APP_ID, defaultAppId));
         } else {
             domainHeader.setAppId(appId);
         }
