@@ -4,19 +4,24 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class AtomicLong {
+    private final String key;
     private final RAtomicLong rAtomicLong;
     private final long cleanValue;
+    private final Consumer<String>[] cleanCallbacks;
     private static final String namespace = "com.xyz.cloud.atomic.long.";
 
-    public AtomicLong(String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays) {
+    public AtomicLong(String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays, Consumer<String>... cleanCallback) {
+        this.key = key;
         this.rAtomicLong = redissonClient.getAtomicLong(namespace.concat(key));
         if(!rAtomicLong.isExists()) {
             rAtomicLong.set(initValue);
             rAtomicLong.expire(ttlInDays, TimeUnit.DAYS);
         }
         this.cleanValue = cleanValue;
+        this.cleanCallbacks = cleanCallback;
     }
 
     public final long get() {
@@ -99,6 +104,15 @@ public class AtomicLong {
     private void cleanIfNecessary(long update) {
         if (update == cleanValue) {
             rAtomicLong.deleteAsync();
+            callback();
+        }
+    }
+
+    private void callback() {
+        if(cleanCallbacks != null && cleanCallbacks.length>0) {
+            for(Consumer callback: cleanCallbacks) {
+                callback.accept(this.key);
+            }
         }
     }
 }
