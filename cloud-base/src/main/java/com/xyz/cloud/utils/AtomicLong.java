@@ -11,11 +11,11 @@ public class AtomicLong {
     private final RAtomicLong rAtomicLong;
     private final long cleanValue;
     private final Consumer<String>[] cleanCallbacks;
-    private static final String namespace = "com.xyz.cloud.atomic.long.";
+    private static final String PREFIX = "atomic.long.";
 
-    public AtomicLong(String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays, Consumer<String>... cleanCallback) {
+    public AtomicLong(String namespace, String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays, Consumer<String>... cleanCallback) {
         this.key = key;
-        this.rAtomicLong = redissonClient.getAtomicLong(namespace.concat(key));
+        this.rAtomicLong = redissonClient.getAtomicLong(PREFIX.concat(namespace).concat(key));
         if(!rAtomicLong.isExists()) {
             rAtomicLong.set(initValue);
             rAtomicLong.expire(ttlInDays, TimeUnit.DAYS);
