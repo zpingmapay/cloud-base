@@ -80,6 +80,10 @@ public class AtomicLong {
         return (int) get();
     }
 
+    public boolean isCleaned() {
+        return !rAtomicLong.isExists() || get() == cleanValue;
+    }
+
     public long longValue() {
         return get();
     }
