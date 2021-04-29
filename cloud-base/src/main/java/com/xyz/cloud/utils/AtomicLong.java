@@ -4,24 +4,23 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 public class AtomicLong {
     private final String key;
     private final RAtomicLong rAtomicLong;
     private final long cleanValue;
-    private final Consumer<String>[] cleanCallbacks;
+    private final CleanListener[] cleanListeners;
     private static final String PREFIX = "atomic.long.";
 
-    public AtomicLong(String namespace, String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays, Consumer<String>... cleanCallback) {
+    public AtomicLong(String namespace, String key, long initValue, long cleanValue, RedissonClient redissonClient, int ttlInDays, CleanListener... cleanListeners) {
         this.key = key;
         this.rAtomicLong = redissonClient.getAtomicLong(PREFIX.concat(namespace).concat(key));
-        if(!rAtomicLong.isExists()) {
+        if (!rAtomicLong.isExists()) {
             rAtomicLong.set(initValue);
             rAtomicLong.expire(ttlInDays, TimeUnit.DAYS);
         }
         this.cleanValue = cleanValue;
-        this.cleanCallbacks = cleanCallback;
+        this.cleanListeners = cleanListeners;
     }
 
     public final long get() {
@@ -109,10 +108,14 @@ public class AtomicLong {
     }
 
     private void callback() {
-        if(cleanCallbacks != null && cleanCallbacks.length>0) {
-            for(Consumer callback: cleanCallbacks) {
-                callback.accept(this.key);
+        if (cleanListeners != null && cleanListeners.length > 0) {
+            for (CleanListener listener : cleanListeners) {
+                listener.onClean(this.key);
             }
         }
+    }
+
+    public interface CleanListener {
+        void onClean(String key);
     }
 }
