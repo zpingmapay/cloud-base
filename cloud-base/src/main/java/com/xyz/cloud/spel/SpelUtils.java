@@ -28,6 +28,7 @@ import static com.xyz.cloud.spel.SpelRelation.NE;
 
 public class SpelUtils {
     private final static ExpressionParser parser = new SpelExpressionParser();
+    private static final Pair<Boolean, List<String>> TRUE = new ImmutablePair<>(true, Collections.emptyList());
 
     public static String parse(String exp, ProceedingJoinPoint pjp) {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
@@ -53,12 +54,18 @@ public class SpelUtils {
      * @param contextObject context object
      * @return boolean result and the violation messages
      */
-    private static final Pair<Boolean, List<String>> TRUE = new ImmutablePair<>(true, Collections.emptyList());
-
     public static <B, C> Pair<Boolean, List<String>> evaluate(B spelBean, C contextObject) {
         return evaluate(spelBean, contextObject, null);
     }
 
+    /**
+     * Evaluate a context object against a spel bean.
+     *
+     * @param spelBean      POJO with fields annotated by @SpelCondition
+     * @param contextObject context object
+     * @param messageMapping message mapping
+     * @return boolean result and the violation messages
+     */
     public static <B, C> Pair<Boolean, List<String>> evaluate(B spelBean, C contextObject, Map<String, List<String>> messageMapping) {
         List<Pair<String, String>> spels = beanToSpelList(spelBean, messageMapping);
         List<String> result = spels.stream()
