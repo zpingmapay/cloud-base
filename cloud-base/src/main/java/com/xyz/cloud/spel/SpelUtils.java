@@ -1,6 +1,7 @@
 package com.xyz.cloud.spel;
 
 import com.xyz.function.TryWithCatch;
+import com.xyz.utils.ValidationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,7 +22,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.xyz.cloud.spel.SpelRelation.*;
+import static com.xyz.cloud.spel.SpelRelation.EQ;
+import static com.xyz.cloud.spel.SpelRelation.NE;
 
 
 public class SpelUtils {
@@ -35,11 +37,12 @@ public class SpelUtils {
         return TryWithCatch.apply(() -> parser.parseExpression(exp).getValue(context, String.class), method.getName());
     }
 
-    public static <C, R> R parse(String exp, C contextObject, Class<R> clazz, R defaultResult) {
+    @SuppressWarnings("unchecked")
+    public static <C, R> R parse(String exp, C contextObject, R defaultResult) {
         return TryWithCatch.apply(() -> {
             Expression expression = parser.parseExpression(exp);
             StandardEvaluationContext context = new StandardEvaluationContext(contextObject);
-            return expression.getValue(context, clazz);
+            return (R) expression.getValue(context, defaultResult.getClass());
         }, defaultResult);
     }
 
@@ -59,16 +62,18 @@ public class SpelUtils {
     public static <B, C> Pair<Boolean, List<String>> evaluate(B spelBean, C contextObject, Map<String, List<String>> messageMapping) {
         List<Pair<String, String>> spels = beanToSpelList(spelBean, messageMapping);
         List<String> result = spels.stream()
-                .filter(x -> !parse(x.getLeft(), contextObject, Boolean.class, false))
+                .filter(x -> !parse(x.getLeft(), contextObject, false))
                 .map(Pair::getRight)
                 .distinct()
                 .collect(Collectors.toList());
-        return CollectionUtils.isEmpty(result) ? TRUE : new ImmutablePair<>(false, result);
+        return CollectionUtils.isEmpty(result) ? TRUE : fail(result);
     }
 
     public static <Bean> String beanToSpel(Bean bean) {
-        List<String> spelParts = beanToSpelList(bean, null).stream().map(Pair::getLeft).collect(Collectors.toList());
-        return StringUtils.join(spelParts, " and ");
+        List<Pair<String, String>> spels = beanToSpelList(bean, null);
+        return spels.stream()
+                .map(Pair::getLeft)
+                .collect(Collectors.joining(" and "));
     }
 
     public static <Bean> List<Pair<String, String>> beanToSpelList(Bean bean, Map<String, List<String>> fieldValueMapping) {
@@ -79,7 +84,7 @@ public class SpelUtils {
                 .collect(Collectors.toList());
     }
 
-    private static <Bean> Pair<String, String> convertFieldToSpel(Bean bean, Field field, Map<String, List<String>> fieldValueMapping) {
+    private static <Bean> Pair<String, String> convertFieldToSpel(Bean bean, Field field, Map<String, List<String>> messageMapping) {
         field.setAccessible(true);
         Object fieldValue = ReflectionUtils.getField(field, bean);
         if (fieldValue == null) {
@@ -93,48 +98,51 @@ public class SpelUtils {
         String msg = annotation.msg();
         SpelRelation spelRelation = annotation.relation();
 
-        if (spelRelation == IN || spelRelation == NIN) {
-            String logicRelation = spelRelation == IN ? " or " : " and ";
-            spelRelation = spelRelation == IN ? EQ : NE;
-            if (fieldValue instanceof Collection) {
-                return collectionToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, fieldValueMapping);
-            } else {
-                return arrayToSpel(field, name, logicRelation, spelRelation, fieldValue, msg, fieldValueMapping);
-            }
+        switch (spelRelation) {
+            case IN:
+                return collectionToSpel(field, name, " or ", EQ, fieldValue, msg, messageMapping);
+            case NIN:
+                return collectionToSpel(field, name, " and ", NE, fieldValue, msg, messageMapping);
+            case HAS_ANY:
+                return hasAnyToSpel(field, name, fieldValue, msg, messageMapping);
+            case HAS_NONE:
+                return hasNoneToSpel(field, name, fieldValue, msg, messageMapping);
+            case HAS_ALL:
+                return hasAllToSpel(field, name, fieldValue, msg, messageMapping);
+            default:
+                String errorMsg = convertErrorMsg(field, msg, messageMapping, fieldValue);
+                return new ImmutablePair<>(fieldToSpel(name, spelRelation, fieldValue), errorMsg);
         }
-        String errorMsg;
-        if (CollectionUtils.isEmpty(fieldValueMapping) || !fieldValueMapping.containsKey(field.getName())) {
-            errorMsg = String.format(msg, fieldValue);
-        } else {
-            errorMsg = String.format(msg, StringUtils.join(fieldValueMapping.get(field.getName()), ","));
-        }
-        return new ImmutablePair<>(fieldToSpel(name, spelRelation, fieldValue), errorMsg);
     }
 
     private static Pair<String, String> collectionToSpel(Field field, String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg, Map<String, List<String>> messageMapping) {
-        Collection<?> itemList = (Collection<?>) fieldValue;
-        return itemToSpel(field, name, logicRelation, spelRelation, itemList, msg, messageMapping);
+        Collection<Object> itemList = fieldToCollection(fieldValue);
+        ValidationUtils.notEmpty(itemList, String.format("Cannot convert %s to spel", field.getName()));
+        String errorMsg = convertErrorMsg(field, msg, messageMapping, StringUtils.join(itemList, ","));
+        return itemToSpel(name, logicRelation, spelRelation, itemList, errorMsg);
     }
 
-    private static Pair<String, String> arrayToSpel(Field field, String name, String logicRelation, SpelRelation spelRelation, Object fieldValue, String msg, Map<String, List<String>> messageMapping) {
-        int length = Array.getLength(fieldValue);
-        List<Object> itemList = new ArrayList<>();
-        for (int i = 0; i < length; i++) {
-            Object itemValue = Array.get(fieldValue, i);
-            itemList.add(itemValue);
-        }
-        return itemToSpel(field, name, logicRelation, spelRelation, itemList, msg, messageMapping);
+    private static Pair<String, String> hasAnyToSpel(Field field, String name, Object fieldValue, String msg, Map<String, List<String>> messageMapping) {
+        Collection<Object> itemList = fieldToCollection(fieldValue);
+        ValidationUtils.notEmpty(itemList, String.format("Cannot convert %s to spel", field.getName()));
+        String spel = "T(org.springframework.util.CollectionUtils).containsAny(" + name + ", " + joinFieldValue(itemList) + ")";
+        String errorMsg = convertErrorMsg(field, msg, messageMapping, StringUtils.join(itemList, ","));
+        return new ImmutablePair<>(spel, errorMsg);
     }
 
-    private static Pair<String, String> itemToSpel(Field field, String name, String logicRelation, SpelRelation spelRelation, Collection<?> itemList, String msg, Map<String, List<String>> messageMapping) {
-        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
-        String spel = "(" + StringUtils.join(list, logicRelation) + ")";
-        String errorMsg;
-        if (CollectionUtils.isEmpty(messageMapping) || !messageMapping.containsKey(field.getName())) {
-            errorMsg = String.format(msg, StringUtils.join(itemList, ","));
-        } else {
-            errorMsg = String.format(msg, StringUtils.join(messageMapping.get(field.getName()), ","));
-        }
+    private static Pair<String, String> hasAllToSpel(Field field, String name, Object fieldValue, String msg, Map<String, List<String>> messageMapping) {
+        Collection<Object> itemList = fieldToCollection(fieldValue);
+        ValidationUtils.notEmpty(itemList, String.format("Cannot convert %s to spel", field.getName()));
+        String spel = name + ".containsAll(" + joinFieldValue(itemList) + ")";
+        String errorMsg = convertErrorMsg(field, msg, messageMapping, StringUtils.join(itemList, ","));
+        return new ImmutablePair<>(spel, errorMsg);
+    }
+
+    private static Pair<String, String> hasNoneToSpel(Field field, String name, Object fieldValue, String msg, Map<String, List<String>> messageMapping) {
+        Collection<Object> itemList = fieldToCollection(fieldValue);
+        ValidationUtils.notEmpty(itemList, String.format("Cannot convert %s to spel", field.getName()));
+        String spel = "!T(org.springframework.util.CollectionUtils).containsAny(" + name + ", " + joinFieldValue(itemList) + ")";
+        String errorMsg = convertErrorMsg(field, msg, messageMapping, StringUtils.join(itemList, ","));
         return new ImmutablePair<>(spel, errorMsg);
     }
 
@@ -148,6 +156,53 @@ public class SpelUtils {
             sb.append(fieldValue);
         }
         return sb.toString();
+    }
+
+    private static Pair<String, String> itemToSpel(String name, String logicRelation, SpelRelation spelRelation, Collection<?> itemList, String errorMsg) {
+        List<String> list = itemList.stream().map(x -> fieldToSpel(name, spelRelation, x)).collect(Collectors.toList());
+        String spel = "(" + StringUtils.join(list, logicRelation) + ")";
+        return new ImmutablePair<>(spel, errorMsg);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Collection<Object> fieldToCollection(Object fieldValue) {
+        Collection<Object> itemList;
+        if (fieldValue instanceof Collection) {
+            itemList = (Collection<Object>) fieldValue;
+        } else {
+            int length = Array.getLength(fieldValue);
+            itemList = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                Object itemValue = Array.get(fieldValue, i);
+                itemList.add(itemValue);
+            }
+        }
+        return itemList;
+    }
+
+    private static String joinFieldValue(Collection<Object> itemList) {
+        String joint = itemList.stream().map(item -> {
+            if (item instanceof String) {
+                return "'" + item + "'";
+            } else {
+                return item.toString();
+            }
+        }).collect(Collectors.joining(","));
+        return "{" + joint + "}";
+    }
+
+    private static String convertErrorMsg(Field field, String msg, Map<String, List<String>> messageMapping, Object fieldValue) {
+        String errorMsg;
+        if (CollectionUtils.isEmpty(messageMapping) || !messageMapping.containsKey(field.getName())) {
+            errorMsg = String.format(msg, fieldValue);
+        } else {
+            errorMsg = String.format(msg, StringUtils.join(messageMapping.get(field.getName()), ","));
+        }
+        return errorMsg;
+    }
+
+    private static Pair<Boolean, List<String>> fail(List<String> reasons) {
+        return new ImmutablePair<>(false, reasons);
     }
 
 }
