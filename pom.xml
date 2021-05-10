@@ -52,11 +52,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>ognl</groupId>
-                <artifactId>ognl</artifactId>
-                <version>3.2.20</version>
-            </dependency>
-            <dependency>
                 <groupId>com.xyz</groupId>
                 <artifactId>common-clients</artifactId>
                 <version>${project.version}</version>
