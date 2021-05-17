@@ -32,12 +32,8 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
         domainHeader.setAppId(this.getHeader(request, HEADER_APP_ID, DEFAULT_APP_ID));
         domainHeader.setTraceId(this.getHeader(request, HEADER_TRACE_ID, Uuid.generate()));
         domainHeader.setTimestamp(this.getHeader(request, HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis())));
-        if (StringUtils.isNotBlank(request.getHeader(HEADER_LNG))) {
-            domainHeader.setLng(Double.parseDouble(request.getHeader(HEADER_LNG)));
-        }
-        if (StringUtils.isNotBlank(request.getHeader(HEADER_LAT))) {
-            domainHeader.setLat(Double.parseDouble(request.getHeader(HEADER_LAT)));
-        }
+        domainHeader.setLng(request.getHeader(HEADER_LNG));
+        domainHeader.setLat(request.getHeader(HEADER_LAT));
         String userId = getUserIdFromCtx();
         domainHeader.setUserId(userId);
         setHeaderObject(domainHeader);
@@ -96,16 +92,12 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
 
     @Data
     public static class DomainHeader {
-        private double lng;
-        private double lat;
+        private String lng;
+        private String lat;
         private String traceId;
         private String timestamp;
         private String appId;
         private String userId;
-
-        public int getAppIdAsInt() {
-            return Integer.valueOf(appId);
-        }
 
         @Override
         public String toString() {
