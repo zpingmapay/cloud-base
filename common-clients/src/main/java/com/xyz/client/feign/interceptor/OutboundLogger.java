@@ -4,7 +4,6 @@ import feign.Logger;
 import feign.Request;
 import feign.Response;
 import feign.Util;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
