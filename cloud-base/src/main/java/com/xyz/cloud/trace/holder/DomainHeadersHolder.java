@@ -22,20 +22,14 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
     private static final String HEADER_LNG = "lng";
     private static final String HEADER_LAT = "lat";
     private static final String HEADER_APP_ID = "app-id";
-    private static final String HEADER_CASE_APP_ID = "appId";
+    private static final String DEFAULT_APP_ID = String.valueOf(Integer.MIN_VALUE);
 
     private static final ThreadLocal<Map<String, Object>> headerThreadLocal = new ThreadLocal<>();
 
     @Override
     public DomainHeader extract(HttpServletRequest request) {
         DomainHeader domainHeader = new DomainHeader();
-        String defaultAppId = String.valueOf(Integer.MIN_VALUE);
-        String appId = this.getHeader(request, HEADER_APP_ID, defaultAppId);
-        if (defaultAppId.equals(appId)) {
-            domainHeader.setAppId(this.getHeader(request, HEADER_CASE_APP_ID, defaultAppId));
-        } else {
-            domainHeader.setAppId(appId);
-        }
+        domainHeader.setAppId(this.getHeader(request, HEADER_APP_ID, DEFAULT_APP_ID));
         domainHeader.setTraceId(this.getHeader(request, HEADER_TRACE_ID, Uuid.generate()));
         domainHeader.setTimestamp(this.getHeader(request, HEADER_TIMESTAMP, String.valueOf(System.currentTimeMillis())));
         if (StringUtils.isNotBlank(request.getHeader(HEADER_LNG))) {
@@ -84,13 +78,16 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
         });
     }
 
-    private String normalize(String key) {
-        return key.toLowerCase().replaceAll("-", "");
-    }
-
     private String getHeader(HttpServletRequest request, String key, String defaultValue) {
         String header = request.getHeader(key);
+        if(StringUtils.isBlank(header)) {
+            header = request.getHeader(normalize(key));
+        }
         return StringUtils.isBlank(header) ? defaultValue : header;
+    }
+
+    private String normalize(String key) {
+        return key.toLowerCase().replaceAll("-", "");
     }
 
     private String getUserIdFromCtx() {
