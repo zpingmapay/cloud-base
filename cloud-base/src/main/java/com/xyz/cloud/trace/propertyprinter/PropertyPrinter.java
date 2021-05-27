@@ -1,4 +1,4 @@
-package com.xyz.cloud.propertyprinter;
+package com.xyz.cloud.trace.propertyprinter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;

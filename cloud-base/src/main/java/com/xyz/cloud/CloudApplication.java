@@ -1,6 +1,6 @@
 package com.xyz.cloud;
 
-import com.xyz.cloud.propertyprinter.PrintSpringProperties;
+import com.xyz.cloud.trace.propertyprinter.PrintSpringProperties;
 import com.xyz.cloud.exceptionhandler.DefaultGlobalExceptionHandler;
 import com.xyz.cloud.jwt.annotation.EnableJwt;
 import com.xyz.cloud.lock.annotation.EnableLock;

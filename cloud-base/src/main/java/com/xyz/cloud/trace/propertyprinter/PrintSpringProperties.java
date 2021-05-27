@@ -1,4 +1,4 @@
-package com.xyz.cloud.propertyprinter;
+package com.xyz.cloud.trace.propertyprinter;
 
 import org.springframework.context.annotation.Import;
 
