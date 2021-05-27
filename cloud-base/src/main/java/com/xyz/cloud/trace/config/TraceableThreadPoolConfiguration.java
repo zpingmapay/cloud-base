@@ -6,6 +6,7 @@ import com.xyz.cloud.trace.threadpool.TraceableExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.task.TaskSchedulerBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     @Value("${cloud.thread.queue.capacity: 20}")
     private int queueCapacity;
 
+    @ConditionalOnMissingBean(ThreadPoolTaskExecutor.class)
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new TraceableExecutor();
@@ -38,6 +40,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
         return executor;
     }
 
+    @ConditionalOnMissingBean(TaskScheduler.class)
     @Bean(destroyMethod = "shutdown")
     public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
         ThreadPoolTaskScheduler scheduler = builder.build();
