@@ -22,7 +22,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     @Value("${cloud.thread.pool.name: task-pool-}")
-    private String poolName;
+    private String taskPoolName;
+    @Value("${cloud.scheduler.pool.name: scheduler-pool-}")
+    private String schedulerPoolName;
     @Value("${cloud.thread.pool.size: 20}")
     private int poolSize;
     @Value("${cloud.thread.queue.capacity: 20}")
@@ -32,7 +34,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new TraceableExecutor();
-        executor.setThreadNamePrefix(poolName);
+        executor.setThreadNamePrefix(taskPoolName);
         executor.setCorePoolSize(poolSize);
         executor.setMaxPoolSize(poolSize);
         executor.setQueueCapacity(queueCapacity);
@@ -44,7 +46,7 @@ public class TraceableThreadPoolConfiguration implements AsyncConfigurer {
     @Bean(destroyMethod = "shutdown")
     public TaskScheduler taskScheduler(TaskSchedulerBuilder builder) {
         ThreadPoolTaskScheduler scheduler = builder.build();
-        scheduler.setThreadNamePrefix("scheduler-pool-");
+        scheduler.setThreadNamePrefix(schedulerPoolName);
         scheduler.setPoolSize(poolSize);
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         scheduler.setErrorHandler(throwable -> {
