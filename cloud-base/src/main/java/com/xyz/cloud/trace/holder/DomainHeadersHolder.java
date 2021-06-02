@@ -99,6 +99,10 @@ public class DomainHeadersHolder implements HttpHeadersHolder<DomainHeadersHolde
         private String appId;
         private String userId;
 
+        public int getAppIdAsInt() {
+            return Integer.valueOf(appId);
+        }
+
         @Override
         public String toString() {
             return JsonUtils.beanToJson(this);
