@@ -7,7 +7,7 @@ public interface Randomable {
         int MAX_PRIORITY = 1;
         int MIN_PRIORITY = 10;
 
-        @Range(min = MAX_PRIORITY, max = MIN_PRIORITY, message = "Priority:[" + MAX_PRIORITY + " , " + MIN_PRIORITY + "]")
+        @Range(min = MAX_PRIORITY, max = MIN_PRIORITY, message = "Priority:[" + MAX_PRIORITY + "," + MIN_PRIORITY + "]")
         int getPriority();
     }
 
