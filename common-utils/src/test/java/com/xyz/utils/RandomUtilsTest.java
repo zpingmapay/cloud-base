@@ -33,10 +33,10 @@ public class RandomUtilsTest {
 
     @Test
     public void testPertentagableRandom() {
-        List<PercentageRule> list = Lists.newArrayList();
-        list.add(new PercentageRule(1, 60));
-        list.add(new PercentageRule(2, 30));
-        list.add(new PercentageRule(3, 10));
+        PercentageRule[] list = new PercentageRule[3];
+        list[0] = new PercentageRule(1, 60);
+        list[1] = new PercentageRule(2, 30);
+        list[2] = new PercentageRule(3, 10);
 
 
         Map<Integer, List<PercentageRule>> group = IntStream.range(0, 10000)

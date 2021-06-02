@@ -1,11 +1,17 @@
 package com.xyz.utils;
 
+import com.google.common.collect.Lists;
+
 import java.util.Comparator;
 import java.util.List;
 
 import static com.xyz.utils.RandomUtils.Prioritiable.MIN_PRIORITY;
 
 public class RandomUtils {
+    public static <T extends Prioritiable> T randomByPriority(T[] list) {
+        return randomByPriority(Lists.newArrayList(list));
+    }
+
     public static <T extends Prioritiable> T randomByPriority(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
         int total = list.stream().mapToInt(Prioritiable::getPriority).sum();
@@ -24,6 +30,9 @@ public class RandomUtils {
                 .orElseThrow(IllegalStateException::new);
     }
 
+    public static <T extends Percentagable> T randomByPercentage(T[] list) {
+        return randomByPercentage(Lists.newArrayList(list));
+    }
 
     public static <T extends Percentagable> T randomByPercentage(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
