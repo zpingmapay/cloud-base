@@ -30,11 +30,11 @@ public class RandomUtils {
                 .orElseThrow(IllegalStateException::new);
     }
 
-    public static <T extends Randomable.ByWeight> T randomByPercentage(T[] list) {
-        return randomByPercentage(Lists.newArrayList(list));
+    public static <T extends Randomable.ByWeight> T randomByWeight(T[] list) {
+        return randomByWeight(Lists.newArrayList(list));
     }
 
-    public static <T extends Randomable.ByWeight> T randomByPercentage(List<T> list) {
+    public static <T extends Randomable.ByWeight> T randomByWeight(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
         int total = list.stream().mapToInt(Randomable.ByWeight::getWeight).sum();
         ValidationUtils.isTrue(100 == total, "Total percentage is not 100%");

@@ -1,6 +1,5 @@
 package com.xyz.utils;
 
-import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -15,11 +14,10 @@ public class RandomUtilsTest {
 
     @Test
     public void testRandomByPriority() {
-        List<PriorityRule> list = Lists.newArrayList();
-        list.add(new PriorityRule(1, 1));
-        list.add(new PriorityRule(2, 2));
-        list.add(new PriorityRule(3, 3));
-
+        PriorityRule[] list = new PriorityRule[3];
+        list[0] = new PriorityRule(1, 1);
+        list[1] = new PriorityRule(2, 2);
+        list[2] = new PriorityRule(3, 3);
 
         Map<Integer, List<PriorityRule>> group = IntStream.range(0, 10000)
                 .mapToObj(x -> RandomUtils.randomByPriority(list))
@@ -33,15 +31,15 @@ public class RandomUtilsTest {
 
     @Test
     public void testRandomByPercentage() {
-        PercentageRule[] list = new PercentageRule[3];
-        list[0] = new PercentageRule(1, 60);
-        list[1] = new PercentageRule(2, 30);
-        list[2] = new PercentageRule(3, 10);
+        WeightRule[] list = new WeightRule[3];
+        list[0] = new WeightRule(1, 60);
+        list[1] = new WeightRule(2, 30);
+        list[2] = new WeightRule(3, 10);
 
 
-        Map<Integer, List<PercentageRule>> group = IntStream.range(0, 10000)
-                .mapToObj(x -> RandomUtils.randomByPercentage(list))
-                .collect(Collectors.groupingBy(PercentageRule::getId));
+        Map<Integer, List<WeightRule>> group = IntStream.range(0, 10000)
+                .mapToObj(x -> RandomUtils.randomByWeight(list))
+                .collect(Collectors.groupingBy(WeightRule::getId));
         int count1 = group.get(1).size();
         int count2 = group.get(2).size();
         int count3 = group.get(3).size();
@@ -58,7 +56,7 @@ public class RandomUtilsTest {
 
     @Data
     @AllArgsConstructor
-    public static class PercentageRule implements Randomable.ByWeight {
+    public static class WeightRule implements Randomable.ByWeight {
         private int id;
         private int weight;
     }
