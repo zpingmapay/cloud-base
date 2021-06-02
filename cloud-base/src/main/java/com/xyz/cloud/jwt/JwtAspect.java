@@ -49,7 +49,6 @@ public class JwtAspect {
         String token = request.getHeader(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
-
         }
         ValidationUtils.isTrue(StringUtils.isNoneBlank(token), "Access token is required");
         token = jwtTokenFactory.findByKey(token);
