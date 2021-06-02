@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class RandomUtilsTest {
 
     @Test
-    public void testPrioritableRandom() {
+    public void testRandomByPriority() {
         List<PriorityRule> list = Lists.newArrayList();
         list.add(new PriorityRule(1, 1));
         list.add(new PriorityRule(2, 2));
@@ -28,11 +28,11 @@ public class RandomUtilsTest {
         int count2 = group.get(2).size();
         int count3 = group.get(3).size();
 
-        Assert.isTrue(count1> count2 && count2 > count3, "priority incorrect");
+        Assert.isTrue(count1> count2 && count2 > count3, "by priority incorrect");
     }
 
     @Test
-    public void testPertentagableRandom() {
+    public void testRandomByPercentage() {
         PercentageRule[] list = new PercentageRule[3];
         list[0] = new PercentageRule(1, 60);
         list[1] = new PercentageRule(2, 30);
@@ -46,20 +46,20 @@ public class RandomUtilsTest {
         int count2 = group.get(2).size();
         int count3 = group.get(3).size();
 
-        Assert.isTrue(count1> count2 && count2 > count3, "percentage incorrect");
+        Assert.isTrue(count1> count2 && count2 > count3, "by weight incorrect");
     }
 
     @Data
     @AllArgsConstructor
-    public static class PriorityRule implements RandomUtils.Prioritiable {
+    public static class PriorityRule implements Randomable.ByPriority {
         private int id;
         private int priority;
     }
 
     @Data
     @AllArgsConstructor
-    public static class PercentageRule implements RandomUtils.Percentagable {
+    public static class PercentageRule implements Randomable.ByWeight {
         private int id;
-        private int percentage;
+        private int weight;
     }
 }

@@ -5,17 +5,17 @@ import com.google.common.collect.Lists;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.xyz.utils.RandomUtils.Prioritiable.MIN_PRIORITY;
+import static com.xyz.utils.Randomable.ByPriority.MIN_PRIORITY;
 
 public class RandomUtils {
-    public static <T extends Prioritiable> T randomByPriority(T[] list) {
+    public static <T extends Randomable.ByPriority> T randomByPriority(T[] list) {
         return randomByPriority(Lists.newArrayList(list));
     }
 
-    public static <T extends Prioritiable> T randomByPriority(List<T> list) {
+    public static <T extends Randomable.ByPriority> T randomByPriority(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
-        int total = list.stream().mapToInt(Prioritiable::getPriority).sum();
-        int max = list.stream().mapToInt(Prioritiable::getPriority).max().orElse(MIN_PRIORITY);
+        int total = list.stream().mapToInt(Randomable.ByPriority::getPriority).sum();
+        int max = list.stream().mapToInt(Randomable.ByPriority::getPriority).max().orElse(MIN_PRIORITY);
 
         int indexRandom = org.apache.commons.lang3.RandomUtils.nextInt(0, total);
         int index = 0;
@@ -26,40 +26,28 @@ public class RandomUtils {
             }
         }
         return list.stream()
-                .min(Comparator.comparing(Prioritiable::getPriority))
+                .min(Comparator.comparing(Randomable.ByPriority::getPriority))
                 .orElseThrow(IllegalStateException::new);
     }
 
-    public static <T extends Percentagable> T randomByPercentage(T[] list) {
+    public static <T extends Randomable.ByWeight> T randomByPercentage(T[] list) {
         return randomByPercentage(Lists.newArrayList(list));
     }
 
-    public static <T extends Percentagable> T randomByPercentage(List<T> list) {
+    public static <T extends Randomable.ByWeight> T randomByPercentage(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
-        int total = list.stream().mapToInt(Percentagable::getPercentage).sum();
+        int total = list.stream().mapToInt(Randomable.ByWeight::getWeight).sum();
         ValidationUtils.isTrue(100 == total, "Total percentage is not 100%");
         int indexRandom = org.apache.commons.lang3.RandomUtils.nextInt(0, 100);
         int index = 0;
         for (T t : list) {
-            index += t.getPercentage();
+            index += t.getWeight();
             if (indexRandom < index) {
                 return t;
             }
         }
         return list.stream()
-                .max(Comparator.comparing(Percentagable::getPercentage))
+                .max(Comparator.comparing(Randomable.ByWeight::getWeight))
                 .orElseThrow(IllegalStateException::new);
-    }
-
-
-    public interface Prioritiable {
-        int MAX_PRIORITY = 1;
-        int MIN_PRIORITY = 10;
-
-        int getPriority();
-    }
-
-    public interface Percentagable {
-        int getPercentage();
     }
 }
