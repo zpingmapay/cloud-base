@@ -12,7 +12,7 @@ public interface Randomable {
     }
 
     interface ByWeight {
-        @Range(min = 1, max = 100, message = "Priority:[1,100)")
+        @Range(min = 1, max = 100, message = "Weight:[1,100)")
         int getWeight();
     }
 }
