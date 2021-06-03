@@ -14,8 +14,8 @@ public class RandomUtils {
 
     public static <T extends Randomable.ByPriority> T randomByPriority(List<T> list) {
         ValidationUtils.notEmpty(list, "list can not be empty");
-        int total = list.stream().mapToInt(Randomable.ByPriority::getPriority).sum();
         int max = list.stream().mapToInt(Randomable.ByPriority::getPriority).max().orElse(MIN_PRIORITY);
+        int total = list.stream().mapToInt(x -> 1 + max - x.getPriority()).sum();
 
         int indexRandom = org.apache.commons.lang3.RandomUtils.nextInt(0, total);
         int index = 0;

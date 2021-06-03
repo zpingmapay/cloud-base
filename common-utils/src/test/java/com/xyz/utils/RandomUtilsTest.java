@@ -17,7 +17,7 @@ public class RandomUtilsTest {
         PriorityRule[] list = new PriorityRule[3];
         list[0] = new PriorityRule(1, 1);
         list[1] = new PriorityRule(2, 2);
-        list[2] = new PriorityRule(3, 3);
+        list[2] = new PriorityRule(3, 10);
 
         Map<Integer, List<PriorityRule>> group = IntStream.range(0, 10000)
                 .mapToObj(x -> RandomUtils.randomByPriority(list))
@@ -26,7 +26,7 @@ public class RandomUtilsTest {
         int count2 = group.get(2).size();
         int count3 = group.get(3).size();
 
-        Assert.isTrue(count1> count2 && count2 > count3, "by priority incorrect");
+        Assert.isTrue(count1 > count2 && count2 > count3 && count3 > 0, "by priority incorrect");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class RandomUtilsTest {
         int count2 = group.get(2).size();
         int count3 = group.get(3).size();
 
-        Assert.isTrue(count1> count2 && count2 > count3, "by weight incorrect");
+        Assert.isTrue(count1 > count2 && count2 > count3, "by weight incorrect");
     }
 
     @Data
