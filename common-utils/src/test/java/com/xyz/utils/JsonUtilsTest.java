@@ -1,7 +1,6 @@
 package com.xyz.utils;
 
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;

@@ -18,19 +18,19 @@ public class PageDto<T> {
     /**
      * 总记录数
      */
-    private long total;
+    private Long total;
     /**
      * 总页数
      */
-    private long totalPage;
+    private Long totalPage;
     /**
      * 页码
      */
-    private int pageNo = 1;
+    private Integer pageNo = 1;
     /**
      * 每页大小
      */
-    private int pageSize;
+    private Integer pageSize;
     /**
      * 本页数据
      */
