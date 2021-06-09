@@ -24,6 +24,7 @@ public class OAuth1Validator {
     }
 
     public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
+        ValidationUtils.notNull(oAuthServerConfig, "Invalid OAuth1 consumer key");
         String consumerSecret = oAuthServerConfig.findConsumerSecretByKey(consumerKey);
         ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
         String baseUrl = oAuthServerConfig.findBaseUrlByKey(consumerKey);
