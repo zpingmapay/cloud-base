@@ -27,7 +27,7 @@ public class OAuth1Validator {
     }
 
     public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
-        ValidationUtils.isTrue(oAuthServerConfig!=null && MapUtils.isNotEmpty(oAuthServerConfig.getOauth()), "Invalid OAuth1 consumer key");
+        ValidationUtils.isTrue(oAuthServerConfig!=null && MapUtils.isNotEmpty(oAuthServerConfig.getOauth()), "Server side oauth keys are missing");
         String consumerSecret = oAuthServerConfig.findConsumerSecretByKey(consumerKey);
         ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
         String baseUrl = oAuthServerConfig.findBaseUrlByKey(consumerKey);
