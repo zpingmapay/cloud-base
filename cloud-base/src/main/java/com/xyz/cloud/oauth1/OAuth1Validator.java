@@ -1,10 +1,13 @@
 package com.xyz.cloud.oauth1;
 
+import com.google.common.collect.Maps;
 import com.xyz.exception.AccessException;
 import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.oauth.*;
 import net.oauth.server.OAuthServlet;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +27,7 @@ public class OAuth1Validator {
     }
 
     public void validateRequest(String consumerKey, HttpServletRequest httpRequest) {
-        ValidationUtils.notNull(oAuthServerConfig, "Invalid OAuth1 consumer key");
+        ValidationUtils.isTrue(oAuthServerConfig!=null && MapUtils.isNotEmpty(oAuthServerConfig.getOauth()), "Invalid OAuth1 consumer key");
         String consumerSecret = oAuthServerConfig.findConsumerSecretByKey(consumerKey);
         ValidationUtils.notBlank(consumerSecret, "Invalid OAuth1 consumer key");
         String baseUrl = oAuthServerConfig.findBaseUrlByKey(consumerKey);
