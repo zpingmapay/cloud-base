@@ -48,7 +48,8 @@ public class ResultDto<T> {
 
     public static <T> ResultDto<T> error(String msg) {
         int errorCode = mapErrorCode(INTERNAL_SERVER_ERROR.value());
-        return new ResultDto<>(errorCode, msg, null);
+        String errorMsg = getErrorMsg(OK.value(), msg);
+        return new ResultDto<>(errorCode, errorMsg, null);
     }
 
     public static <T> ResultDto<T> error(Integer code, String msg) {
@@ -62,5 +63,4 @@ public class ResultDto<T> {
         String errorMsg = getErrorMsg(code, msg);
         return new ResultDto<>(errorCode, errorMsg, data);
     }
-
 }

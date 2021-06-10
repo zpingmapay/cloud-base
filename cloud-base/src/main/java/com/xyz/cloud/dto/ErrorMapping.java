@@ -15,6 +15,9 @@ public class ErrorMapping {
     }
 
     public static String getErrorMsg(int code, String msg) {
+        if(StringUtils.isNotBlank(msg)) {
+            return msg;
+        }
         return errorCodes.stream().filter(x -> x.getHttpCode() == code).map(
                 x -> {
                     String formattedMsg = x.getMsg();
