@@ -5,19 +5,39 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
-@Getter
-@RequiredArgsConstructor
-public enum Status {
-    INACTIVE(0, "有效"),
-    ACTIVE(1, "无效");
+public class Status {
+    @Getter
+    @RequiredArgsConstructor
+    public enum EntityStatus {
+        INACTIVE(0, "有效"),
+        ACTIVE(1, "无效");
 
-    private final int code;
-    private final String desc;
+        private final int code;
+        private final String desc;
 
-    public static Status of(int code) {
-        return Arrays.stream(Status.values())
-                .filter(x -> code == x.getCode())
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown status " + code));
+        public static EntityStatus of(int code) {
+            return Arrays.stream(EntityStatus.values())
+                    .filter(x -> code == x.getCode())
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown entity status " + code));
+        }
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum TxStatus {
+        Init(0, "已提交"),
+        Success(1, "已完成"),
+        Failed(2, "已失败");
+
+        private final int code;
+        private final String desc;
+
+        public static TxStatus of(int code) {
+            return Arrays.stream(TxStatus.values())
+                    .filter(x -> code == x.getCode())
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown tx status " + code));
+        }
     }
 }
