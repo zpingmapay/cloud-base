@@ -14,6 +14,7 @@ public class TimeUtils {
     public static final String DATE_SMALL_STR = "yyyy-MM-dd";
     public static final String DATE_FULL_STR = "yyyy-MM-dd HH:mm:ss";
     public static final String SHORT_YEAR_DATE_MIN_STR_TIME = "yyMMddHHmmss";
+    public static final String TIME_FULL_STR = "yyyyMMddHHmmss";
     public static final String DATE_FULL_STR_BIG_ALL = "yyyyMMddHHmmssSSS";
     public static final String DATE_FULL_STR_MIN_YEAR = "yyMMddHHmmss";
     public static final String DATE_TIME_MIN_STR = "HH:mm:ss";
