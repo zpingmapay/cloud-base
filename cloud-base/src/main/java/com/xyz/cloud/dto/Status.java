@@ -9,8 +9,8 @@ public class Status {
     @Getter
     @RequiredArgsConstructor
     public enum EntityStatus {
-        INACTIVE(0, "有效"),
-        ACTIVE(1, "无效");
+        INACTIVE(0, "无效"),
+        ACTIVE(1, "有效");
 
         private final int code;
         private final String desc;
