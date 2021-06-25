@@ -1,9 +1,9 @@
 package com.xyz.cloud.jwt;
 
 import com.xyz.cloud.jwt.annotation.JwtSecured;
-import com.xyz.cloud.trace.holder.DefaultHeadersHolder;
-import com.xyz.cloud.trace.holder.HttpHeadersHolder;
 import com.xyz.exception.AccessException;
+import com.xyz.exception.ValidationException;
+import com.xyz.utils.ValidationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,7 +15,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.xyz.cloud.jwt.JwtTokenProvider.HEADER_ACCESS_TOKEN;
@@ -26,14 +25,20 @@ import static org.springframework.web.context.request.RequestContextHolder.getRe
 @Order(1000)
 public class JwtAspect {
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFactory jwtTokenFactory;
 
-    public JwtAspect(JwtTokenProvider jwtTokenProvider) {
+    public JwtAspect(JwtTokenProvider jwtTokenProvider, JwtTokenFactory jwtTokenFactory) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenFactory = jwtTokenFactory;
     }
 
     @Around(value = "@annotation(annotation) || @within(annotation)", argNames = "pjp,annotation")
     public Object authWithJwt(ProceedingJoinPoint pjp, JwtSecured annotation) throws Throwable {
-        validJwt();
+        try {
+            validJwt();
+        } catch (ValidationException e) {
+            throw new AccessException(e.getMessage());
+        }
         return pjp.proceed();
     }
 
@@ -41,24 +46,17 @@ public class JwtAspect {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(requestAttributes).getRequest();
 
-        HttpHeadersHolder<Map<String, String>> httpHeadersHolder = new DefaultHeadersHolder();
-        httpHeadersHolder.extract(request);
-
-        String token = httpHeadersHolder.getString(HEADER_ACCESS_TOKEN);
+        String token = request.getHeader(HEADER_ACCESS_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = request.getParameter(HEADER_ACCESS_TOKEN);
         }
-        assertTrue(token!=null, "Access token is required");
+        ValidationUtils.isTrue(StringUtils.isNoneBlank(token), "Access token is required");
+        token = jwtTokenFactory.findByKey(token);
+        ValidationUtils.isTrue(StringUtils.isNoneBlank(token), "Invalid access token");
         String userId = jwtTokenProvider.getUserIdFromToken(token);
-        assertTrue(StringUtils.isNotBlank(userId), "Invalid access token");
+        ValidationUtils.isTrue(StringUtils.isNotBlank(userId), "Invalid access token");
 
         RequestContextHolder.getRequestAttributes().setAttribute(JwtTokenProvider.USER_ID, userId, RequestAttributes.SCOPE_REQUEST);
-    }
-
-    private void assertTrue(boolean condition, String msg) {
-        if (!condition) {
-            throw new AccessException(msg);
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 package com.xyz.client.feign.interceptor;
 
 import com.xyz.client.HttpClientUtils;
-import com.xyz.client.OAuth1HttpClient;
+import com.xyz.client.Oauth1Signer;
 import com.xyz.client.config.ClientCredentialConfig;
 import com.xyz.exception.CommonException;
 import feign.RequestInterceptor;
@@ -15,7 +15,6 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,11 +37,9 @@ public class OAuth1Interceptor implements RequestInterceptor {
     private static final int DEFAULT_CONNECT_TIMEOUT = 6000;
     private static final int DEFAULT_READ_TIMEOUT = 30000;
 
-    private final CloseableHttpClient httpClient;
     private final ClientCredentialConfig clientCredentialConfig;
 
-    public OAuth1Interceptor(CloseableHttpClient httpClient, ClientCredentialConfig clientCredentialConfig) {
-        this.httpClient = httpClient;
+    public OAuth1Interceptor(ClientCredentialConfig clientCredentialConfig) {
         this.clientCredentialConfig = clientCredentialConfig;
     }
 
@@ -51,10 +48,9 @@ public class OAuth1Interceptor implements RequestInterceptor {
         try {
             HttpUriRequest httpRequest = toHttpUriRequest(template);
             ClientCredentialConfig.OAuthConfig oauthKey = clientCredentialConfig.findOAuthConfigByUrl(template.feignTarget().url());
-            OAuth1HttpClient oAuth1HttpClient = OAuth1HttpClient.getOrCreate(httpClient, oauthKey.getKey(), oauthKey.getSecret());
-            String token = oAuth1HttpClient.sign(httpRequest);
+            String token = Oauth1Signer.getOrCreate(oauthKey.getKey(), oauthKey.getSecret()).sign(httpRequest);
             template.header(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
-            template.header(OAuth1HttpClient.HEADER_AUTH_TOKEN, token);
+            template.header(Oauth1Signer.HEADER_AUTH_TOKEN, token);
         } catch (Exception e) {
             log.error("Failed to sign request", e);
             throw new CommonException(null, "Failed to sign request", e);

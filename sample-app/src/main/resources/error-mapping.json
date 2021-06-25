@@ -1,0 +1,32 @@
+[
+  {
+    "httpCode": 200,
+    "sysCode": 0,
+    "msg": "请求成功"
+  },
+  {
+    "httpCode": 400,
+    "sysCode": 2,
+    "msg": "请求参数错误"
+  },
+  {
+    "httpCode": 401,
+    "sysCode": 10,
+    "msg": "无效的token，请重新登录"
+  },
+  {
+    "httpCode": 403,
+    "sysCode": 13,
+    "msg": "权限不足，请联系管理员"
+  },
+  {
+    "httpCode": 406,
+    "sysCode": 11,
+    "msg": "系统繁忙，请稍等"
+  },
+  {
+    "httpCode": 500,
+    "sysCode": 1,
+    "msg": "系统异常，请联系客服"
+  }
+]

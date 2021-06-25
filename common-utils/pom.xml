@@ -4,17 +4,17 @@
     <parent>
         <groupId>com.xyz</groupId>
         <artifactId>cloud-base-parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-utils</artifactId>
-    <version>1.0.2</version>
+    <version>1.2.0</version>
 
     <dependencies>
         <dependency>
-            <groupId>com.xyz</groupId>
-            <artifactId>lombok-plus</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>
@@ -76,6 +76,10 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
         </dependency>
     </dependencies>
 </project>

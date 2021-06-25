@@ -2,7 +2,14 @@
 <configuration>
     <property name="LOGS" value="./logs" />
     <property name="APP" value="sample" />
-    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %p [%t] %C{32} %X{tid}-%X{uid} %m%n" />
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %p [%t] %c{32} %X{tid}-%X{uid} %m%n %rEx{full,
+          java.,
+          javax.,
+          org.,
+          sun.,
+          net.,
+          ByCGLIB
+        }"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

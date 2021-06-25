@@ -3,32 +3,50 @@ package com.xyz.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 import lombok.NonNull;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 
+import static com.alibaba.fastjson.serializer.SerializerFeature.DisableCircularReferenceDetect;
+
 public class JsonUtils {
-    public static <T> T jsonToBean(@NonNull String json, @NonNull Class<T> cls) {
+    public static <T> T jsonToBean(String json, @NonNull Class<T> cls) {
+        if (StringUtils.isBlank(json)) {
+            return null;
+        }
         return JSON.parseObject(json, cls);
     }
 
     public static <T> T jsonToBean(String jsonStr, Class<T> baseType, Type... nestingTypes) {
+        if (StringUtils.isBlank(jsonStr)) {
+            return null;
+        }
         return JSON.parseObject(jsonStr, buildType(baseType, nestingTypes));
     }
 
-    public static <T> List<T> jsonToList(@NonNull String json, @NonNull Class<T> cls) {
+    public static <T> List<T> jsonToList(String json, @NonNull Class<T> cls) {
+        if (StringUtils.isBlank(json)) {
+            return Collections.emptyList();
+        }
         return JSON.parseArray(json, cls);
     }
 
     public static String beanToJson(Object obj) {
+        return beanToJson(obj, DisableCircularReferenceDetect);
+    }
+
+    public static String beanToJson(Object obj, SerializerFeature... features) {
         if (obj == null) {
             return null;
         }
         try {
-            return JSON.toJSONString(obj);
+            return JSON.toJSONString(obj, features);
         } catch (Exception e) {
             return null;
         }
@@ -47,6 +65,9 @@ public class JsonUtils {
 
     public static <T> List<T> extraListByPath(String contentJson, String path, Class<T> tClass) {
         Object data = JSONPath.read(contentJson, path);
+        if (data == null) {
+            return Collections.emptyList();
+        }
         return JSONObject.parseArray(JsonUtils.beanToJson(data), tClass);
     }
 
@@ -58,8 +79,8 @@ public class JsonUtils {
     }
 
     public static <F, T> List<T> convertList(List<F> f, Class<T> clazz) {
-        if (f == null) {
-            return null;
+        if (CollectionUtils.isEmpty(f)) {
+            return Collections.emptyList();
         }
         return jsonToBean(beanToJson(f), List.class, clazz);
     }

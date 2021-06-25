@@ -2,6 +2,7 @@ package com.xyz.cloud.retry;
 
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
+import com.xyz.cloud.lock.FailedToObtainLockException;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.DefaultDeadEventHandler;
 import com.xyz.cloud.retry.monitor.EventMonitorJob;
@@ -9,23 +10,31 @@ import com.xyz.cloud.retry.monitor.EventRepositoryMonitor;
 import com.xyz.cloud.retry.repository.DefaultRepository;
 import com.xyz.cloud.retry.repository.EventRepository;
 import com.xyz.cloud.retry.repository.EventRepositoryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.task.TaskSchedulerBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 @EnableAsync
 @EnableScheduling
 @Configuration
+@Slf4j
 public class RetryableConfiguration {
     @Bean("RamEventRepository")
     @ConditionalOnMissingBean(RedissonClient.class)
     public EventRepository ramEventRepository() {
+        log.info("Initializing 'ram' retryable event repository");
         ICache<String, String> cache = CacheManager.getLocalCache(EventRepository.class.getName());
         return new DefaultRepository(null, cache);
     }
@@ -34,6 +43,7 @@ public class RetryableConfiguration {
     @ConditionalOnBean(RedissonClient.class)
     @ConditionalOnMissingBean(EventRepository.class)
     public EventRepository redisEventRepository(RedissonClient redissonClient) {
+        log.info("Initializing 'redis' retryable event repository");
         ICache<String, String> cache = CacheManager.getRedisCache(EventRepository.class.getName(), redissonClient);
         return new DefaultRepository(null, cache);
     }

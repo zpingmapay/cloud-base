@@ -1,8 +1,10 @@
 package com.xyz.cloud.sample.service;
 
+import com.xyz.cloud.lock.FailedToObtainLockException;
 import com.xyz.cloud.trace.annotation.PerformanceWatch;
 import com.xyz.cloud.trace.annotation.Traceable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -17,5 +19,10 @@ public class SampleRemoteService {
         TimeUnit.SECONDS.sleep(2);
 
         return input;
+    }
+
+    @Async
+    public void failedToObtainLock() {
+        throw new FailedToObtainLockException();
     }
 }

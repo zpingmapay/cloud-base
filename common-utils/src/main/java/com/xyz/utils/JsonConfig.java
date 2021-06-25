@@ -1,11 +1,12 @@
 package com.xyz.utils;
 
 
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -18,19 +19,30 @@ public class JsonConfig {
     }
 
     public static <T> List<T> config2List(String configFolder, String configName, Class<T> clazz) {
-        return JsonUtils.jsonToList(readContent(configFolder, configName), clazz);
+        try {
+            String content = readContent(configFolder, configName);
+            return JsonUtils.jsonToList(content, clazz);
+        } catch (Exception e) {
+            return Lists.newArrayList();
+        }
     }
 
     private static String readContent(String configFolder, String configName) {
         String content = null;
         try (InputStream is = new FileInputStream(configFolder.concat(configName))) {
             content = IOUtils.toString(is);
-        } catch (IOException e) {
+        } catch (Exception e) {
             try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(configName)) {
-                content = IOUtils.toString(is);
-            } catch (IOException e1) {
-                log.error("no config file found for " + configName, e1);
+                if (is != null) {
+                    content = IOUtils.toString(is);
+                }
+            } catch (Exception e1) {
+                log.warn("no config file found for " + configName);
+                return "";
             }
+        }
+        if (StringUtils.isBlank(content)) {
+            return content;
         }
         return content.replaceAll("\r\n", "");
     }

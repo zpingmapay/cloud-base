@@ -54,6 +54,7 @@ public class SampleController {
         DomainHeadersHolder.DomainHeader headerObject = httpHeadersHolder.getHeaderObject();
         String userId = headerObject.getUserId();
         remoteService.echo(userId);
+        remoteService.failedToObtainLock();
         ValidationUtils.isTrue(userId.equals(this.getUserId()), "Incorrect user id found");
         log.info("do post");
         eventPublisher.publish(new SampleEvent(userId, headerObject.getTraceId()));

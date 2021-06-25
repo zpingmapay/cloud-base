@@ -8,6 +8,10 @@ public class AccessException extends CommonException {
         this(null, msg);
     }
 
+    public AccessException(String msg, Throwable t) {
+        this(null, msg);
+    }
+
     public AccessException(String code, String msg) {
         super(code, msg);
     }
@@ -15,4 +19,5 @@ public class AccessException extends CommonException {
     public AccessException(String code, String msg, Throwable t) {
         super(code, msg, t);
     }
+
 }
