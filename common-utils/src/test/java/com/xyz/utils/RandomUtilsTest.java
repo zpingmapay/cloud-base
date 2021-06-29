@@ -51,13 +51,13 @@ public class RandomUtilsTest {
     @AllArgsConstructor
     public static class PriorityRule implements Randomable.ByPriority {
         private int id;
-        private int priority;
+        private Integer priority;
     }
 
     @Data
     @AllArgsConstructor
     public static class WeightRule implements Randomable.ByWeight {
         private int id;
-        private int weight;
+        private Integer weight;
     }
 }
