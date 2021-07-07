@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class BeanUtilsTest {
     @Test
@@ -19,11 +18,24 @@ public class BeanUtilsTest {
         Assert.isTrue(sample1.getParam5().equals(sample.getParam5()), "Map to bean failed");
     }
 
+    @Test
+    public void testIsFieldSet() {
+        Sample sample = new Sample();
+        sample.setParam6(new ArrayList<>());
+        Assert.isTrue(!BeanUtils.isAnyFieldSet(sample), "field set");
+        Assert.isTrue(!BeanUtils.isAllFieldsSet(sample), "field set");
+
+        sample = initSample();
+        sample.setParam6(Collections.singletonList("test"));
+        Assert.isTrue(BeanUtils.isAnyFieldSet(sample), "field set");
+        Assert.isTrue(BeanUtils.isAllFieldsSet(sample), "field set");
+    }
+
     public static Sample initSample() {
         Sample sample = new Sample();
         sample.setParam1("param1");
         sample.setParam2(new Date());
-        sample.setParam3(1);
+        sample.setParam3(1L);
         sample.setParam4(false);
         sample.setParam5(BigDecimal.ONE);
         return sample;
@@ -33,8 +45,9 @@ public class BeanUtilsTest {
     public static class Sample {
         private String param1;
         private Date param2;
-        private long param3;
-        private boolean param4;
+        private Long param3;
+        private Boolean param4;
         private BigDecimal param5;
+        private List<String> param6;
     }
 }

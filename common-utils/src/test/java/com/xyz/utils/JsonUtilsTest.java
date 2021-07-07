@@ -28,7 +28,7 @@ public class JsonUtilsTest {
         List<Item> list = Lists.newArrayList();
         list.add(new LinkItem("1", "/some/link"));
         list.add(new HrefItem("2", "href:/some/link"));
-        list.add(new UrlItem("3", "https://some/link"));
+        list.add(new UrlItem("3", "https://some/link?a=([{$id}])"));
 
         String json = JsonUtils.beanToJson(list, DisableCircularReferenceDetect, WriteClassName);
         Assert.notNull(json, "to json is null");

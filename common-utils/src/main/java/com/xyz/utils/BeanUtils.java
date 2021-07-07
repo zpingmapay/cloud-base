@@ -1,11 +1,14 @@
 package com.xyz.utils;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +63,28 @@ public class BeanUtils {
             return map;
         } catch (Exception ex) {
             throw new RuntimeException();
+        }
+    }
+
+    public static boolean isAllFieldsSet(Object obj) {
+        Map<String, Object> map = beanToMap(obj);
+        return map.values().stream().allMatch(BeanUtils::isFieldSet);
+    }
+
+    public static boolean isAnyFieldSet(Object obj) {
+        Map<String, Object> map = beanToMap(obj);
+        return map.values().stream().anyMatch(BeanUtils::isFieldSet);
+    }
+
+    private static boolean isFieldSet(Object fieldValue) {
+        if (fieldValue == null) {
+            return false;
+        } else if (fieldValue instanceof Collection) {
+            return ((Collection<?>) fieldValue).size() > 0;
+        } else if (fieldValue.getClass().isArray()) {
+            return Array.getLength(fieldValue) > 0;
+        } else {
+            return StringUtils.isNotBlank(fieldValue.toString());
         }
     }
 }

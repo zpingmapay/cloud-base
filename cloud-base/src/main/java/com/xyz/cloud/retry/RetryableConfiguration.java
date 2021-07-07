@@ -2,7 +2,6 @@ package com.xyz.cloud.retry;
 
 import com.xyz.cache.CacheManager;
 import com.xyz.cache.ICache;
-import com.xyz.cloud.lock.FailedToObtainLockException;
 import com.xyz.cloud.retry.deadevent.DeadEventHandler;
 import com.xyz.cloud.retry.deadevent.DefaultDeadEventHandler;
 import com.xyz.cloud.retry.monitor.EventMonitorJob;
@@ -14,17 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.task.TaskSchedulerBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-
-import java.util.concurrent.ThreadPoolExecutor;
 
 @EnableAsync
 @EnableScheduling
